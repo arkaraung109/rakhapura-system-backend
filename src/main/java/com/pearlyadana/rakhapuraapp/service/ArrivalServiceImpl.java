@@ -30,7 +30,7 @@ public class ArrivalServiceImpl implements ArrivalService {
 
     @Transactional(readOnly = true)
     @Override
-    public PaginationResponse<StudentClassDto> findEachArrivalPageSortByCreatedTimestamp(int pageNumber, boolean isAscending) {
+    public PaginationResponse<StudentClassDto> findEachPageSortByCreatedTimestamp(int pageNumber, boolean isAscending, boolean arrival) {
         Pageable sortedByCreatedTimestamp = null;
         if(isAscending) {
             sortedByCreatedTimestamp = PageRequest.of(PaginationUtil.pageNumber(pageNumber),
@@ -39,7 +39,7 @@ public class ArrivalServiceImpl implements ArrivalService {
             sortedByCreatedTimestamp = PageRequest.of(PaginationUtil.pageNumber(pageNumber),
                     paginationUtil.getPageSize(), Sort.by("createdTimestamp").descending());
         }
-        Page<StudentClass> page = this.studentClassRepository.findAllByArrival(true, sortedByCreatedTimestamp);
+        Page<StudentClass> page = this.studentClassRepository.findAllByArrival(arrival, sortedByCreatedTimestamp);
         PaginationResponse<StudentClassDto> res = new PaginationResponse<StudentClassDto>();
         res.addList(page.stream().map(this.mapper::mapEntityToDto).collect(Collectors.toList()))
                 .addTotalElements(page.getTotalElements())
@@ -50,7 +50,7 @@ public class ArrivalServiceImpl implements ArrivalService {
 
     @Transactional(readOnly = true)
     @Override
-    public PaginationResponse<StudentClassDto> findEachArrivalPageBySearchingSortByCreatedTimestamp(int pageNumber, boolean isAscending, Long examTitleId, Long academicYearId, Long gradeId, String studentClass, String keyword) {
+    public PaginationResponse<StudentClassDto> findEachPageBySearchingSortByCreatedTimestamp(int pageNumber, boolean isAscending, boolean arrival, Long examTitleId, Long academicYearId, Long gradeId, String studentClass, String keyword) {
         Pageable sortedByCreatedTimestamp = null;
         if(isAscending) {
             sortedByCreatedTimestamp = PageRequest.of(PaginationUtil.pageNumber(pageNumber),
@@ -61,41 +61,41 @@ public class ArrivalServiceImpl implements ArrivalService {
         }
         Page<StudentClass> page = null;
         if(examTitleId == 0 && academicYearId == 0 && gradeId == 0 & studentClass.equals("All")) {
-            page = this.studentClassRepository.findAllByKeyword(keyword, sortedByCreatedTimestamp);
+            page = this.studentClassRepository.findAllByKeywordAndArrival(keyword, arrival, sortedByCreatedTimestamp);
         } else if(examTitleId != 0 && academicYearId == 0 && gradeId == 0 & studentClass.equals("All")) {
-            page = this.studentClassRepository.findAllByExamTitleAndKeyword(examTitleId, keyword, sortedByCreatedTimestamp);
+            page = this.studentClassRepository.findAllByExamTitleAndKeywordAndArrival(examTitleId, keyword, arrival, sortedByCreatedTimestamp);
         } else if(examTitleId == 0 && academicYearId != 0 && gradeId == 0 & studentClass.equals("All")) {
-            page = this.studentClassRepository.findAllByAcademicYearAndKeyword(academicYearId, keyword, sortedByCreatedTimestamp);
+            page = this.studentClassRepository.findAllByAcademicYearAndKeywordAndArrival(academicYearId, keyword, arrival, sortedByCreatedTimestamp);
         } else if(examTitleId == 0 && academicYearId == 0 && gradeId != 0 & studentClass.equals("All")) {
-            page = this.studentClassRepository.findAllByGradeAndKeyword(gradeId, keyword, sortedByCreatedTimestamp);
+            page = this.studentClassRepository.findAllByGradeAndKeywordAndArrival(gradeId, keyword, arrival, sortedByCreatedTimestamp);
         } else if(examTitleId == 0 && academicYearId == 0 && gradeId == 0 & !studentClass.equals("All")) {
-            page = this.studentClassRepository.findAllByClassAndKeyword(studentClass, keyword, sortedByCreatedTimestamp);
+            page = this.studentClassRepository.findAllByClassAndKeywordAndArrival(studentClass, keyword, arrival, sortedByCreatedTimestamp);
         } else if(examTitleId != 0 && academicYearId != 0 && gradeId == 0 & studentClass.equals("All")) {
-            page = this.studentClassRepository.findAllByExamTitleAndAcademicYearAndKeyword(examTitleId, academicYearId, keyword, sortedByCreatedTimestamp);
+            page = this.studentClassRepository.findAllByExamTitleAndAcademicYearAndKeywordAndArrival(examTitleId, academicYearId, keyword, arrival, sortedByCreatedTimestamp);
         } else if(examTitleId != 0 && academicYearId == 0 && gradeId != 0 & studentClass.equals("All")) {
-            page = this.studentClassRepository.findAllByExamTitleAndGradeAndKeyword(examTitleId, gradeId, keyword, sortedByCreatedTimestamp);
+            page = this.studentClassRepository.findAllByExamTitleAndGradeAndKeywordAndArrival(examTitleId, gradeId, keyword, arrival, sortedByCreatedTimestamp);
         } else if(examTitleId != 0 && academicYearId == 0 && gradeId == 0 & !studentClass.equals("All")) {
-            page = this.studentClassRepository.findAllByExamTitleAndClassAndKeyword(examTitleId, studentClass, keyword, sortedByCreatedTimestamp);
+            page = this.studentClassRepository.findAllByExamTitleAndClassAndKeywordAndArrival(examTitleId, studentClass, keyword, arrival, sortedByCreatedTimestamp);
         } else if(examTitleId == 0 && academicYearId != 0 && gradeId != 0 & studentClass.equals("All")) {
-            page = this.studentClassRepository.findAllByAcademicYearAndGradeAndKeyword(academicYearId, gradeId, keyword, sortedByCreatedTimestamp);
+            page = this.studentClassRepository.findAllByAcademicYearAndGradeAndKeywordAndArrival(academicYearId, gradeId, keyword, arrival, sortedByCreatedTimestamp);
         } else if(examTitleId == 0 && academicYearId != 0 && gradeId == 0 & !studentClass.equals("All")) {
-            page = this.studentClassRepository.findAllByAcademicYearAndClassAndKeyword(academicYearId, studentClass, keyword, sortedByCreatedTimestamp);
+            page = this.studentClassRepository.findAllByAcademicYearAndClassAndKeywordAndArrival(academicYearId, studentClass, keyword, arrival, sortedByCreatedTimestamp);
         } else if(examTitleId == 0 && academicYearId == 0 && gradeId != 0 & !studentClass.equals("All")) {
-            page = this.studentClassRepository.findAllByGradeAndClassAndKeyword(gradeId, studentClass, keyword, sortedByCreatedTimestamp);
+            page = this.studentClassRepository.findAllByGradeAndClassAndKeywordAndArrival(gradeId, studentClass, keyword, arrival, sortedByCreatedTimestamp);
         } else if(examTitleId != 0 && academicYearId != 0 && gradeId != 0 & studentClass.equals("All")) {
-            page = this.studentClassRepository.findAllByExamTitleAndAcademicYearAndGradeAndKeyword(examTitleId, academicYearId, gradeId, keyword, sortedByCreatedTimestamp);
+            page = this.studentClassRepository.findAllByExamTitleAndAcademicYearAndGradeAndKeywordAndArrival(examTitleId, academicYearId, gradeId, keyword, arrival, sortedByCreatedTimestamp);
         } else if(examTitleId != 0 && academicYearId != 0 && gradeId == 0 & !studentClass.equals("All")) {
-            page = this.studentClassRepository.findAllByExamTitleAndAcademicYearAndClassAndKeyword(examTitleId, academicYearId, studentClass, keyword, sortedByCreatedTimestamp);
+            page = this.studentClassRepository.findAllByExamTitleAndAcademicYearAndClassAndKeywordAndArrival(examTitleId, academicYearId, studentClass, keyword, arrival, sortedByCreatedTimestamp);
         } else if(examTitleId != 0 && academicYearId == 0 && gradeId != 0 & !studentClass.equals("All")) {
-            page = this.studentClassRepository.findAllByExamTitleAndGradeAndClassAndKeyword(examTitleId, gradeId, studentClass, keyword, sortedByCreatedTimestamp);
+            page = this.studentClassRepository.findAllByExamTitleAndGradeAndClassAndKeywordAndArrival(examTitleId, gradeId, studentClass, keyword, arrival, sortedByCreatedTimestamp);
         } else if(examTitleId == 0 && academicYearId != 0 && gradeId != 0 & !studentClass.equals("All")) {
-            page = this.studentClassRepository.findAllByAcademicYearAndGradeAndClassAndKeyword(academicYearId, gradeId, studentClass, keyword, sortedByCreatedTimestamp);
+            page = this.studentClassRepository.findAllByAcademicYearAndGradeAndClassAndKeywordAndArrival(academicYearId, gradeId, studentClass, keyword, arrival, sortedByCreatedTimestamp);
         } else {
-            page = this.studentClassRepository.findAllByExamTitleAndAcademicYearAndGradeAndClassAndKeyword(examTitleId, academicYearId, gradeId, studentClass, keyword, sortedByCreatedTimestamp);
+            page = this.studentClassRepository.findAllByExamTitleAndAcademicYearAndGradeAndClassAndKeywordAndArrival(examTitleId, academicYearId, gradeId, studentClass, keyword, arrival, sortedByCreatedTimestamp);
         }
 
         PaginationResponse<StudentClassDto> res = new PaginationResponse<StudentClassDto>();
-        res.addList(page.stream().filter(StudentClass::isArrival).map(this.mapper::mapEntityToDto).collect(Collectors.toList()))
+        res.addList(page.stream().map(this.mapper::mapEntityToDto).collect(Collectors.toList()))
                 .addTotalElements(page.getTotalElements())
                 .addTotalPages(page.getTotalPages())
                 .addPageSize(page.getSize());

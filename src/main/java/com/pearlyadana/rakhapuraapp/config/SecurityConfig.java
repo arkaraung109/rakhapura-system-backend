@@ -1,7 +1,6 @@
 package com.pearlyadana.rakhapuraapp.config;
 
 import com.pearlyadana.rakhapuraapp.http.AuthenticationEntryPointImpl;
-import com.pearlyadana.rakhapuraapp.http.AuthoritiesConstants;
 import com.pearlyadana.rakhapuraapp.http.JWTConfigurer;
 import com.pearlyadana.rakhapuraapp.http.TokenProvider;
 import com.pearlyadana.rakhapuraapp.service.UserDetailsServiceImpl;
@@ -81,7 +80,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http
 		.authorizeRequests()
 			.antMatchers("/api/v1/authenticate").permitAll()
-			.antMatchers("/api/v1/academic-years/**").hasAnyRole(AuthoritiesConstants.ADMIN, AuthoritiesConstants.EXAM_ENTRY, AuthoritiesConstants.STUDENT_ENTRY)
 			.anyRequest().authenticated();
 	
 		http

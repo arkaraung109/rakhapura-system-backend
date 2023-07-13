@@ -8,6 +8,8 @@ import java.util.UUID;
 
 public interface StudentClassService {
 
+    int findMaxRegSeqNo(Long examTitleId, Long academicYearId, Long gradeId);
+
     StudentClassDto findById(UUID id);
 
     List<StudentClassDto> findAllByStudentId(UUID id);

@@ -19,8 +19,8 @@ public interface GradeRepository extends JpaRepository<Grade, Long> {
 
     List<Grade> findAllByAuthorizedStatus(boolean authorizedStatus);
 
-    @Query(value = "select * from grade where name like :keyword% or remark like :keyword% or abbreviate like :keyword%",
-            countQuery = "select * from grade where name like :keyword% or remark like :keyword% or abbreviate like :keyword%",
+    @Query(value = "select * from grade where (name like :keyword%) or (remark like :keyword%) or (abbreviate like :keyword%)",
+            countQuery = "select * from grade where (name like :keyword%) or (remark like :keyword%) or (abbreviate like :keyword%)",
             nativeQuery = true)
     Page<Grade> findAllByKeyword(@Param("keyword") String keyword, Pageable sortedById);
 

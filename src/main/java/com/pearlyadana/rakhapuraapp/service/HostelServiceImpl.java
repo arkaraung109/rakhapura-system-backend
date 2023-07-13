@@ -48,8 +48,8 @@ public class HostelServiceImpl implements HostelService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<HostelDto> findAllByNameAndAddress(String name, String address) {
-        return this.hostelRepository.findAllByNameAndAddress(name, address)
+    public List<HostelDto> findAllByName(String name) {
+        return this.hostelRepository.findAllByName(name)
                 .stream()
                 .map(this.mapper::mapEntityToDto)
                 .collect(Collectors.toList());

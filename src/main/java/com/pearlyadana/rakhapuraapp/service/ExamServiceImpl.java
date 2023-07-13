@@ -54,6 +54,14 @@ public class ExamServiceImpl implements ExamService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<ExamDto> findAllFilteredByAcademicYearAndExamTitleAndGrade(Long academicYearId, Long examTitleId, Long gradeId) {
+        return this.examRepository.findAllByAcademicYearIdAndExamTitleIdAndGradeIdAndAuthorizedStatus(academicYearId, examTitleId, gradeId, true)
+                .stream()
+                .map(this.mapper::mapEntityToDto)
+                .collect(Collectors.toList());
+    }
+
     @Transactional(readOnly = true)
     @Override
     public List<ExamDto> findAll() {

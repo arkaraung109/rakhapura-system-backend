@@ -1,12 +1,11 @@
 package com.pearlyadana.rakhapuraapp.rest;
 
 import com.pearlyadana.rakhapuraapp.http.AuthoritiesConstants;
-import com.pearlyadana.rakhapuraapp.model.request.StudentClassDto;
+import com.pearlyadana.rakhapuraapp.model.request.AttendanceDto;
 import com.pearlyadana.rakhapuraapp.model.response.DataResponse;
 import com.pearlyadana.rakhapuraapp.model.response.PaginationResponse;
-import com.pearlyadana.rakhapuraapp.service.ArrivalService;
-import com.pearlyadana.rakhapuraapp.service.StudentClassService;
-import com.pearlyadana.rakhapuraapp.util.ArrivedStudentExcelGenerator;
+import com.pearlyadana.rakhapuraapp.service.AttendanceService;
+import com.pearlyadana.rakhapuraapp.util.AttendenceExcelGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,45 +19,51 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(value = "/api/v1/arrivals", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/v1/attendances", produces = MediaType.APPLICATION_JSON_VALUE)
 @Validated
-public class ArrivalController {
+public class AttendanceController {
 
     @Autowired
-    private StudentClassService studentClassService;
+    private AttendanceService attendanceService;
 
-    @Autowired
-    private ArrivalService arrivalService;
+    @GetMapping("/{id}")
+    public ResponseEntity<AttendanceDto> findById(@PathVariable("id") UUID id) {
+        return new ResponseEntity<>(this.attendanceService.findById(id), HttpStatus.OK);
+    }
+
+    @GetMapping("")
+    public ResponseEntity<List<AttendanceDto>> findAll() {
+        return new ResponseEntity<>(this.attendanceService.findAll(), HttpStatus.OK);
+    }
 
     @GetMapping("/segment")
-    public PaginationResponse<StudentClassDto> findEachPageSortByCreatedTimestamp(@RequestParam int page, @RequestParam(required = false) String order, @RequestParam boolean arrival) {
+    public PaginationResponse<AttendanceDto> findEachPageSortByCreatedTimestamp(@RequestParam int page, @RequestParam(required = false) String order, boolean present) {
         boolean isAscending = true;
         if(order!=null && order.equals("desc")) {
             isAscending = false;
         }
-        return this.arrivalService.findEachPageSortByCreatedTimestamp(page, isAscending, arrival);
+        return this.attendanceService.findEachPageSortByCreatedTimestamp(page, isAscending, present);
     }
 
     @GetMapping("/segment/search")
-    public PaginationResponse<StudentClassDto> findEachPageBySearchingSortByCreatedTimestamp(@RequestParam int page, @RequestParam(required = false) String order, @RequestParam boolean arrival, @RequestParam Long examTitleId, @RequestParam Long academicYearId, @RequestParam Long gradeId, @RequestParam String studentClass, @RequestParam String keyword) {
+    public PaginationResponse<AttendanceDto> findEachPageBySearchingSortByCreatedTimestamp(@RequestParam int page, @RequestParam(required = false) String order, boolean present, @RequestParam Long academicYearId, @RequestParam Long examTitleId, @RequestParam Long subjectTypeId, @RequestParam String keyword) {
         boolean isAscending = true;
         if(order!=null && order.equals("desc")) {
             isAscending = false;
         }
-        return this.arrivalService.findEachPageBySearchingSortByCreatedTimestamp(page, isAscending, arrival, examTitleId, academicYearId, gradeId, studentClass, keyword);
+        return this.attendanceService.findEachPageBySearchingSortByCreatedTimestamp(page, isAscending, present, academicYearId, examTitleId, subjectTypeId, keyword);
     }
 
     @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @RolesAllowed(AuthoritiesConstants.STUDENT_ENTRY)
+    @RolesAllowed(AuthoritiesConstants.ATTENDANCE_ENTRY)
     public ResponseEntity<DataResponse> save(@RequestParam List<UUID> idList) {
         List<UUID> createdList = new ArrayList<>();
         for(UUID id : idList) {
-            StudentClassDto dto = this.studentClassService.findById(id);
-            dto.setArrival(true);
-            if(this.studentClassService.update(dto, id) == null) {
+            AttendanceDto dto = this.attendanceService.findById(id);
+            dto.setPresent(true);
+            if(this.attendanceService.update(dto, id) == null) {
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             }
             createdList.add(id);
@@ -73,8 +78,8 @@ public class ArrivalController {
     @GetMapping("/export-to-excel")
     public void exportToExcelFile(HttpServletResponse response) throws IOException {
         response.setContentType("application/octet-stream");
-        List<StudentClassDto> studentClassDtoList = (List<StudentClassDto>) this.studentClassService.findAll().stream().filter(StudentClassDto::isArrival).collect(Collectors.toList());
-        ArrivedStudentExcelGenerator generator = new ArrivedStudentExcelGenerator(studentClassDtoList);
+        List<AttendanceDto> attendenceDtoList = this.attendanceService.findAll();
+        AttendenceExcelGenerator generator = new AttendenceExcelGenerator(attendenceDtoList);
         generator.export(response);
     }
 

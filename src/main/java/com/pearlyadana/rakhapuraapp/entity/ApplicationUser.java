@@ -23,6 +23,9 @@ public class ApplicationUser {
     @Column(name = "password", length = 300)
     private String password;
 
+    @Column(name = "active_status")
+    private boolean activeStatus;
+
     @JoinColumn(name = "role_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private UserRole role;
@@ -30,12 +33,13 @@ public class ApplicationUser {
     public ApplicationUser() {
     }
 
-    public ApplicationUser(Long id, String firstName, String lastName, String loginUserName, String password, UserRole role) {
+    public ApplicationUser(Long id, String firstName, String lastName, String loginUserName, String password, boolean activeStatus, UserRole role) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.loginUserName = loginUserName;
         this.password = password;
+        this.activeStatus = activeStatus;
         this.role = role;
     }
 
@@ -77,6 +81,14 @@ public class ApplicationUser {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public boolean isActiveStatus() {
+        return activeStatus;
+    }
+
+    public void setActiveStatus(boolean activeStatus) {
+        this.activeStatus = activeStatus;
     }
 
     public UserRole getRole() {

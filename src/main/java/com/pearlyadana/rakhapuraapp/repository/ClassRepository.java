@@ -15,7 +15,7 @@ import java.util.List;
 @Repository
 public interface ClassRepository extends JpaRepository<Class, Long> {
 
-    String joinQuery = "select c.* from class c where ";
+    String joinQuery = "select c.* from class c where (c.name like :keyword%)";
 
     @Query(value = "select distinct(name) from class where authorized_status=true", nativeQuery = true)
     List<String> findDistinctAll();
@@ -26,23 +26,23 @@ public interface ClassRepository extends JpaRepository<Class, Long> {
 
     List<Class> findAllByAcademicYearIdAndGradeIdAndAuthorizedStatus(Long academicYearId, Long gradeId, boolean authorizedStatus);
 
-    @Query(value = joinQuery + "(c.name like :keyword%)",
-            countQuery = joinQuery + "(c.name like :keyword%)",
+    @Query(value = joinQuery,
+            countQuery = joinQuery,
             nativeQuery = true)
     Page<Class> findAllByKeyword(@Param("keyword") String keyword, Pageable sortedById);
 
-    @Query(value = joinQuery + "(c.academic_year_id=:academicYearId) and (c.name like :keyword%)",
-            countQuery = joinQuery + "(c.academic_year_id=:academicYearId) and (c.name like :keyword%)",
+    @Query(value = joinQuery + " and (c.academic_year_id=:academicYearId)",
+            countQuery = joinQuery + " and (c.academic_year_id=:academicYearId)",
             nativeQuery = true)
     Page<Class> findAllByAcademicYearAndKeyword(@Param("academicYearId") Long academicYearId, @Param("keyword") String keyword, Pageable sortedById);
 
-    @Query(value = joinQuery + "(c.grade_id=:gradeId) and (c.name like :keyword%)",
-            countQuery = joinQuery + "(c.grade_id=:gradeId) and (c.name like :keyword%)",
+    @Query(value = joinQuery + " and (c.grade_id=:gradeId)",
+            countQuery = joinQuery + " and (c.grade_id=:gradeId)",
             nativeQuery = true)
     Page<Class> findAllByGradeAndKeyword(@Param("gradeId") Long gradeId, @Param("keyword") String keyword, Pageable sortedById);
 
-    @Query(value = joinQuery + "(c.academic_year_id=:academicYearId) and (c.grade_id=:gradeId) and (c.name like :keyword%)",
-            countQuery = joinQuery + "(c.academic_year_id=:academicYearId) and (c.grade_id=:gradeId) and (c.name like :keyword%)",
+    @Query(value = joinQuery + " and (c.academic_year_id=:academicYearId) and (c.grade_id=:gradeId)",
+            countQuery = joinQuery + " and (c.academic_year_id=:academicYearId) and (c.grade_id=:gradeId)",
             nativeQuery = true)
     Page<Class> findAllByAcademicYearAndGradeAndKeyword(@Param("academicYearId") Long academicYearId, @Param("gradeId") Long gradeId, @Param("keyword") String keyword, Pageable sortedById);
 

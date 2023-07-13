@@ -15,7 +15,7 @@ import java.util.List;
 @Repository
 public interface SubjectTypeRepository extends JpaRepository<SubjectType, Long> {
 
-    String joinQuery = "select s.* from subject_type s where ";
+    String joinQuery = "select s.* from subject_type s where (s.name like :keyword%)";
 
     @Query(value = "select distinct(name) from subject_type where authorized_status=true", nativeQuery = true)
     List<String> findDistinctAll();
@@ -26,13 +26,13 @@ public interface SubjectTypeRepository extends JpaRepository<SubjectType, Long> 
 
     List<SubjectType> findAllByGradeIdAndAuthorizedStatus(Long gradeId, boolean authorizedStatus);
 
-    @Query(value = joinQuery + "(s.name like :keyword%)",
-            countQuery = joinQuery + "(s.name like :keyword%)",
+    @Query(value = joinQuery,
+            countQuery = joinQuery,
             nativeQuery = true)
     Page<SubjectType> findAllByKeyword(@Param("keyword") String keyword, Pageable sortedById);
 
-    @Query(value = joinQuery + "(s.grade_id=:gradeId) and (s.name like :keyword%)",
-            countQuery = joinQuery + "(s.grade_id=:gradeId) and (s.name like :keyword%)",
+    @Query(value = joinQuery + " and (s.grade_id=:gradeId)",
+            countQuery = joinQuery + " and (s.grade_id=:gradeId)",
             nativeQuery = true)
     Page<SubjectType> findAllByGradeAndKeyword(@Param("gradeId") Long gradeId, @Param("keyword") String keyword, Pageable sortedById);
 

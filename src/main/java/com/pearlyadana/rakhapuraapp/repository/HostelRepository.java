@@ -15,12 +15,12 @@ import java.util.List;
 @Repository
 public interface HostelRepository extends JpaRepository<Hostel, Long> {
 
-    List<Hostel> findAllByNameAndAddress(String name, String address);
+    List<Hostel> findAllByName(String name);
 
     List<Hostel> findAllByAuthorizedStatus(boolean authorizedStatus);
 
-    @Query(value = "select * from hostel where name like :keyword% or address like :keyword% or phone like :keyword%",
-            countQuery = "select * from hostel where name like :keyword% or address like :keyword% or phone like :keyword%",
+    @Query(value = "select * from hostel where (name like :keyword%) or (address like :keyword%) or (phone like :keyword%)",
+            countQuery = "select * from hostel where (name like :keyword%) or (address like :keyword%) or (phone like :keyword%)",
             nativeQuery = true)
     Page<Hostel> findAllByKeyword(@Param("keyword") String keyword, Pageable sortedById);
 

@@ -11,7 +11,7 @@ public interface HostelService {
 
     List<HostelDto> findAll();
 
-    List<HostelDto> findAllByNameAndAddress(String name, String address);
+    List<HostelDto> findAllByName(String name);
 
     List<HostelDto> findAllByAuthorizedStatus(boolean authorizedStatus);
 

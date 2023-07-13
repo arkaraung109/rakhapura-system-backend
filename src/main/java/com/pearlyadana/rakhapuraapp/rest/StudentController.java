@@ -11,13 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
@@ -63,41 +61,35 @@ public class StudentController {
 
     @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
     @RolesAllowed(AuthoritiesConstants.STUDENT_ENTRY)
-    public ResponseEntity<CustomHttpResponse> save(@Valid @RequestBody StudentDto body, BindingResult bindingResult) {
-        if(!bindingResult.hasErrors()) {
-            if(!this.studentService.findAllByNrc(body.getNrc()).isEmpty()) {
-                CustomHttpResponse res = new CustomHttpResponse(HttpStatus.CONFLICT.value(),"object has already been created.");
-                return new ResponseEntity<>(res, HttpStatus.CONFLICT);
-            }
-            if(this.studentService.save(body) != null) {
-                CustomHttpResponse res = new CustomHttpResponse(HttpStatus.CREATED.value(),"new object is created.");
-                return new ResponseEntity<>(res, HttpStatus.CREATED);
-            }
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<CustomHttpResponse> save(@RequestBody StudentDto body) {
+        if(!this.studentService.findAllByNrc(body.getNrc()).isEmpty()) {
+            CustomHttpResponse res = new CustomHttpResponse(HttpStatus.CONFLICT.value(),"object has already been created.");
+            return new ResponseEntity<>(res, HttpStatus.CONFLICT);
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if(this.studentService.save(body) != null) {
+            CustomHttpResponse res = new CustomHttpResponse(HttpStatus.CREATED.value(),"new object is created.");
+            return new ResponseEntity<>(res, HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @RolesAllowed(AuthoritiesConstants.STUDENT_ENTRY)
-    public ResponseEntity<CustomHttpResponse> update(@Validated @RequestBody StudentDto body, @PathVariable("id") UUID id, BindingResult bindingResult) {
-        if(!bindingResult.hasErrors()) {
-            StudentDto dto = this.studentService.findById(id);
-            if(dto == null) {
-                CustomHttpResponse res = new CustomHttpResponse(HttpStatus.NO_CONTENT.value(),"object does not exist.");
-                return new ResponseEntity<>(res, HttpStatus.NO_CONTENT);
-            }
-            if(!this.studentService.findAllByNrc(body.getNrc()).isEmpty() && !body.getNrc().equals(dto.getNrc())) {
-                CustomHttpResponse res = new CustomHttpResponse(HttpStatus.CONFLICT.value(),"object has already been created.");
-                return new ResponseEntity<>(res, HttpStatus.CONFLICT);
-            }
-            if(this.studentService.update(body, id) != null) {
-                CustomHttpResponse res = new CustomHttpResponse(HttpStatus.OK.value(),"object is updated.");
-                return new ResponseEntity<>(res, HttpStatus.OK);
-            }
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<CustomHttpResponse> update(@RequestBody StudentDto body, @PathVariable("id") UUID id) {
+        StudentDto dto = this.studentService.findById(id);
+        if(dto == null) {
+            CustomHttpResponse res = new CustomHttpResponse(HttpStatus.NO_CONTENT.value(),"object does not exist.");
+            return new ResponseEntity<>(res, HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if(!this.studentService.findAllByNrc(body.getNrc()).isEmpty() && !body.getNrc().equals(dto.getNrc())) {
+            CustomHttpResponse res = new CustomHttpResponse(HttpStatus.CONFLICT.value(),"object has already been created.");
+            return new ResponseEntity<>(res, HttpStatus.CONFLICT);
+        }
+        if(this.studentService.update(body, id) != null) {
+            CustomHttpResponse res = new CustomHttpResponse(HttpStatus.OK.value(),"object is updated.");
+            return new ResponseEntity<>(res, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @DeleteMapping("/{id}")

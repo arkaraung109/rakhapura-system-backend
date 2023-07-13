@@ -36,6 +36,9 @@ public class StudentDto implements Serializable {
 
     private RegionDto region;
 
+    public StudentDto() {
+    }
+
     public StudentDto(UUID id, String regDate, String name, String dob, String sex, String nationality, String nrc, String fatherName, String motherName, String address, String monasteryName, String monasteryHeadmaster, String monasteryTownship, LocalDateTime createdTimestamp, RegionDto region) {
         this.id = id;
         this.regDate = regDate;

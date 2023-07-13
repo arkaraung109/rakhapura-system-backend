@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
 import java.io.Serializable;
 
 @RestController
@@ -48,7 +47,7 @@ public class AuthenticationController {
     }
 
     @PostMapping(value = {"/", ""}, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> authenticate(@Valid @RequestBody Login login) throws Exception {
+    public ResponseEntity<Object> authenticate(@RequestBody Login login) throws Exception {
         try {
             Authentication authenticate = authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(login.getUserID(), login.getPassword()));

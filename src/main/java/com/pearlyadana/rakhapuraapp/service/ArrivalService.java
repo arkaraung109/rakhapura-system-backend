@@ -5,8 +5,8 @@ import com.pearlyadana.rakhapuraapp.model.response.PaginationResponse;
 
 public interface ArrivalService {
 
-    PaginationResponse<StudentClassDto> findEachArrivalPageSortByCreatedTimestamp(int pageNumber, boolean isAscending);
+    PaginationResponse<StudentClassDto> findEachPageSortByCreatedTimestamp(int pageNumber, boolean isAscending, boolean arrival);
 
-    PaginationResponse<StudentClassDto> findEachArrivalPageBySearchingSortByCreatedTimestamp(int pageNumber, boolean isAscending, Long examTitleId, Long academicYearId, Long gradeId, String studentClass, String keyword);
+    PaginationResponse<StudentClassDto> findEachPageBySearchingSortByCreatedTimestamp(int pageNumber, boolean isAscending, boolean arrival, Long examTitleId, Long academicYearId, Long gradeId, String studentClass, String keyword);
 
 }

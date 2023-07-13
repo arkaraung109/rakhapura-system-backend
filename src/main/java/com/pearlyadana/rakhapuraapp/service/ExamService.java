@@ -13,6 +13,8 @@ public interface ExamService {
 
     List<ExamDto> findAllFilteredByAcademicYearAndExamTitle(Long academicYearId, Long examTitleId);
 
+    List<ExamDto> findAllFilteredByAcademicYearAndExamTitleAndGrade(Long academicYearId, Long examTitleId, Long gradeId);
+
     List<ExamDto> findAll();
 
     List<ExamDto> findAllByAcademicYearAndExamTitleAndSubjectType(Long academicYearId, Long examTitleId, Long subjectTypeId);
