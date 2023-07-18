@@ -18,6 +18,8 @@ public interface StudentRepository extends JpaRepository<Student, UUID> {
 
     List<Student> findAllByNrc(String nrc);
 
+    List<Student> findByOrderByCreatedTimestampAsc();
+
     @Query(value = joinQuery,
             countQuery = joinQuery,
             nativeQuery = true)

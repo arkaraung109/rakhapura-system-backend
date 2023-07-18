@@ -16,12 +16,16 @@ public interface StudentClassRepository extends JpaRepository<StudentClass, UUID
 
     String joinQueryStudentClass = "select sc.* from student_class sc, class c, student s where sc.class_id=c.id and sc.student_id=s.id and ((sc.reg_no like :keyword%) or (s.name like :keyword%) or (s.father_name like :keyword%) or (s.monastery_headmaster like :keyword%) or (s.monastery_name like :keyword%))";
     String joinQueryArrival = "select sc.* from student_class sc, class c, student s where sc.class_id=c.id and sc.student_id=s.id and sc.arrival=:arrival and ((sc.reg_no like :keyword%) or (s.name like :keyword%) or (s.father_name like :keyword%))";
-    String joinQueryStudentCard = "select sc.* from student_class sc, class c, student s where sc.class_id=c.id and sc.student_id=s.id and sc.reg_no=null and sc.reg_seq_no=0 and ((s.name like :keyword%) or (s.father_name like :keyword%))";
+    String joinQueryStudentCard = "select sc.* from student_class sc, class c, student s where sc.class_id=c.id and sc.student_id=s.id and sc.reg_no is null and sc.reg_seq_no=0 and sc.arrival=true and ((s.name like :keyword%) or (s.father_name like :keyword%))";
+    String joinQueryHostelNotPresent = "select sc.* from student_class sc, class c, student s where sc.class_id=c.id and sc.student_id=s.id and sc.reg_no is null and sc.reg_seq_no=0 and sc.arrival=true and sc.hostel_id is null and ((s.name like :keyword%) or (s.father_name like :keyword%))";
+    String joinQueryHostelPresent = "select sc.* from student_class sc, class c, student s where sc.class_id=c.id and sc.student_id=s.id and sc.hostel_id is not null and ((sc.reg_no like :keyword%) or (s.name like :keyword%) or (s.father_name like :keyword%))";
 
     @Query(value = "select max(sc.reg_seq_no) from student_class sc, class c where sc.class_id=c.id and sc.exam_title_id=:examTitleId and c.academic_year_id=:academicYearId and c.grade_id=:gradeId", nativeQuery = true)
     int findMaxRegSeqNo(@Param("examTitleId") Long examTitleId, @Param("academicYearId") Long academicYearId, @Param("gradeId") Long gradeId);
 
     List<StudentClass> findAllByStudentId(UUID id);
+
+    List<StudentClass> findByOrderByCreatedTimestampAsc();
 
     @Query(value = "select sc.* from student_class sc, class c where sc.class_id=c.id and sc.exam_title_id=:examTitleId and c.academic_year_id=:academicYearId and sc.student_id=:studentId", nativeQuery = true)
     List<StudentClass> findAllByExamTitleIdAndAcademicYearIdAndStudentId(@Param("examTitleId") Long examTitleId, @Param("academicYearId") Long academicYearId, @Param("studentId") UUID studentId);
@@ -29,6 +33,16 @@ public interface StudentClassRepository extends JpaRepository<StudentClass, UUID
     Page<StudentClass> findAllByArrival(boolean arrival, Pageable sortedByCreatedTimestamp);
 
     Page<StudentClass> findAllByArrivalAndRegNoAndRegSeqNo(boolean arrival, String regNo, int regSeqNo, Pageable sortedByCreatedTimestamp);
+
+    @Query(value = "select sc.* from student_class sc where sc.reg_no is null and sc.reg_seq_no=0 and sc.arrival=true and sc.hostel_id is null",
+            countQuery = "select sc.* from student_class sc where sc.reg_no is null and sc.reg_seq_no=0 and sc.arrival=true and sc.hostel_id is null",
+            nativeQuery = true)
+    Page<StudentClass> findAllByHostelNotPresent(Pageable sortedByCreatedTimestamp);
+
+    @Query(value = "select sc.* from student_class sc where hostel_id is not null",
+            countQuery = "select sc.* from student_class sc where hostel_id is not null",
+            nativeQuery = true)
+    Page<StudentClass> findAllByHostelPresent(Pageable sortedByCreatedTimestamp);
 
     //-----Student Class-----
 
@@ -275,5 +289,125 @@ public interface StudentClassRepository extends JpaRepository<StudentClass, UUID
             countQuery = joinQueryStudentCard + " and (sc.exam_title_id=:examTitleId) and (c.academic_year_id=:academicYearId) and (c.grade_id=:gradeId) and (c.name=:studentClass)",
             nativeQuery = true)
     Page<StudentClass> findAllByExamTitleAndAcademicYearAndGradeAndClassAndKeywordAndRegNoAndRegSeqNo(@Param("examTitleId") Long examTitleId, @Param("academicYearId") Long academicYearId, @Param("gradeId") Long gradeId, @Param("studentClass") String studentClass, @Param("keyword") String keyword, Pageable sortedByCreatedTimestamp);
+
+    //-----Hostel Not Present-----
+
+    @Query(value = joinQueryHostelNotPresent,
+            countQuery = joinQueryHostelNotPresent,
+            nativeQuery = true)
+    Page<StudentClass> findAllByKeywordAndHostelNotPresent(String keyword, Pageable sortedByCreatedTimestamp);
+
+    @Query(value = joinQueryHostelNotPresent + " and (sc.exam_title_id=:examTitleId)",
+            countQuery = joinQueryHostelNotPresent + " and (sc.exam_title_id=:examTitleId)",
+            nativeQuery = true)
+    Page<StudentClass> findAllByExamTitleAndKeywordAndHostelNotPresent(Long examTitleId, String keyword, Pageable sortedByCreatedTimestamp);
+
+    @Query(value = joinQueryHostelNotPresent + " and (c.academic_year_id=:academicYearId)",
+            countQuery = joinQueryHostelNotPresent + " and (c.academic_year_id=:academicYearId)",
+            nativeQuery = true)
+    Page<StudentClass> findAllByAcademicYearAndKeywordAndHostelNotPresent(Long academicYearId, String keyword, Pageable sortedByCreatedTimestamp);
+
+    @Query(value = joinQueryHostelNotPresent + " and (c.grade_id=:gradeId)",
+            countQuery = joinQueryHostelNotPresent + " and (c.grade_id=:gradeId)",
+            nativeQuery = true)
+    Page<StudentClass> findAllByGradeAndKeywordAndHostelNotPresent(Long gradeId, String keyword, Pageable sortedByCreatedTimestamp);
+
+    @Query(value = joinQueryHostelNotPresent + " and (sc.exam_title_id=:examTitleId) and (c.academic_year_id=:academicYearId)",
+            countQuery = joinQueryHostelNotPresent + " and (sc.exam_title_id=:examTitleId) and (c.academic_year_id=:academicYearId)",
+            nativeQuery = true)
+    Page<StudentClass> findAllByExamTitleAndAcademicYearAndKeywordAndHostelNotPresent(Long examTitleId, Long academicYearId, String keyword, Pageable sortedByCreatedTimestamp);
+
+    @Query(value = joinQueryHostelNotPresent + " and (sc.exam_title_id=:examTitleId) and (c.grade_id=:gradeId)",
+            countQuery = joinQueryHostelNotPresent + " and (sc.exam_title_id=:examTitleId) and (c.grade_id=:gradeId)",
+            nativeQuery = true)
+    Page<StudentClass> findAllByExamTitleAndGradeAndKeywordAndHostelNotPresent(Long examTitleId, Long gradeId, String keyword, Pageable sortedByCreatedTimestamp);
+
+    @Query(value = joinQueryHostelNotPresent + " and (sc.exam_title_id=:examTitleId) and (c.academic_year_id=:academicYearId) and (c.grade_id=:gradeId)",
+            countQuery = joinQueryHostelNotPresent + " and (sc.exam_title_id=:examTitleId) and (c.academic_year_id=:academicYearId) and (c.grade_id=:gradeId)",
+            nativeQuery = true)
+    Page<StudentClass> findAllByAcademicYearAndGradeAndKeywordAndHostelNotPresent(Long academicYearId, Long gradeId, String keyword, Pageable sortedByCreatedTimestamp);
+
+
+    //-----Hostel Present-----
+
+    @Query(value = joinQueryHostelPresent,
+            countQuery = joinQueryHostelPresent,
+            nativeQuery = true)
+    Page<StudentClass> findAllByKeywordAndHostelPresent(@Param("keyword") String keyword, Pageable sortedByCreatedTimestamp);
+
+    @Query(value = joinQueryHostelPresent + " and (sc.exam_title_id=:examTitleId)",
+            countQuery = joinQueryHostelPresent + " and (sc.exam_title_id=:examTitleId)",
+            nativeQuery = true)
+    Page<StudentClass> findAllByExamTitleAndKeywordAndHostelPresent(@Param("examTitleId") Long examTitleId, @Param("keyword") String keyword, Pageable sortedByCreatedTimestamp);
+
+    @Query(value = joinQueryHostelPresent + " and (c.academic_year_id=:academicYearId)",
+            countQuery = joinQueryHostelPresent + " and (c.academic_year_id=:academicYearId)",
+            nativeQuery = true)
+    Page<StudentClass> findAllByAcademicYearAndKeywordAndHostelPresent(@Param("academicYearId") Long academicYearId, @Param("keyword") String keyword, Pageable sortedByCreatedTimestamp);
+
+    @Query(value = joinQueryHostelPresent + " and (c.grade_id=:gradeId)",
+            countQuery = joinQueryHostelPresent + " and (c.grade_id=:gradeId)",
+            nativeQuery = true)
+    Page<StudentClass> findAllByGradeAndKeywordAndHostelPresent(@Param("gradeId") Long gradeId, @Param("keyword") String keyword, Pageable sortedByCreatedTimestamp);
+
+    @Query(value = joinQueryHostelPresent + " and (sc.hostel_id=:hostelId)",
+            countQuery = joinQueryHostelPresent + " and (sc.hostel_id=:hostelId)",
+            nativeQuery = true)
+    Page<StudentClass> findAllByHostelAndKeywordAndHostelPresent(@Param("hostelId") Long hostelId, @Param("keyword") String keyword, Pageable sortedByCreatedTimestamp);
+
+    @Query(value = joinQueryHostelPresent + " and (sc.exam_title_id=:examTitleId) and (c.academic_year_id=:academicYearId)",
+            countQuery = joinQueryHostelPresent + " and (sc.exam_title_id=:examTitleId) and (c.academic_year_id=:academicYearId)",
+            nativeQuery = true)
+    Page<StudentClass> findAllByExamTitleAndAcademicYearAndKeywordAndHostelPresent(@Param("examTitleId") Long examTitleId, @Param("academicYearId") Long academicYearId, @Param("keyword") String keyword, Pageable sortedByCreatedTimestamp);
+
+    @Query(value = joinQueryHostelPresent + " and (sc.exam_title_id=:examTitleId) and (c.grade_id=:gradeId)",
+            countQuery = joinQueryHostelPresent + " and (sc.exam_title_id=:examTitleId) and (c.grade_id=:gradeId)",
+            nativeQuery = true)
+    Page<StudentClass> findAllByExamTitleAndGradeAndKeywordAndHostelPresent(@Param("examTitleId") Long examTitleId, @Param("gradeId") Long gradeId, @Param("keyword") String keyword, Pageable sortedByCreatedTimestamp);
+
+    @Query(value = joinQueryHostelPresent + " and (sc.exam_title_id=:examTitleId) and (sc.hostel_id=:hostelId)",
+            countQuery = joinQueryHostelPresent + " and (sc.exam_title_id=:examTitleId) and (sc.hostel_id=:hostelId)",
+            nativeQuery = true)
+    Page<StudentClass> findAllByExamTitleAndHostelAndKeywordAndHostelPresent(@Param("examTitleId") Long examTitleId, @Param("hostelId") Long hostelId, @Param("keyword") String keyword, Pageable sortedByCreatedTimestamp);
+
+    @Query(value = joinQueryHostelPresent + " and (c.academic_year_id=:academicYearId) and (c.grade_id=:gradeId)",
+            countQuery = joinQueryHostelPresent + " and (c.academic_year_id=:academicYearId) and (c.grade_id=:gradeId)",
+            nativeQuery = true)
+    Page<StudentClass> findAllByAcademicYearAndGradeAndKeywordAndHostelPresent(@Param("academicYearId") Long academicYearId, @Param("gradeId") Long gradeId, @Param("keyword") String keyword, Pageable sortedByCreatedTimestamp);
+
+    @Query(value = joinQueryHostelPresent + " and (c.academic_year_id=:academicYearId) and (sc.hostel_id=:hostelId)",
+            countQuery = joinQueryHostelPresent + " and (c.academic_year_id=:academicYearId) and (sc.hostel_id=:hostelId)",
+            nativeQuery = true)
+    Page<StudentClass> findAllByAcademicYearAndHostelAndKeywordAndHostelPresent(@Param("academicYearId") Long academicYearId, @Param("hostelId") Long hostelId, @Param("keyword") String keyword, Pageable sortedByCreatedTimestamp);
+
+    @Query(value = joinQueryHostelPresent + " and (c.grade_id=:gradeId) and (sc.hostel_id=:hostelId)",
+            countQuery = joinQueryHostelPresent + " and (c.grade_id=:gradeId) and (sc.hostel_id=:hostelId)",
+            nativeQuery = true)
+    Page<StudentClass> findAllByGradeAndHostelAndKeywordAndHostelPresent(@Param("gradeId") Long gradeId, @Param("hostelId") Long hostelId, @Param("keyword") String keyword, Pageable sortedByCreatedTimestamp);
+
+    @Query(value = joinQueryHostelPresent + " and (sc.exam_title_id=:examTitleId) and (c.academic_year_id=:academicYearId) and (c.grade_id=:gradeId)",
+            countQuery = joinQueryHostelPresent + " and (sc.exam_title_id=:examTitleId) and (c.academic_year_id=:academicYearId) and (c.grade_id=:gradeId)",
+            nativeQuery = true)
+    Page<StudentClass> findAllByExamTitleAndAcademicYearAndGradeAndKeywordAndHostelPresent(@Param("examTitleId") Long examTitleId, @Param("academicYearId") Long academicYearId, @Param("gradeId") Long gradeId, @Param("keyword") String keyword, Pageable sortedByCreatedTimestamp);
+
+    @Query(value = joinQueryHostelPresent + " and (sc.exam_title_id=:examTitleId) and (c.academic_year_id=:academicYearId) and (sc.hostel_id=:hostelId)",
+            countQuery = joinQueryHostelPresent + " and (sc.exam_title_id=:examTitleId) and (c.academic_year_id=:academicYearId) and (sc.hostel_id=:hostelId)",
+            nativeQuery = true)
+    Page<StudentClass> findAllByExamTitleAndAcademicYearAndHostelAndKeywordAndHostelPresent(@Param("examTitleId") Long examTitleId, @Param("academicYearId") Long academicYearId, @Param("hostelId") Long hostelId, @Param("keyword") String keyword, Pageable sortedByCreatedTimestamp);
+
+    @Query(value = joinQueryHostelPresent + " and (sc.exam_title_id=:examTitleId) and (c.grade_id=:gradeId) and (sc.hostel_id=:hostelId)",
+            countQuery = joinQueryHostelPresent + " and (sc.exam_title_id=:examTitleId) and (c.grade_id=:gradeId) and (sc.hostel_id=:hostelId)",
+            nativeQuery = true)
+    Page<StudentClass> findAllByExamTitleAndGradeAndHostelAndKeywordAndHostelPresent(@Param("examTitleId") Long examTitleId, @Param("gradeId") Long gradeId, @Param("hostelId") Long hostelId, @Param("keyword") String keyword, Pageable sortedByCreatedTimestamp);
+
+    @Query(value = joinQueryHostelPresent + " and (c.academic_year_id=:academicYearId) and (c.grade_id=:gradeId) and (sc.hostel_id=:hostelId)",
+            countQuery = joinQueryHostelPresent + " and (c.academic_year_id=:academicYearId) and (c.grade_id=:gradeId) and (sc.hostel_id=:hostelId)",
+            nativeQuery = true)
+    Page<StudentClass> findAllByAcademicYearAndGradeAndHostelAndKeywordAndHostelPresent(@Param("academicYearId") Long academicYearId, @Param("gradeId") Long gradeId, @Param("hostelId") Long hostelId, @Param("keyword") String keyword, Pageable sortedByCreatedTimestamp);
+
+    @Query(value = joinQueryHostelPresent + " and (sc.exam_title_id=:examTitleId) and (c.academic_year_id=:academicYearId) and (c.grade_id=:gradeId) and (sc.hostel_id=:hostelId)",
+            countQuery = joinQueryHostelPresent + " and (sc.exam_title_id=:examTitleId) and (c.academic_year_id=:academicYearId) and (c.grade_id=:gradeId) and (sc.hostel_id=:hostelId)",
+            nativeQuery = true)
+    Page<StudentClass> findAllByExamTitleAndAcademicYearAndGradeAndHostelAndKeywordAndHostelPresent(@Param("examTitleId") Long examTitleId, @Param("academicYearId") Long academicYearId, @Param("gradeId") Long gradeId, @Param("hostelId") Long hostelId, @Param("keyword") String keyword, Pageable sortedByCreatedTimestamp);
 
 }

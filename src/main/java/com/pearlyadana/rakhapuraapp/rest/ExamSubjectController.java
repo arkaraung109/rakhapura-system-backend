@@ -1,6 +1,7 @@
 package com.pearlyadana.rakhapuraapp.rest;
 
 import com.pearlyadana.rakhapuraapp.http.AuthoritiesConstants;
+import com.pearlyadana.rakhapuraapp.model.request.ExamDto;
 import com.pearlyadana.rakhapuraapp.model.request.ExamSubjectDto;
 import com.pearlyadana.rakhapuraapp.model.response.CustomHttpResponse;
 import com.pearlyadana.rakhapuraapp.model.response.PaginationResponse;
@@ -37,7 +38,7 @@ public class ExamSubjectController {
         return new ResponseEntity<>(this.examSubjectService.findAll(), HttpStatus.OK);
     }
 
-    @GetMapping("exam/{id}")
+    @GetMapping("/exam/{id}")
     public ResponseEntity<List<ExamSubjectDto>> findAllByExam(@PathVariable("id") Long id) {
         return new ResponseEntity<>(this.examSubjectService.findAllByExam(id), HttpStatus.OK);
     }
@@ -68,10 +69,39 @@ public class ExamSubjectController {
     @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
     @RolesAllowed(AuthoritiesConstants.EXAM_ENTRY)
     public ResponseEntity<CustomHttpResponse> save(@RequestBody ExamSubjectDto body) {
+        ExamDto examDto = this.examService.findByAcademicYearAndExamTitleAndSubjectType(body.getExam().getAcademicYear().getId(), body.getExam().getExamTitle().getId(), body.getExam().getSubjectType().getId());
+        body.setExam(examDto);
+
         if(!this.examSubjectService.findAllByExamAndSubject(body.getExam().getId(), body.getSubject().getId()).isEmpty()) {
             CustomHttpResponse res = new CustomHttpResponse(HttpStatus.CONFLICT.value(),"object has already been created.");
             return new ResponseEntity<>(res, HttpStatus.CONFLICT);
         }
+
+        List<ExamSubjectDto> examSubjectDtoList = this.examSubjectService.findAllByExam(examDto.getId());
+        int sumOfPassMark = body.getPassMark();
+        int sumOfMarkPercentage = body.getMarkPercentage();
+        int overAllPassMark = examDto.getPassMark();
+        int overAllMarkPercentage = examDto.getMarkPercentage();
+        for(ExamSubjectDto examSubjectDto : examSubjectDtoList) {
+            sumOfPassMark += examSubjectDto.getPassMark();
+            sumOfMarkPercentage += examSubjectDto.getMarkPercentage();
+        }
+
+        String message = "";
+        if(sumOfPassMark > overAllPassMark) {
+            message += "passMarkExceeded";
+            if(sumOfMarkPercentage > overAllMarkPercentage) {
+                message += "&markPercentageExceeded";
+            }
+        } else if(sumOfMarkPercentage > overAllMarkPercentage) {
+            message += "markPercentageExceeded";
+        }
+
+        if(!message.equalsIgnoreCase("")) {
+            CustomHttpResponse res = new CustomHttpResponse(HttpStatus.NOT_ACCEPTABLE.value(), message);
+            return new ResponseEntity<>(res, HttpStatus.NOT_ACCEPTABLE);
+        }
+
         if(this.examSubjectService.save(body) != null) {
             CustomHttpResponse res = new CustomHttpResponse(HttpStatus.CREATED.value(),"new object is created.");
             return new ResponseEntity<>(res, HttpStatus.CREATED);

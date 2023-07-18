@@ -101,35 +101,35 @@ public class ExamSubjectServiceImpl implements ExamSubjectService {
                     paginationUtil.getPageSize(), Sort.by("id").descending());
         }
         Page<ExamSubject> page = null;
-        if(academicYearId == 0 && examTitleId == 0 && subjectTypeId == 0 & subjectId == 0) {
+        if(academicYearId == 0 && examTitleId == 0 && subjectTypeId == 0 && subjectId == 0) {
             page = this.examSubjectRepository.findAllByKeyword(keyword, sortedById);
-        } else if(academicYearId != 0 && examTitleId == 0 && subjectTypeId == 0 & subjectId == 0) {
+        } else if(academicYearId != 0 && examTitleId == 0 && subjectTypeId == 0 && subjectId == 0) {
             page = this.examSubjectRepository.findAllByAcademicYearAndKeyword(academicYearId, keyword, sortedById);
-        } else if(academicYearId == 0 && examTitleId != 0 && subjectTypeId == 0 & subjectId == 0) {
+        } else if(academicYearId == 0 && examTitleId != 0 && subjectTypeId == 0 && subjectId == 0) {
             page = this.examSubjectRepository.findAllByExamTitleAndKeyword(examTitleId, keyword, sortedById);
-        } else if(academicYearId == 0 && examTitleId == 0 && subjectTypeId != 0 & subjectId == 0) {
+        } else if(academicYearId == 0 && examTitleId == 0 && subjectTypeId != 0 && subjectId == 0) {
             page = this.examSubjectRepository.findAllBySubjectTypeAndKeyword(subjectTypeId, keyword, sortedById);
-        } else if(academicYearId == 0 && examTitleId == 0 && subjectTypeId == 0 & subjectId != 0) {
+        } else if(academicYearId == 0 && examTitleId == 0 && subjectTypeId == 0 && subjectId != 0) {
             page = this.examSubjectRepository.findAllBySubjectAndKeyword(subjectId, keyword, sortedById);
-        } else if(academicYearId != 0 && examTitleId != 0 && subjectTypeId == 0 & subjectId == 0) {
+        } else if(academicYearId != 0 && examTitleId != 0 && subjectTypeId == 0 && subjectId == 0) {
             page = this.examSubjectRepository.findAllByAcademicYearAndExamTitleAndKeyword(academicYearId, examTitleId, keyword, sortedById);
-        } else if(academicYearId != 0 && examTitleId == 0 && subjectTypeId != 0 & subjectId == 0) {
+        } else if(academicYearId != 0 && examTitleId == 0 && subjectTypeId != 0 && subjectId == 0) {
             page = this.examSubjectRepository.findAllByAcademicYearAndSubjectTypeAndKeyword(academicYearId, subjectTypeId, keyword, sortedById);
-        } else if(academicYearId != 0 && examTitleId == 0 && subjectTypeId == 0 & subjectId != 0) {
+        } else if(academicYearId != 0 && examTitleId == 0 && subjectTypeId == 0 && subjectId != 0) {
             page = this.examSubjectRepository.findAllByAcademicYearAndSubjectAndKeyword(academicYearId, subjectId, keyword, sortedById);
-        } else if(academicYearId == 0 && examTitleId != 0 && subjectTypeId != 0 & subjectId == 0) {
+        } else if(academicYearId == 0 && examTitleId != 0 && subjectTypeId != 0 && subjectId == 0) {
             page = this.examSubjectRepository.findAllByExamTitleAndSubjectTypeAndKeyword(examTitleId, subjectTypeId, keyword, sortedById);
-        } else if(academicYearId == 0 && examTitleId != 0 && subjectTypeId == 0 & subjectId != 0) {
+        } else if(academicYearId == 0 && examTitleId != 0 && subjectTypeId == 0 && subjectId != 0) {
             page = this.examSubjectRepository.findAllByExamTitleAndSubjectAndKeyword(examTitleId, subjectId, keyword, sortedById);
-        } else if(academicYearId == 0 && examTitleId == 0 && subjectTypeId != 0 & subjectId != 0) {
+        } else if(academicYearId == 0 && examTitleId == 0 && subjectTypeId != 0 && subjectId != 0) {
             page = this.examSubjectRepository.findAllBySubjectTypeAndSubjectAndKeyword(subjectTypeId, subjectId, keyword, sortedById);
-        } else if(academicYearId != 0 && examTitleId != 0 && subjectTypeId != 0 & subjectId == 0) {
+        } else if(academicYearId != 0 && examTitleId != 0 && subjectTypeId != 0 && subjectId == 0) {
             page = this.examSubjectRepository.findAllByAcademicYearAndExamTitleAndSubjectTypeAndKeyword(academicYearId, examTitleId, subjectTypeId, keyword, sortedById);
-        } else if(academicYearId != 0 && examTitleId != 0 && subjectTypeId == 0 & subjectId != 0) {
+        } else if(academicYearId != 0 && examTitleId != 0 && subjectTypeId == 0 && subjectId != 0) {
             page = this.examSubjectRepository.findAllByAcademicYearAndExamTitleAndSubjectAndKeyword(academicYearId, examTitleId, subjectId, keyword, sortedById);
-        } else if(academicYearId != 0 && examTitleId == 0 && subjectTypeId != 0 & subjectId != 0) {
+        } else if(academicYearId != 0 && examTitleId == 0 && subjectTypeId != 0 && subjectId != 0) {
             page = this.examSubjectRepository.findAllByAcademicYearAndSubjectTypeAndSubjectAndKeyword(academicYearId, subjectTypeId, subjectId, keyword, sortedById);
-        } else if(academicYearId == 0 && examTitleId != 0 && subjectTypeId != 0 & subjectId != 0) {
+        } else if(academicYearId == 0 && examTitleId != 0 && subjectTypeId != 0 && subjectId != 0) {
             page = this.examSubjectRepository.findAllByExamTitleAndSubjectTypeAndSubjectAndKeyword(examTitleId, subjectTypeId, subjectId, keyword, sortedById);
         } else {
             page = this.examSubjectRepository.findAllByAcademicYearAndExamTitleAndSubjectTypeAndSubjectAndKeyword(academicYearId, examTitleId, subjectTypeId, subjectId, keyword, sortedById);

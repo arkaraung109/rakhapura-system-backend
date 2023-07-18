@@ -60,35 +60,35 @@ public class ArrivalServiceImpl implements ArrivalService {
                     paginationUtil.getPageSize(), Sort.by("createdTimestamp").descending());
         }
         Page<StudentClass> page = null;
-        if(examTitleId == 0 && academicYearId == 0 && gradeId == 0 & studentClass.equals("All")) {
+        if(examTitleId == 0 && academicYearId == 0 && gradeId == 0 && studentClass.equals("All")) {
             page = this.studentClassRepository.findAllByKeywordAndArrival(keyword, arrival, sortedByCreatedTimestamp);
-        } else if(examTitleId != 0 && academicYearId == 0 && gradeId == 0 & studentClass.equals("All")) {
+        } else if(examTitleId != 0 && academicYearId == 0 && gradeId == 0 && studentClass.equals("All")) {
             page = this.studentClassRepository.findAllByExamTitleAndKeywordAndArrival(examTitleId, keyword, arrival, sortedByCreatedTimestamp);
-        } else if(examTitleId == 0 && academicYearId != 0 && gradeId == 0 & studentClass.equals("All")) {
+        } else if(examTitleId == 0 && academicYearId != 0 && gradeId == 0 && studentClass.equals("All")) {
             page = this.studentClassRepository.findAllByAcademicYearAndKeywordAndArrival(academicYearId, keyword, arrival, sortedByCreatedTimestamp);
-        } else if(examTitleId == 0 && academicYearId == 0 && gradeId != 0 & studentClass.equals("All")) {
+        } else if(examTitleId == 0 && academicYearId == 0 && gradeId != 0 && studentClass.equals("All")) {
             page = this.studentClassRepository.findAllByGradeAndKeywordAndArrival(gradeId, keyword, arrival, sortedByCreatedTimestamp);
-        } else if(examTitleId == 0 && academicYearId == 0 && gradeId == 0 & !studentClass.equals("All")) {
+        } else if(examTitleId == 0 && academicYearId == 0 && gradeId == 0 && !studentClass.equals("All")) {
             page = this.studentClassRepository.findAllByClassAndKeywordAndArrival(studentClass, keyword, arrival, sortedByCreatedTimestamp);
-        } else if(examTitleId != 0 && academicYearId != 0 && gradeId == 0 & studentClass.equals("All")) {
+        } else if(examTitleId != 0 && academicYearId != 0 && gradeId == 0 && studentClass.equals("All")) {
             page = this.studentClassRepository.findAllByExamTitleAndAcademicYearAndKeywordAndArrival(examTitleId, academicYearId, keyword, arrival, sortedByCreatedTimestamp);
-        } else if(examTitleId != 0 && academicYearId == 0 && gradeId != 0 & studentClass.equals("All")) {
+        } else if(examTitleId != 0 && academicYearId == 0 && gradeId != 0 && studentClass.equals("All")) {
             page = this.studentClassRepository.findAllByExamTitleAndGradeAndKeywordAndArrival(examTitleId, gradeId, keyword, arrival, sortedByCreatedTimestamp);
-        } else if(examTitleId != 0 && academicYearId == 0 && gradeId == 0 & !studentClass.equals("All")) {
+        } else if(examTitleId != 0 && academicYearId == 0 && gradeId == 0 && !studentClass.equals("All")) {
             page = this.studentClassRepository.findAllByExamTitleAndClassAndKeywordAndArrival(examTitleId, studentClass, keyword, arrival, sortedByCreatedTimestamp);
-        } else if(examTitleId == 0 && academicYearId != 0 && gradeId != 0 & studentClass.equals("All")) {
+        } else if(examTitleId == 0 && academicYearId != 0 && gradeId != 0 && studentClass.equals("All")) {
             page = this.studentClassRepository.findAllByAcademicYearAndGradeAndKeywordAndArrival(academicYearId, gradeId, keyword, arrival, sortedByCreatedTimestamp);
-        } else if(examTitleId == 0 && academicYearId != 0 && gradeId == 0 & !studentClass.equals("All")) {
+        } else if(examTitleId == 0 && academicYearId != 0 && gradeId == 0 && !studentClass.equals("All")) {
             page = this.studentClassRepository.findAllByAcademicYearAndClassAndKeywordAndArrival(academicYearId, studentClass, keyword, arrival, sortedByCreatedTimestamp);
-        } else if(examTitleId == 0 && academicYearId == 0 && gradeId != 0 & !studentClass.equals("All")) {
+        } else if(examTitleId == 0 && academicYearId == 0 && gradeId != 0 && !studentClass.equals("All")) {
             page = this.studentClassRepository.findAllByGradeAndClassAndKeywordAndArrival(gradeId, studentClass, keyword, arrival, sortedByCreatedTimestamp);
-        } else if(examTitleId != 0 && academicYearId != 0 && gradeId != 0 & studentClass.equals("All")) {
+        } else if(examTitleId != 0 && academicYearId != 0 && gradeId != 0 && studentClass.equals("All")) {
             page = this.studentClassRepository.findAllByExamTitleAndAcademicYearAndGradeAndKeywordAndArrival(examTitleId, academicYearId, gradeId, keyword, arrival, sortedByCreatedTimestamp);
-        } else if(examTitleId != 0 && academicYearId != 0 && gradeId == 0 & !studentClass.equals("All")) {
+        } else if(examTitleId != 0 && academicYearId != 0 && gradeId == 0 && !studentClass.equals("All")) {
             page = this.studentClassRepository.findAllByExamTitleAndAcademicYearAndClassAndKeywordAndArrival(examTitleId, academicYearId, studentClass, keyword, arrival, sortedByCreatedTimestamp);
-        } else if(examTitleId != 0 && academicYearId == 0 && gradeId != 0 & !studentClass.equals("All")) {
+        } else if(examTitleId != 0 && academicYearId == 0 && gradeId != 0 && !studentClass.equals("All")) {
             page = this.studentClassRepository.findAllByExamTitleAndGradeAndClassAndKeywordAndArrival(examTitleId, gradeId, studentClass, keyword, arrival, sortedByCreatedTimestamp);
-        } else if(examTitleId == 0 && academicYearId != 0 && gradeId != 0 & !studentClass.equals("All")) {
+        } else if(examTitleId == 0 && academicYearId != 0 && gradeId != 0 && !studentClass.equals("All")) {
             page = this.studentClassRepository.findAllByAcademicYearAndGradeAndClassAndKeywordAndArrival(academicYearId, gradeId, studentClass, keyword, arrival, sortedByCreatedTimestamp);
         } else {
             page = this.studentClassRepository.findAllByExamTitleAndAcademicYearAndGradeAndClassAndKeywordAndArrival(examTitleId, academicYearId, gradeId, studentClass, keyword, arrival, sortedByCreatedTimestamp);

@@ -10,11 +10,19 @@ public interface AttendanceService {
 
     AttendanceDto findById(UUID id);
 
+    List<AttendanceDto> findByStudentClassId(UUID id);
+
     List<AttendanceDto> findAll();
 
-    PaginationResponse<AttendanceDto> findEachPageSortByCreatedTimestamp(int pageNumber, boolean isAscending, boolean present);
+    List<AttendanceDto> findByOrderByCreatedTimestampAsc();
 
-    PaginationResponse<AttendanceDto> findEachPageBySearchingSortByCreatedTimestamp(int pageNumber, boolean isAscending, boolean present, Long academicYearId, Long examTitleId, Long subjectTypeId, String keyword);
+    PaginationResponse<AttendanceDto> findEachNotPresentPageSortByCreatedTimestamp(int pageNumber, boolean isAscending);
+
+    PaginationResponse<AttendanceDto> findEachNotPresentPageBySearchingSortByCreatedTimestamp(int pageNumber, boolean isAscending, Long academicYearId, Long examTitleId, Long subjectTypeId, String keyword);
+
+    PaginationResponse<AttendanceDto> findEachPresentPageSortByCreatedTimestamp(int pageNumber, boolean isAscending);
+
+    PaginationResponse<AttendanceDto> findEachPresentPageBySearchingSortByCreatedTimestamp(int pageNumber, boolean isAscending, Long academicYearId, Long examTitleId, Long gradeId, String studentClass, String keyword);
 
     AttendanceDto save(AttendanceDto attendanceDto);
 

@@ -16,6 +16,8 @@ public interface StudentClassService {
 
     List<StudentClassDto> findAll();
 
+    List<StudentClassDto> findByOrderByCreatedTimestampAsc();
+
     List<StudentClassDto> findAllByExamTitleAndAcademicYearAndStudent(Long examTitleId, Long academicYearId, UUID studentId);
 
     PaginationResponse<StudentClassDto> findEachPageSortByCreatedTimestamp(int pageNumber, boolean isAscending);

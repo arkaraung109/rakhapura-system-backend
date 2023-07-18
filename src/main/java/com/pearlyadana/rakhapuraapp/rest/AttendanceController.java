@@ -33,27 +33,50 @@ public class AttendanceController {
         return new ResponseEntity<>(this.attendanceService.findById(id), HttpStatus.OK);
     }
 
+    @GetMapping("/student-class/{id}")
+    public ResponseEntity<List<AttendanceDto>> findByStudentClassId(@PathVariable("id") UUID id) {
+        return new ResponseEntity<>(this.attendanceService.findByStudentClassId(id), HttpStatus.OK);
+    }
+
     @GetMapping("")
     public ResponseEntity<List<AttendanceDto>> findAll() {
         return new ResponseEntity<>(this.attendanceService.findAll(), HttpStatus.OK);
     }
 
-    @GetMapping("/segment")
-    public PaginationResponse<AttendanceDto> findEachPageSortByCreatedTimestamp(@RequestParam int page, @RequestParam(required = false) String order, boolean present) {
+    @GetMapping("/segment/not-present")
+    public PaginationResponse<AttendanceDto> findEachNotPresentPageSortByCreatedTimestamp(@RequestParam int page, @RequestParam(required = false) String order) {
         boolean isAscending = true;
         if(order!=null && order.equals("desc")) {
             isAscending = false;
         }
-        return this.attendanceService.findEachPageSortByCreatedTimestamp(page, isAscending, present);
+        return this.attendanceService.findEachNotPresentPageSortByCreatedTimestamp(page, isAscending);
     }
 
-    @GetMapping("/segment/search")
-    public PaginationResponse<AttendanceDto> findEachPageBySearchingSortByCreatedTimestamp(@RequestParam int page, @RequestParam(required = false) String order, boolean present, @RequestParam Long academicYearId, @RequestParam Long examTitleId, @RequestParam Long subjectTypeId, @RequestParam String keyword) {
+    @GetMapping("/segment/not-present/search")
+    public PaginationResponse<AttendanceDto> findEachNotPresentPageBySearchingSortByCreatedTimestamp(@RequestParam int page, @RequestParam(required = false) String order, @RequestParam Long academicYearId, @RequestParam Long examTitleId, @RequestParam Long subjectTypeId, @RequestParam String keyword) {
         boolean isAscending = true;
         if(order!=null && order.equals("desc")) {
             isAscending = false;
         }
-        return this.attendanceService.findEachPageBySearchingSortByCreatedTimestamp(page, isAscending, present, academicYearId, examTitleId, subjectTypeId, keyword);
+        return this.attendanceService.findEachNotPresentPageBySearchingSortByCreatedTimestamp(page, isAscending, academicYearId, examTitleId, subjectTypeId, keyword);
+    }
+
+    @GetMapping("/segment/present")
+    public PaginationResponse<AttendanceDto> findEachPresentPageSortByCreatedTimestamp(@RequestParam int page, @RequestParam(required = false) String order) {
+        boolean isAscending = true;
+        if(order!=null && order.equals("desc")) {
+            isAscending = false;
+        }
+        return this.attendanceService.findEachPresentPageSortByCreatedTimestamp(page, isAscending);
+    }
+
+    @GetMapping("/segment/present/search")
+    public PaginationResponse<AttendanceDto> findEachPresentPageBySearchingSortByCreatedTimestamp(@RequestParam int page, @RequestParam(required = false) String order, @RequestParam Long academicYearId, @RequestParam Long examTitleId, @RequestParam Long gradeId, @RequestParam String studentClass, @RequestParam String keyword) {
+        boolean isAscending = true;
+        if(order!=null && order.equals("desc")) {
+            isAscending = false;
+        }
+        return this.attendanceService.findEachPresentPageBySearchingSortByCreatedTimestamp(page, isAscending, academicYearId, examTitleId, gradeId, studentClass, keyword);
     }
 
     @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -78,7 +101,7 @@ public class AttendanceController {
     @GetMapping("/export-to-excel")
     public void exportToExcelFile(HttpServletResponse response) throws IOException {
         response.setContentType("application/octet-stream");
-        List<AttendanceDto> attendenceDtoList = this.attendanceService.findAll();
+        List<AttendanceDto> attendenceDtoList = this.attendanceService.findByOrderByCreatedTimestampAsc();
         AttendenceExcelGenerator generator = new AttendenceExcelGenerator(attendenceDtoList);
         generator.export(response);
     }

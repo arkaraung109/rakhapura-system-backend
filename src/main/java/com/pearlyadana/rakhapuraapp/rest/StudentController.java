@@ -85,6 +85,8 @@ public class StudentController {
             CustomHttpResponse res = new CustomHttpResponse(HttpStatus.CONFLICT.value(),"object has already been created.");
             return new ResponseEntity<>(res, HttpStatus.CONFLICT);
         }
+        body.setRegDate(dto.getRegDate());
+        body.setCreatedTimestamp(dto.getCreatedTimestamp());
         if(this.studentService.update(body, id) != null) {
             CustomHttpResponse res = new CustomHttpResponse(HttpStatus.OK.value(),"object is updated.");
             return new ResponseEntity<>(res, HttpStatus.OK);
@@ -111,7 +113,7 @@ public class StudentController {
     @GetMapping("/export-to-excel")
     public void exportToExcelFile(HttpServletResponse response) throws IOException {
         response.setContentType("application/octet-stream");
-        List<StudentDto> studentDtoList = this.studentService.findAll();
+        List<StudentDto> studentDtoList = this.studentService.findByOrderByCreatedTimestampAsc();
         StudentExcelGenerator generator = new StudentExcelGenerator(studentDtoList);
         generator.export(response);
     }

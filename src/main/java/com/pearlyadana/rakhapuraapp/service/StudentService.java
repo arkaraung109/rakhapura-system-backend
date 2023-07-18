@@ -12,6 +12,8 @@ public interface StudentService {
 
     List<StudentDto> findAll();
 
+    List<StudentDto> findByOrderByCreatedTimestampAsc();
+
     List<StudentDto> findAllByNrc(String nrc);
 
     PaginationResponse<StudentDto> findEachPageSortByCreatedTimestamp(int pageNumber, boolean isAscending);

@@ -60,35 +60,35 @@ public class StudentCardServiceImpl implements StudentCardService {
                     paginationUtil.getPageSize(), Sort.by("createdTimestamp").descending());
         }
         Page<StudentClass> page = null;
-        if(examTitleId == 0 && academicYearId == 0 && gradeId == 0 & studentClass.equals("All")) {
+        if(examTitleId == 0 && academicYearId == 0 && gradeId == 0 && studentClass.equals("All")) {
             page = this.studentClassRepository.findAllByKeywordAndRegNoAndRegSeqNo(keyword, sortedByCreatedTimestamp);
-        } else if(examTitleId != 0 && academicYearId == 0 && gradeId == 0 & studentClass.equals("All")) {
+        } else if(examTitleId != 0 && academicYearId == 0 && gradeId == 0 && studentClass.equals("All")) {
             page = this.studentClassRepository.findAllByExamTitleAndKeywordAndRegNoAndRegSeqNo(examTitleId, keyword, sortedByCreatedTimestamp);
-        } else if(examTitleId == 0 && academicYearId != 0 && gradeId == 0 & studentClass.equals("All")) {
+        } else if(examTitleId == 0 && academicYearId != 0 && gradeId == 0 && studentClass.equals("All")) {
             page = this.studentClassRepository.findAllByAcademicYearAndKeywordAndRegNoAndRegSeqNo(academicYearId, keyword, sortedByCreatedTimestamp);
-        } else if(examTitleId == 0 && academicYearId == 0 && gradeId != 0 & studentClass.equals("All")) {
+        } else if(examTitleId == 0 && academicYearId == 0 && gradeId != 0 && studentClass.equals("All")) {
             page = this.studentClassRepository.findAllByGradeAndKeywordAndRegNoAndRegSeqNo(gradeId, keyword, sortedByCreatedTimestamp);
-        } else if(examTitleId == 0 && academicYearId == 0 && gradeId == 0 & !studentClass.equals("All")) {
+        } else if(examTitleId == 0 && academicYearId == 0 && gradeId == 0 && !studentClass.equals("All")) {
             page = this.studentClassRepository.findAllByClassAndKeywordAndRegNoAndRegSeqNo(studentClass, keyword, sortedByCreatedTimestamp);
-        } else if(examTitleId != 0 && academicYearId != 0 && gradeId == 0 & studentClass.equals("All")) {
+        } else if(examTitleId != 0 && academicYearId != 0 && gradeId == 0 && studentClass.equals("All")) {
             page = this.studentClassRepository.findAllByExamTitleAndAcademicYearAndKeywordAndRegNoAndRegSeqNo(examTitleId, academicYearId, keyword, sortedByCreatedTimestamp);
-        } else if(examTitleId != 0 && academicYearId == 0 && gradeId != 0 & studentClass.equals("All")) {
+        } else if(examTitleId != 0 && academicYearId == 0 && gradeId != 0 && studentClass.equals("All")) {
             page = this.studentClassRepository.findAllByExamTitleAndGradeAndKeywordAndRegNoAndRegSeqNo(examTitleId, gradeId, keyword, sortedByCreatedTimestamp);
-        } else if(examTitleId != 0 && academicYearId == 0 && gradeId == 0 & !studentClass.equals("All")) {
+        } else if(examTitleId != 0 && academicYearId == 0 && gradeId == 0 && !studentClass.equals("All")) {
             page = this.studentClassRepository.findAllByExamTitleAndClassAndKeywordAndRegNoAndRegSeqNo(examTitleId, studentClass, keyword, sortedByCreatedTimestamp);
-        } else if(examTitleId == 0 && academicYearId != 0 && gradeId != 0 & studentClass.equals("All")) {
+        } else if(examTitleId == 0 && academicYearId != 0 && gradeId != 0 && studentClass.equals("All")) {
             page = this.studentClassRepository.findAllByAcademicYearAndGradeAndKeywordAndRegNoAndRegSeqNo(academicYearId, gradeId, keyword, sortedByCreatedTimestamp);
-        } else if(examTitleId == 0 && academicYearId != 0 && gradeId == 0 & !studentClass.equals("All")) {
+        } else if(examTitleId == 0 && academicYearId != 0 && gradeId == 0 && !studentClass.equals("All")) {
             page = this.studentClassRepository.findAllByAcademicYearAndClassAndKeywordAndRegNoAndRegSeqNo(academicYearId, studentClass, keyword, sortedByCreatedTimestamp);
-        } else if(examTitleId == 0 && academicYearId == 0 && gradeId != 0 & !studentClass.equals("All")) {
+        } else if(examTitleId == 0 && academicYearId == 0 && gradeId != 0 && !studentClass.equals("All")) {
             page = this.studentClassRepository.findAllByGradeAndClassAndKeywordAndRegNoAndRegSeqNo(gradeId, studentClass, keyword, sortedByCreatedTimestamp);
-        } else if(examTitleId != 0 && academicYearId != 0 && gradeId != 0 & studentClass.equals("All")) {
+        } else if(examTitleId != 0 && academicYearId != 0 && gradeId != 0 && studentClass.equals("All")) {
             page = this.studentClassRepository.findAllByExamTitleAndAcademicYearAndGradeAndKeywordAndRegNoAndRegSeqNo(examTitleId, academicYearId, gradeId, keyword, sortedByCreatedTimestamp);
-        } else if(examTitleId != 0 && academicYearId != 0 && gradeId == 0 & !studentClass.equals("All")) {
+        } else if(examTitleId != 0 && academicYearId != 0 && gradeId == 0 && !studentClass.equals("All")) {
             page = this.studentClassRepository.findAllByExamTitleAndAcademicYearAndClassAndKeywordAndRegNoAndRegSeqNo(examTitleId, academicYearId, studentClass, keyword, sortedByCreatedTimestamp);
-        } else if(examTitleId != 0 && academicYearId == 0 && gradeId != 0 & !studentClass.equals("All")) {
+        } else if(examTitleId != 0 && academicYearId == 0 && gradeId != 0 && !studentClass.equals("All")) {
             page = this.studentClassRepository.findAllByExamTitleAndGradeAndClassAndKeywordAndRegNoAndRegSeqNo(examTitleId, gradeId, studentClass, keyword, sortedByCreatedTimestamp);
-        } else if(examTitleId == 0 && academicYearId != 0 && gradeId != 0 & !studentClass.equals("All")) {
+        } else if(examTitleId == 0 && academicYearId != 0 && gradeId != 0 && !studentClass.equals("All")) {
             page = this.studentClassRepository.findAllByAcademicYearAndGradeAndClassAndKeywordAndRegNoAndRegSeqNo(academicYearId, gradeId, studentClass, keyword, sortedByCreatedTimestamp);
         } else {
             page = this.studentClassRepository.findAllByExamTitleAndAcademicYearAndGradeAndClassAndKeywordAndRegNoAndRegSeqNo(examTitleId, academicYearId, gradeId, studentClass, keyword, sortedByCreatedTimestamp);

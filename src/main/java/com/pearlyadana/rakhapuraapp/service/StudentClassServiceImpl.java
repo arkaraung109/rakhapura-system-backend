@@ -61,6 +61,14 @@ public class StudentClassServiceImpl implements StudentClassService {
     }
 
     @Override
+    public List<StudentClassDto> findByOrderByCreatedTimestampAsc() {
+        return this.studentClassRepository.findByOrderByCreatedTimestampAsc()
+                .stream()
+                .map(this.mapper::mapEntityToDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<StudentClassDto> findAllByExamTitleAndAcademicYearAndStudent(Long examTitleId, Long academicYearId, UUID studentId) {
         return this.studentClassRepository.findAllByExamTitleIdAndAcademicYearIdAndStudentId(examTitleId, academicYearId, studentId)
                 .stream()
@@ -99,35 +107,35 @@ public class StudentClassServiceImpl implements StudentClassService {
                     paginationUtil.getPageSize(), Sort.by("createdTimestamp").descending());
         }
         Page<StudentClass> page = null;
-        if(examTitleId == 0 && academicYearId == 0 && gradeId == 0 & studentClass.equals("All")) {
+        if(examTitleId == 0 && academicYearId == 0 && gradeId == 0 && studentClass.equals("All")) {
             page = this.studentClassRepository.findAllByKeyword(keyword, sortedByCreatedTimestamp);
-        } else if(examTitleId != 0 && academicYearId == 0 && gradeId == 0 & studentClass.equals("All")) {
+        } else if(examTitleId != 0 && academicYearId == 0 && gradeId == 0 && studentClass.equals("All")) {
             page = this.studentClassRepository.findAllByExamTitleAndKeyword(examTitleId, keyword, sortedByCreatedTimestamp);
-        } else if(examTitleId == 0 && academicYearId != 0 && gradeId == 0 & studentClass.equals("All")) {
+        } else if(examTitleId == 0 && academicYearId != 0 && gradeId == 0 && studentClass.equals("All")) {
             page = this.studentClassRepository.findAllByAcademicYearAndKeyword(academicYearId, keyword, sortedByCreatedTimestamp);
-        } else if(examTitleId == 0 && academicYearId == 0 && gradeId != 0 & studentClass.equals("All")) {
+        } else if(examTitleId == 0 && academicYearId == 0 && gradeId != 0 && studentClass.equals("All")) {
             page = this.studentClassRepository.findAllByGradeAndKeyword(gradeId, keyword, sortedByCreatedTimestamp);
-        } else if(examTitleId == 0 && academicYearId == 0 && gradeId == 0 & !studentClass.equals("All")) {
+        } else if(examTitleId == 0 && academicYearId == 0 && gradeId == 0 && !studentClass.equals("All")) {
             page = this.studentClassRepository.findAllByClassAndKeyword(studentClass, keyword, sortedByCreatedTimestamp);
-        } else if(examTitleId != 0 && academicYearId != 0 && gradeId == 0 & studentClass.equals("All")) {
+        } else if(examTitleId != 0 && academicYearId != 0 && gradeId == 0 && studentClass.equals("All")) {
             page = this.studentClassRepository.findAllByExamTitleAndAcademicYearAndKeyword(examTitleId, academicYearId, keyword, sortedByCreatedTimestamp);
-        } else if(examTitleId != 0 && academicYearId == 0 && gradeId != 0 & studentClass.equals("All")) {
+        } else if(examTitleId != 0 && academicYearId == 0 && gradeId != 0 && studentClass.equals("All")) {
             page = this.studentClassRepository.findAllByExamTitleAndGradeAndKeyword(examTitleId, gradeId, keyword, sortedByCreatedTimestamp);
-        } else if(examTitleId != 0 && academicYearId == 0 && gradeId == 0 & !studentClass.equals("All")) {
+        } else if(examTitleId != 0 && academicYearId == 0 && gradeId == 0 && !studentClass.equals("All")) {
             page = this.studentClassRepository.findAllByExamTitleAndClassAndKeyword(examTitleId, studentClass, keyword, sortedByCreatedTimestamp);
-        } else if(examTitleId == 0 && academicYearId != 0 && gradeId != 0 & studentClass.equals("All")) {
+        } else if(examTitleId == 0 && academicYearId != 0 && gradeId != 0 && studentClass.equals("All")) {
             page = this.studentClassRepository.findAllByAcademicYearAndGradeAndKeyword(academicYearId, gradeId, keyword, sortedByCreatedTimestamp);
-        } else if(examTitleId == 0 && academicYearId != 0 && gradeId == 0 & !studentClass.equals("All")) {
+        } else if(examTitleId == 0 && academicYearId != 0 && gradeId == 0 && !studentClass.equals("All")) {
             page = this.studentClassRepository.findAllByAcademicYearAndClassAndKeyword(academicYearId, studentClass, keyword, sortedByCreatedTimestamp);
-        } else if(examTitleId == 0 && academicYearId == 0 && gradeId != 0 & !studentClass.equals("All")) {
+        } else if(examTitleId == 0 && academicYearId == 0 && gradeId != 0 && !studentClass.equals("All")) {
             page = this.studentClassRepository.findAllByGradeAndClassAndKeyword(gradeId, studentClass, keyword, sortedByCreatedTimestamp);
-        } else if(examTitleId != 0 && academicYearId != 0 && gradeId != 0 & studentClass.equals("All")) {
+        } else if(examTitleId != 0 && academicYearId != 0 && gradeId != 0 && studentClass.equals("All")) {
             page = this.studentClassRepository.findAllByExamTitleAndAcademicYearAndGradeAndKeyword(examTitleId, academicYearId, gradeId, keyword, sortedByCreatedTimestamp);
-        } else if(examTitleId != 0 && academicYearId != 0 && gradeId == 0 & !studentClass.equals("All")) {
+        } else if(examTitleId != 0 && academicYearId != 0 && gradeId == 0 && !studentClass.equals("All")) {
             page = this.studentClassRepository.findAllByExamTitleAndAcademicYearAndClassAndKeyword(examTitleId, academicYearId, studentClass, keyword, sortedByCreatedTimestamp);
-        } else if(examTitleId != 0 && academicYearId == 0 && gradeId != 0 & !studentClass.equals("All")) {
+        } else if(examTitleId != 0 && academicYearId == 0 && gradeId != 0 && !studentClass.equals("All")) {
             page = this.studentClassRepository.findAllByExamTitleAndGradeAndClassAndKeyword(examTitleId, gradeId, studentClass, keyword, sortedByCreatedTimestamp);
-        } else if(examTitleId == 0 && academicYearId != 0 && gradeId != 0 & !studentClass.equals("All")) {
+        } else if(examTitleId == 0 && academicYearId != 0 && gradeId != 0 && !studentClass.equals("All")) {
             page = this.studentClassRepository.findAllByAcademicYearAndGradeAndClassAndKeyword(academicYearId, gradeId, studentClass, keyword, sortedByCreatedTimestamp);
         } else {
             page = this.studentClassRepository.findAllByExamTitleAndAcademicYearAndGradeAndClassAndKeyword(examTitleId, academicYearId, gradeId, studentClass, keyword, sortedByCreatedTimestamp);

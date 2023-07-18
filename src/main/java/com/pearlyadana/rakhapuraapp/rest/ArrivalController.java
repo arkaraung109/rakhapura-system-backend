@@ -73,7 +73,7 @@ public class ArrivalController {
     @GetMapping("/export-to-excel")
     public void exportToExcelFile(HttpServletResponse response) throws IOException {
         response.setContentType("application/octet-stream");
-        List<StudentClassDto> studentClassDtoList = (List<StudentClassDto>) this.studentClassService.findAll().stream().filter(StudentClassDto::isArrival).collect(Collectors.toList());
+        List<StudentClassDto> studentClassDtoList = (List<StudentClassDto>) this.studentClassService.findByOrderByCreatedTimestampAsc().stream().filter(StudentClassDto::isArrival).collect(Collectors.toList());
         ArrivedStudentExcelGenerator generator = new ArrivedStudentExcelGenerator(studentClassDtoList);
         generator.export(response);
     }

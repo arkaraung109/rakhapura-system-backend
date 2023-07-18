@@ -105,6 +105,11 @@ public class StudentClassController {
             CustomHttpResponse res = new CustomHttpResponse(HttpStatus.NOT_ACCEPTABLE.value(),"arrived object cannot be updated.");
             return new ResponseEntity<>(res, HttpStatus.NOT_ACCEPTABLE);
         }
+        body.setRegNo(dto.getRegNo());
+        body.setRegSeqNo(dto.getRegSeqNo());
+        body.setArrival(dto.isArrival());
+        body.setCreatedTimestamp(dto.getCreatedTimestamp());
+        body.setHostel(dto.getHostel());
         if(this.studentClassService.update(body, id) != null) {
             CustomHttpResponse res = new CustomHttpResponse(HttpStatus.OK.value(),"object is updated.");
             return new ResponseEntity<>(res, HttpStatus.OK);
@@ -132,7 +137,7 @@ public class StudentClassController {
     @GetMapping("/export-to-excel")
     public void exportToExcelFile(HttpServletResponse response) throws IOException {
         response.setContentType("application/octet-stream");
-        List<StudentClassDto> studentClassDtoList = this.studentClassService.findAll();
+        List<StudentClassDto> studentClassDtoList = this.studentClassService.findByOrderByCreatedTimestampAsc();
         StudentClassExcelGenerator generator = new StudentClassExcelGenerator(studentClassDtoList);
         generator.export(response);
     }

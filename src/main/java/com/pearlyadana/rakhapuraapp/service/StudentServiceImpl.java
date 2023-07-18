@@ -51,6 +51,14 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    public List<StudentDto> findByOrderByCreatedTimestampAsc() {
+        return this.studentRepository.findByOrderByCreatedTimestampAsc()
+                .stream()
+                .map(this.mapper::mapEntityToDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<StudentDto> findAllByNrc(String nrc) {
         return this.studentRepository.findAllByNrc(nrc)
                 .stream()

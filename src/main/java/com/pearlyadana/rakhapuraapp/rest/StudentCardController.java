@@ -18,12 +18,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
-import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 @RestController
 @RequestMapping(value = "/api/v1/student-cards", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -40,7 +37,7 @@ public class StudentCardController {
     private StudentCardService studentCardService;
 
     @Autowired
-    private AttendanceService attendenceService;
+    private AttendanceService attendanceService;
 
     @GetMapping("/segment")
     public PaginationResponse<StudentClassDto> findEachPageSortByCreatedTimestamp(@RequestParam int page, @RequestParam(required = false) String order) {
@@ -85,7 +82,7 @@ public class StudentCardController {
                     attendenceDto.setPresent(false);
                     attendenceDto.setExam(examDto);
                     attendenceDto.setStudentClass(studentClassDto);
-                    if(this.attendenceService.save(attendenceDto) == null) {
+                    if(this.attendanceService.save(attendenceDto) == null) {
                         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
                     }
                 }
@@ -119,34 +116,6 @@ public class StudentCardController {
             }
         }
         return sb.toString();
-    }
-
-    private byte[] zipFiles(File directory, String[] files) throws IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ZipOutputStream zos = new ZipOutputStream(baos);
-        byte bytes[] = new byte[2048];
-
-        for (String fileName : files) {
-            FileInputStream fis = new FileInputStream(directory.getPath() +
-                    File.separator + fileName);
-            BufferedInputStream bis = new BufferedInputStream(fis);
-
-            zos.putNextEntry(new ZipEntry(fileName));
-
-            int bytesRead;
-            while ((bytesRead = bis.read(bytes)) != -1) {
-                zos.write(bytes, 0, bytesRead);
-            }
-            zos.closeEntry();
-            bis.close();
-            fis.close();
-        }
-        zos.flush();
-        baos.flush();
-        zos.close();
-        baos.close();
-
-        return baos.toByteArray();
     }
 
 }
