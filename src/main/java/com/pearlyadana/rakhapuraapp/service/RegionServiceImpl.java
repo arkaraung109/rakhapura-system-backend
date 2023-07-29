@@ -55,6 +55,7 @@ public class RegionServiceImpl implements RegionService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<RegionDto> findAllByAuthorizedStatus(boolean authorizedStatus) {
         return this.regionRepository.findAllByAuthorizedStatusOrderByName(authorizedStatus)
@@ -64,25 +65,6 @@ public class RegionServiceImpl implements RegionService {
     }
 
     @Transactional(readOnly = true)
-    @Override
-    public PaginationResponse<RegionDto> findEachPageSortById(int pageNumber, boolean isAscending) {
-        Pageable sortedById = null;
-        if(isAscending) {
-            sortedById = PageRequest.of(PaginationUtil.pageNumber(pageNumber),
-                    paginationUtil.getPageSize(), Sort.by("id").ascending());
-        } else {
-            sortedById = PageRequest.of(PaginationUtil.pageNumber(pageNumber),
-                    paginationUtil.getPageSize(), Sort.by("id").descending());
-        }
-        Page<Region> page = this.regionRepository.findAll(sortedById);
-        PaginationResponse<RegionDto> res = new PaginationResponse<RegionDto>();
-        res.addList(page.stream().map(this.mapper::mapEntityToDto).collect(Collectors.toList()))
-                .addTotalElements(page.getTotalElements())
-                .addTotalPages(page.getTotalPages())
-                .addPageSize(page.getSize());
-        return res;
-    }
-
     @Override
     public PaginationResponse<RegionDto> findEachPageBySearchingSortById(int pageNumber, boolean isAscending, String keyword) {
         Pageable sortedById = null;

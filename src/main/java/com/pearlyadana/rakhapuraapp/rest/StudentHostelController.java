@@ -34,15 +34,6 @@ public class StudentHostelController {
     @Autowired
     private StudentHostelService studentHostelService;
 
-    @GetMapping("/segment/not-present")
-    public PaginationResponse<StudentClassDto> findEachNotPresentPageSortByCreatedTimestamp(@RequestParam int page, @RequestParam(required = false) String order) {
-        boolean isAscending = true;
-        if(order!=null && order.equals("desc")) {
-            isAscending = false;
-        }
-        return this.studentHostelService.findEachNotPresentPageSortByCreatedTimestamp(page, isAscending);
-    }
-
     @GetMapping("/segment/not-present/search")
     public PaginationResponse<StudentClassDto> findEachNotPresentPageBySearchingSortByCreatedTimestamp(@RequestParam int page, @RequestParam(required = false) String order, @RequestParam Long examTitleId, @RequestParam Long academicYearId, @RequestParam Long gradeId, @RequestParam String keyword) {
         boolean isAscending = true;
@@ -50,15 +41,6 @@ public class StudentHostelController {
             isAscending = false;
         }
         return this.studentHostelService.findEachNotPresentPageBySearchingSortByCreatedTimestamp(page, isAscending, examTitleId, academicYearId, gradeId, keyword);
-    }
-
-    @GetMapping("/segment/present")
-    public PaginationResponse<StudentClassDto> findEachPresentPageSortByCreatedTimestamp(@RequestParam int page, @RequestParam(required = false) String order) {
-        boolean isAscending = true;
-        if(order!=null && order.equals("desc")) {
-            isAscending = false;
-        }
-        return this.studentHostelService.findEachPresentPageSortByCreatedTimestamp(page, isAscending);
     }
 
     @GetMapping("/segment/present/search")
@@ -131,9 +113,9 @@ public class StudentHostelController {
     }
 
     @GetMapping("/export-to-excel")
-    public void exportToExcelFile(HttpServletResponse response) throws IOException {
+    public void exportToExcelFile(@RequestParam Long examTitleId, @RequestParam Long academicYearId, @RequestParam Long gradeId, @RequestParam Long hostelId, @RequestParam String keyword, HttpServletResponse response) throws IOException {
         response.setContentType("application/octet-stream");
-        List<StudentClassDto> studentClassDtoList = this.studentClassService.findByOrderByCreatedTimestampAsc();
+        List<StudentClassDto> studentClassDtoList = this.studentHostelService.findAllBySearching(examTitleId, academicYearId, gradeId, hostelId, keyword);
         StudentHostelExcelGenerator generator = new StudentHostelExcelGenerator(studentClassDtoList);
         generator.export(response);
     }

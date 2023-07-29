@@ -55,6 +55,7 @@ public class ExamTitleServiceImpl implements ExamTitleService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<ExamTitleDto> findAllByAuthorizedStatus(boolean authorizedStatus) {
         return this.examTitleRepository.findAllByAuthorizedStatus(authorizedStatus)
@@ -64,25 +65,6 @@ public class ExamTitleServiceImpl implements ExamTitleService {
     }
 
     @Transactional(readOnly = true)
-    @Override
-    public PaginationResponse<ExamTitleDto> findEachPageSortById(int pageNumber, boolean isAscending) {
-        Pageable sortedById = null;
-        if(isAscending) {
-            sortedById = PageRequest.of(PaginationUtil.pageNumber(pageNumber),
-                    paginationUtil.getPageSize(), Sort.by("id").ascending());
-        } else {
-            sortedById = PageRequest.of(PaginationUtil.pageNumber(pageNumber),
-                    paginationUtil.getPageSize(), Sort.by("id").descending());
-        }
-        Page<ExamTitle> page = this.examTitleRepository.findAll(sortedById);
-        PaginationResponse<ExamTitleDto> res = new PaginationResponse<ExamTitleDto>();
-        res.addList(page.stream().map(this.mapper::mapEntityToDto).collect(Collectors.toList()))
-                .addTotalElements(page.getTotalElements())
-                .addTotalPages(page.getTotalPages())
-                .addPageSize(page.getSize());
-        return res;
-    }
-
     @Override
     public PaginationResponse<ExamTitleDto> findEachPageBySearchingSortById(int pageNumber, boolean isAscending, String keyword) {
         Pageable sortedById = null;

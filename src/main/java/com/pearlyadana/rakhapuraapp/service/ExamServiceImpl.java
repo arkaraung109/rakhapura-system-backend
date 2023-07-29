@@ -40,12 +40,14 @@ public class ExamServiceImpl implements ExamService {
         return optional.map(this.mapper::mapEntityToDto).orElse(null);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public ExamDto findByAcademicYearAndExamTitleAndSubjectType(Long academicYearId, Long examTitleId, Long subjectTypeId) {
-        Optional<Exam> optional = this.examRepository.findByAcademicYearIdAndExamTitleIdAndSubjectTypeId(academicYearId, examTitleId, subjectTypeId);
+        Optional<Exam> optional = this.examRepository.findFirstByAcademicYearIdAndExamTitleIdAndSubjectTypeId(academicYearId, examTitleId, subjectTypeId);
         return optional.map(this.mapper::mapEntityToDto).orElse(null);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<ExamDto> findAllFilteredByAcademicYearAndExamTitle(Long academicYearId, Long examTitleId) {
         return this.examRepository.findAllByAcademicYearIdAndExamTitleIdAndAuthorizedStatus(academicYearId, examTitleId, true)
@@ -54,6 +56,7 @@ public class ExamServiceImpl implements ExamService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<ExamDto> findAllFilteredByAcademicYearAndExamTitleAndGrade(Long academicYearId, Long examTitleId, Long gradeId) {
         return this.examRepository.findAllByAcademicYearIdAndExamTitleIdAndGradeIdAndAuthorizedStatus(academicYearId, examTitleId, gradeId, true)
@@ -71,6 +74,7 @@ public class ExamServiceImpl implements ExamService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<ExamDto> findAllByAcademicYearAndExamTitleAndSubjectType(Long academicYearId, Long examTitleId, Long subjectTypeId) {
         return this.examRepository.findAllByAcademicYearIdAndExamTitleIdAndSubjectTypeId(academicYearId, examTitleId, subjectTypeId)
@@ -80,25 +84,6 @@ public class ExamServiceImpl implements ExamService {
     }
 
     @Transactional(readOnly = true)
-    @Override
-    public PaginationResponse<ExamDto> findEachPageSortById(int pageNumber, boolean isAscending) {
-        Pageable sortedById = null;
-        if(isAscending) {
-            sortedById = PageRequest.of(PaginationUtil.pageNumber(pageNumber),
-                    paginationUtil.getPageSize(), Sort.by("id").ascending());
-        } else {
-            sortedById = PageRequest.of(PaginationUtil.pageNumber(pageNumber),
-                    paginationUtil.getPageSize(), Sort.by("id").descending());
-        }
-        Page<Exam> page = this.examRepository.findAll(sortedById);
-        PaginationResponse<ExamDto> res = new PaginationResponse<ExamDto>();
-        res.addList(page.stream().map(this.mapper::mapEntityToDto).collect(Collectors.toList()))
-                .addTotalElements(page.getTotalElements())
-                .addTotalPages(page.getTotalPages())
-                .addPageSize(page.getSize());
-        return res;
-    }
-
     @Override
     public PaginationResponse<ExamDto> findEachPageBySearchingSortById(int pageNumber, boolean isAscending, Long academicYearId, Long examTitleId, Long subjectTypeId, String keyword) {
         Pageable sortedById = null;

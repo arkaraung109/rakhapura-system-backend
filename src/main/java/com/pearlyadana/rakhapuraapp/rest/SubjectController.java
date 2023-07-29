@@ -38,15 +38,6 @@ public class SubjectController {
         return new ResponseEntity<>(this.subjectService.findAllByAuthorizedStatus(true), HttpStatus.OK);
     }
 
-    @GetMapping("/segment")
-    public PaginationResponse<SubjectDto> findEachPageSortById(@RequestParam int page, @RequestParam(required = false) String order) {
-        boolean isAscending = true;
-        if(order!=null && order.equals("desc")) {
-            isAscending = false;
-        }
-        return this.subjectService.findEachPageSortById(page, isAscending);
-    }
-
     @GetMapping("/segment/search")
     public PaginationResponse<SubjectDto> findEachPageBySearchingSortById(@RequestParam int page, @RequestParam(required = false) String order, @RequestParam String keyword) {
         boolean isAscending = true;

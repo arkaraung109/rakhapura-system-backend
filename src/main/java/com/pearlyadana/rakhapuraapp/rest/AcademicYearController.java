@@ -38,15 +38,6 @@ public class AcademicYearController {
         return new ResponseEntity<>(this.academicYearService.findAllByAuthorizedStatus(true), HttpStatus.OK);
     }
 
-    @GetMapping("/segment")
-    public PaginationResponse<AcademicYearDto> findEachPageSortById(@RequestParam int page, @RequestParam(required = false) String order) {
-        boolean isAscending = true;
-        if(order!=null && order.equals("desc")) {
-            isAscending = false;
-        }
-        return this.academicYearService.findEachPageSortById(page, isAscending);
-    }
-
     @GetMapping("/segment/search")
     public PaginationResponse<AcademicYearDto> findEachPageBySearchingSortById(@RequestParam int page, @RequestParam(required = false) String order, @RequestParam String keyword) {
         boolean isAscending = true;

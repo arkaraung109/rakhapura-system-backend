@@ -15,6 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,24 +31,48 @@ public class StudentHostelServiceImpl implements StudentHostelService {
 
     @Transactional(readOnly = true)
     @Override
-    public PaginationResponse<StudentClassDto> findEachNotPresentPageSortByCreatedTimestamp(int pageNumber, boolean isAscending) {
-        Pageable sortedByCreatedTimestamp = null;
-        if(isAscending) {
-            sortedByCreatedTimestamp = PageRequest.of(PaginationUtil.pageNumber(pageNumber),
-                    paginationUtil.getPageSize(), Sort.by("createdTimestamp").ascending());
+    public List<StudentClassDto> findAllBySearching(Long examTitleId, Long academicYearId, Long gradeId, Long hostelId, String keyword) {
+        List<StudentClass> studentClassList;
+        if(examTitleId == 0 && academicYearId == 0 && gradeId == 0 && hostelId == 0) {
+            studentClassList = this.studentClassRepository.findAllByKeywordAndHostelPresent(keyword);
+        } else if(examTitleId != 0 && academicYearId == 0 && gradeId == 0 && hostelId == 0) {
+            studentClassList = this.studentClassRepository.findAllByExamTitleAndKeywordAndHostelPresent(examTitleId, keyword);
+        } else if(examTitleId == 0 && academicYearId != 0 && gradeId == 0 && hostelId == 0) {
+            studentClassList = this.studentClassRepository.findAllByAcademicYearAndKeywordAndHostelPresent(academicYearId, keyword);
+        } else if(examTitleId == 0 && academicYearId == 0 && gradeId != 0 && hostelId == 0) {
+            studentClassList = this.studentClassRepository.findAllByGradeAndKeywordAndHostelPresent(gradeId, keyword);
+        } else if(examTitleId == 0 && academicYearId == 0 && gradeId == 0 && hostelId != 0) {
+            studentClassList = this.studentClassRepository.findAllByHostelAndKeywordAndHostelPresent(hostelId, keyword);
+        } else if(examTitleId != 0 && academicYearId != 0 && gradeId == 0 && hostelId == 0) {
+            studentClassList = this.studentClassRepository.findAllByExamTitleAndAcademicYearAndKeywordAndHostelPresent(examTitleId, academicYearId, keyword);
+        } else if(examTitleId != 0 && academicYearId == 0 && gradeId != 0 && hostelId == 0) {
+            studentClassList = this.studentClassRepository.findAllByExamTitleAndGradeAndKeywordAndHostelPresent(examTitleId, gradeId, keyword);
+        } else if(examTitleId != 0 && academicYearId == 0 && gradeId == 0 && hostelId != 0) {
+            studentClassList = this.studentClassRepository.findAllByExamTitleAndHostelAndKeywordAndHostelPresent(examTitleId, hostelId, keyword);
+        } else if(examTitleId == 0 && academicYearId != 0 && gradeId != 0 && hostelId == 0) {
+            studentClassList = this.studentClassRepository.findAllByAcademicYearAndGradeAndKeywordAndHostelPresent(academicYearId, gradeId, keyword);
+        } else if(examTitleId == 0 && academicYearId != 0 && gradeId == 0 && hostelId != 0) {
+            studentClassList = this.studentClassRepository.findAllByAcademicYearAndHostelAndKeywordAndHostelPresent(academicYearId, hostelId, keyword);
+        } else if(examTitleId == 0 && academicYearId == 0 && gradeId != 0 && hostelId != 0) {
+            studentClassList = this.studentClassRepository.findAllByGradeAndHostelAndKeywordAndHostelPresent(gradeId, hostelId, keyword);
+        } else if(examTitleId != 0 && academicYearId != 0 && gradeId != 0 && hostelId == 0) {
+            studentClassList = this.studentClassRepository.findAllByExamTitleAndAcademicYearAndGradeAndKeywordAndHostelPresent(examTitleId, academicYearId, gradeId, keyword);
+        } else if(examTitleId != 0 && academicYearId != 0 && gradeId == 0 && hostelId != 0) {
+            studentClassList = this.studentClassRepository.findAllByExamTitleAndAcademicYearAndHostelAndKeywordAndHostelPresent(examTitleId, academicYearId, hostelId, keyword);
+        } else if(examTitleId != 0 && academicYearId == 0 && gradeId != 0 && hostelId != 0) {
+            studentClassList = this.studentClassRepository.findAllByExamTitleAndGradeAndHostelAndKeywordAndHostelPresent(examTitleId, gradeId, hostelId, keyword);
+        } else if(examTitleId == 0 && academicYearId != 0 && gradeId != 0 && hostelId != 0) {
+            studentClassList = this.studentClassRepository.findAllByAcademicYearAndGradeAndHostelAndKeywordAndHostelPresent(academicYearId, gradeId, hostelId, keyword);
         } else {
-            sortedByCreatedTimestamp = PageRequest.of(PaginationUtil.pageNumber(pageNumber),
-                    paginationUtil.getPageSize(), Sort.by("createdTimestamp").descending());
+            studentClassList = this.studentClassRepository.findAllByExamTitleAndAcademicYearAndGradeAndHostelAndKeywordAndHostelPresent(examTitleId, academicYearId, gradeId, hostelId, keyword);
         }
-        Page<StudentClass> page = this.studentClassRepository.findAllByHostelNotPresent(sortedByCreatedTimestamp);
-        PaginationResponse<StudentClassDto> res = new PaginationResponse<StudentClassDto>();
-        res.addList(page.stream().map(this.mapper::mapEntityToDto).collect(Collectors.toList()))
-                .addTotalElements(page.getTotalElements())
-                .addTotalPages(page.getTotalPages())
-                .addPageSize(page.getSize());
-        return res;
+        return studentClassList
+                .stream()
+                .map(this.mapper::mapEntityToDto)
+                .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public PaginationResponse<StudentClassDto> findEachNotPresentPageBySearchingSortByCreatedTimestamp(int pageNumber, boolean isAscending, Long examTitleId, Long academicYearId, Long gradeId, String keyword) {
         Pageable sortedByCreatedTimestamp = null;
@@ -74,7 +99,7 @@ public class StudentHostelServiceImpl implements StudentHostelService {
         } else if(examTitleId == 0 && academicYearId != 0 && gradeId != 0) {
             page = this.studentClassRepository.findAllByAcademicYearAndGradeAndKeywordAndHostelNotPresent(academicYearId, gradeId, keyword, sortedByCreatedTimestamp);
         } else {
-            page = this.studentClassRepository.findAllByExamTitleAndAcademicYearAndGradeAndKeyword(examTitleId, academicYearId, gradeId, keyword, sortedByCreatedTimestamp);
+            page = this.studentClassRepository.findAllByExamTitleAndAcademicYearAndGradeAndKeywordAndHostelNotPresent(examTitleId, academicYearId, gradeId, keyword, sortedByCreatedTimestamp);
         }
 
         PaginationResponse<StudentClassDto> res = new PaginationResponse<StudentClassDto>();
@@ -86,25 +111,6 @@ public class StudentHostelServiceImpl implements StudentHostelService {
     }
 
     @Transactional(readOnly = true)
-    @Override
-    public PaginationResponse<StudentClassDto> findEachPresentPageSortByCreatedTimestamp(int pageNumber, boolean isAscending) {
-        Pageable sortedByCreatedTimestamp = null;
-        if(isAscending) {
-            sortedByCreatedTimestamp = PageRequest.of(PaginationUtil.pageNumber(pageNumber),
-                    paginationUtil.getPageSize(), Sort.by("createdTimestamp").ascending());
-        } else {
-            sortedByCreatedTimestamp = PageRequest.of(PaginationUtil.pageNumber(pageNumber),
-                    paginationUtil.getPageSize(), Sort.by("createdTimestamp").descending());
-        }
-        Page<StudentClass> page = this.studentClassRepository.findAllByHostelPresent(sortedByCreatedTimestamp);
-        PaginationResponse<StudentClassDto> res = new PaginationResponse<StudentClassDto>();
-        res.addList(page.stream().map(this.mapper::mapEntityToDto).collect(Collectors.toList()))
-                .addTotalElements(page.getTotalElements())
-                .addTotalPages(page.getTotalPages())
-                .addPageSize(page.getSize());
-        return res;
-    }
-
     @Override
     public PaginationResponse<StudentClassDto> findEachPresentPageBySearchingSortByCreatedTimestamp(int pageNumber, boolean isAscending, Long examTitleId, Long academicYearId, Long gradeId, Long hostelId, String keyword) {
         Pageable sortedByCreatedTimestamp = null;

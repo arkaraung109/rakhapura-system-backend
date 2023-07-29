@@ -15,8 +15,6 @@ public interface RegionService {
 
     List<RegionDto> findAllByAuthorizedStatus(boolean authorizedStatus);
 
-    PaginationResponse<RegionDto> findEachPageSortById(int pageNumber, boolean isAscending);
-
     PaginationResponse<RegionDto> findEachPageBySearchingSortById(int pageNumber, boolean isAscending, String keyword);
 
     RegionDto save(RegionDto regionDto);

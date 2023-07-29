@@ -40,15 +40,6 @@ public class StudentClassController {
         return new ResponseEntity<>(this.studentClassService.findAll(), HttpStatus.OK);
     }
 
-    @GetMapping("/segment")
-    public PaginationResponse<StudentClassDto> findEachPageSortByCreatedTimestamp(@RequestParam int page, @RequestParam(required = false) String order) {
-        boolean isAscending = true;
-        if(order!=null && order.equals("desc")) {
-            isAscending = false;
-        }
-        return this.studentClassService.findEachPageSortByCreatedTimestamp(page, isAscending);
-    }
-
     @GetMapping("/segment/search")
     public PaginationResponse<StudentClassDto> findEachPageBySearchingSortByCreatedTimestamp(@RequestParam int page, @RequestParam(required = false) String order, @RequestParam Long examTitleId, @RequestParam Long academicYearId, @RequestParam Long gradeId, @RequestParam String studentClass, @RequestParam String keyword) {
         boolean isAscending = true;
@@ -79,7 +70,7 @@ public class StudentClassController {
             }
         }
         if(!createdList.isEmpty() && errorList.isEmpty()) {
-            DataResponse res = new DataResponse(HttpStatus.CREATED.value(), createdList.size(), errorList.size());
+            DataResponse res = new DataResponse(HttpStatus.CREATED.value(), createdList.size(), 0);
             return new ResponseEntity<>(res, HttpStatus.CREATED);
         }
         if(!errorList.isEmpty()) {
@@ -135,9 +126,9 @@ public class StudentClassController {
     }
 
     @GetMapping("/export-to-excel")
-    public void exportToExcelFile(HttpServletResponse response) throws IOException {
+    public void exportToExcelFile(@RequestParam Long examTitleId,@RequestParam Long academicYearId,@RequestParam Long gradeId, @RequestParam String studentClass, @RequestParam String keyword, HttpServletResponse response) throws IOException {
         response.setContentType("application/octet-stream");
-        List<StudentClassDto> studentClassDtoList = this.studentClassService.findByOrderByCreatedTimestampAsc();
+        List<StudentClassDto> studentClassDtoList = this.studentClassService.findAllBySearching(examTitleId, academicYearId, gradeId, studentClass, keyword);
         StudentClassExcelGenerator generator = new StudentClassExcelGenerator(studentClassDtoList);
         generator.export(response);
     }

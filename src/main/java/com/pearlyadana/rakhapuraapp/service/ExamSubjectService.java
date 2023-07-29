@@ -13,11 +13,11 @@ public interface ExamSubjectService {
 
     List<ExamSubjectDto> findAllByExam(Long examId);
 
+    List<ExamSubjectDto> findAllByAuthorizedExam(Long examId);
+
     List<ExamSubjectDto> findAllByExamAndSubject(Long examId, Long subjectId);
 
     List<ExamSubjectDto> findAllByAuthorizedStatus(boolean authorizedStatus);
-
-    PaginationResponse<ExamSubjectDto> findEachPageSortById(int pageNumber, boolean isAscending);
 
     PaginationResponse<ExamSubjectDto> findEachPageBySearchingSortById(int pageNumber, boolean isAscending, Long academicYearId, Long examTitleId, Long subjectTypeId, Long subjectId, String keyword);
 

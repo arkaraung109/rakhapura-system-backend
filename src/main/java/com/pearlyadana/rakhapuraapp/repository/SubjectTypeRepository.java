@@ -17,9 +17,6 @@ public interface SubjectTypeRepository extends JpaRepository<SubjectType, Long> 
 
     String joinQuery = "select s.* from subject_type s where (s.name like :keyword%)";
 
-    @Query(value = "select distinct(name) from subject_type where authorized_status=true", nativeQuery = true)
-    List<String> findDistinctAll();
-
     List<SubjectType> findAllByNameAndGradeId(String name, Long gradeId);
 
     List<SubjectType> findAllByAuthorizedStatus(boolean authorizedStatus);

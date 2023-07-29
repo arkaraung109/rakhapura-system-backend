@@ -30,26 +30,6 @@ public class StudentCardServiceImpl implements StudentCardService {
 
     @Transactional(readOnly = true)
     @Override
-    public PaginationResponse<StudentClassDto> findEachPageSortByCreatedTimestamp(int pageNumber, boolean isAscending) {
-        Pageable sortedByCreatedTimestamp = null;
-        if(isAscending) {
-            sortedByCreatedTimestamp = PageRequest.of(PaginationUtil.pageNumber(pageNumber),
-                    paginationUtil.getPageSize(), Sort.by("createdTimestamp").ascending());
-        } else {
-            sortedByCreatedTimestamp = PageRequest.of(PaginationUtil.pageNumber(pageNumber),
-                    paginationUtil.getPageSize(), Sort.by("createdTimestamp").descending());
-        }
-        Page<StudentClass> page = this.studentClassRepository.findAllByArrivalAndRegNoAndRegSeqNo(true, null, 0, sortedByCreatedTimestamp);
-        PaginationResponse<StudentClassDto> res = new PaginationResponse<StudentClassDto>();
-        res.addList(page.stream().map(this.mapper::mapEntityToDto).collect(Collectors.toList()))
-                .addTotalElements(page.getTotalElements())
-                .addTotalPages(page.getTotalPages())
-                .addPageSize(page.getSize());
-        return res;
-    }
-
-    @Transactional(readOnly = true)
-    @Override
     public PaginationResponse<StudentClassDto> findEachPageBySearchingSortByCreatedTimestamp(int pageNumber, boolean isAscending, Long examTitleId, Long academicYearId, Long gradeId, String studentClass, String keyword) {
         Pageable sortedByCreatedTimestamp = null;
         if(isAscending) {

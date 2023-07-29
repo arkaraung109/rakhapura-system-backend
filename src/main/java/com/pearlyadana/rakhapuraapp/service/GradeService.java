@@ -15,8 +15,6 @@ public interface GradeService {
 
     List<GradeDto> findAllByAuthorizedStatus(boolean authorizedStatus);
 
-    PaginationResponse<GradeDto> findEachPageSortById(int pageNumber, boolean isAscending);
-
     PaginationResponse<GradeDto> findEachPageBySearchingSortById(int pageNumber, boolean isAscending, String keyword);
 
     GradeDto save(GradeDto gradeDto);

@@ -55,6 +55,7 @@ public class GradeServiceImpl implements GradeService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<GradeDto> findAllByAuthorizedStatus(boolean authorizedStatus) {
         return this.gradeRepository.findAllByAuthorizedStatus(authorizedStatus)
@@ -64,25 +65,6 @@ public class GradeServiceImpl implements GradeService {
     }
 
     @Transactional(readOnly = true)
-    @Override
-    public PaginationResponse<GradeDto> findEachPageSortById(int pageNumber, boolean isAscending) {
-        Pageable sortedById = null;
-        if(isAscending) {
-            sortedById = PageRequest.of(PaginationUtil.pageNumber(pageNumber),
-                    paginationUtil.getPageSize(), Sort.by("id").ascending());
-        } else {
-            sortedById = PageRequest.of(PaginationUtil.pageNumber(pageNumber),
-                    paginationUtil.getPageSize(), Sort.by("id").descending());
-        }
-        Page<Grade> page = this.gradeRepository.findAll(sortedById);
-        PaginationResponse<GradeDto> res = new PaginationResponse<GradeDto>();
-        res.addList(page.stream().map(this.mapper::mapEntityToDto).collect(Collectors.toList()))
-                .addTotalElements(page.getTotalElements())
-                .addTotalPages(page.getTotalPages())
-                .addPageSize(page.getSize());
-        return res;
-    }
-
     @Override
     public PaginationResponse<GradeDto> findEachPageBySearchingSortById(int pageNumber, boolean isAscending, String keyword) {
         Pageable sortedById = null;

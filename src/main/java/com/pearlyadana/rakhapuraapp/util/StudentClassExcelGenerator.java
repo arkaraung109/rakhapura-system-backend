@@ -1,9 +1,7 @@
 package com.pearlyadana.rakhapuraapp.util;
 
 import com.pearlyadana.rakhapuraapp.model.request.StudentClassDto;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -32,18 +30,21 @@ public class StudentClassExcelGenerator {
         sheet = workbook.createSheet("Assigned Students In Classes");
         Row row = sheet.createRow(0);
         CellStyle style = workbook.createCellStyle();
+        style.setVerticalAlignment(VerticalAlignment.CENTER);
+        style.setAlignment(HorizontalAlignment.CENTER);
         XSSFFont font = workbook.createFont();
+        font.setFontHeight(11);
         font.setBold(true);
-        font.setFontHeight(13);
         style.setFont(font);
 
-        createCell(row, 0, "ခုံနံပါတ်", style);
-        createCell(row, 1, "အမည်", style);
-        createCell(row, 2, "အဖအမည်", style);
-        createCell(row, 3, "စာသင်နှစ်", style);
-        createCell(row, 4, "စာမေးပွဲခေါင်းစဉ်", style);
-        createCell(row, 5, "အတန်း", style);
-        createCell(row, 6, "အခန်း", style);
+        createCell(row, 0, "စဉ်", style);
+        createCell(row, 1, "ခုံနံပါတ်", style);
+        createCell(row, 2, "အမည်", style);
+        createCell(row, 3, "အဖအမည်", style);
+        createCell(row, 4, "စာသင်နှစ်", style);
+        createCell(row, 5, "စာမေးပွဲခေါင်းစဉ်", style);
+        createCell(row, 6, "အတန်း", style);
+        createCell(row, 7, "အခန်း", style);
     }
 
     private void createCell(Row row, int columnCount, Object value, CellStyle style) {
@@ -61,7 +62,10 @@ public class StudentClassExcelGenerator {
 
     private void writeDataLines() {
         int rowCount = 1;
+        int seqNo = 1;
         CellStyle style = workbook.createCellStyle();
+        style.setVerticalAlignment(VerticalAlignment.CENTER);
+        style.setAlignment(HorizontalAlignment.CENTER);
         XSSFFont font = workbook.createFont();
         font.setFontHeight(11);
         style.setFont(font);
@@ -70,6 +74,7 @@ public class StudentClassExcelGenerator {
             Row row = sheet.createRow(rowCount++);
             int columnCount = 0;
 
+            createCell(row, columnCount++, seqNo++, style);
             createCell(row, columnCount++, studentClassDto.getRegNo(), style);
             createCell(row, columnCount++, studentClassDto.getStudent().getName(), style);
             createCell(row, columnCount++, studentClassDto.getStudent().getFatherName(), style);

@@ -19,8 +19,6 @@ public interface ExamService {
 
     List<ExamDto> findAllByAcademicYearAndExamTitleAndSubjectType(Long academicYearId, Long examTitleId, Long subjectTypeId);
 
-    PaginationResponse<ExamDto> findEachPageSortById(int pageNumber, boolean isAscending);
-
     PaginationResponse<ExamDto> findEachPageBySearchingSortById(int pageNumber, boolean isAscending, Long academicYearId, Long examTitleId, Long subjectTypeId, String keyword);
 
     ExamDto save(ExamDto examDto);

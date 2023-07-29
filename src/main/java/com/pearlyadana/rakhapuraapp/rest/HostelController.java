@@ -13,7 +13,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
-import javax.validation.constraints.Min;
 import java.util.List;
 
 @RestController
@@ -37,17 +36,6 @@ public class HostelController {
     @GetMapping("/authorized")
     public ResponseEntity<List<HostelDto>> findAllByAuthorizedStatus() {
         return new ResponseEntity<>(this.hostelService.findAllByAuthorizedStatus(true), HttpStatus.OK);
-    }
-
-    @GetMapping("/segment")
-    public PaginationResponse<HostelDto> findEachPageSortById(
-            @RequestParam @Min(value = 1, message = "invalid parameter value") int page,
-            @RequestParam(required = false) String order) {
-        boolean isAscending = true;
-        if(order!=null && order.equals("desc")) {
-            isAscending = false;
-        }
-        return this.hostelService.findEachPageSortById(page, isAscending);
     }
 
     @GetMapping("/segment/search")

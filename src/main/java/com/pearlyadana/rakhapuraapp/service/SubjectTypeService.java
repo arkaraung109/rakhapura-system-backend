@@ -9,8 +9,6 @@ public interface SubjectTypeService {
 
     SubjectTypeDto findById(Long id);
 
-    List<String> findDistinctAll();
-
     List<SubjectTypeDto> findAll();
 
     List<SubjectTypeDto> findAllByNameAndGrade(String name, Long gradeId);
@@ -18,8 +16,6 @@ public interface SubjectTypeService {
     List<SubjectTypeDto> findAllByAuthorizedStatus(boolean authorizedStatus);
 
     List<SubjectTypeDto> findAllFilteredByGrade(Long gradeId);
-
-    PaginationResponse<SubjectTypeDto> findEachPageSortById(int pageNumber, boolean isAscending);
 
     PaginationResponse<SubjectTypeDto> findEachPageBySearchingSortById(int pageNumber, boolean isAscending, Long gradeId, String keyword);
 

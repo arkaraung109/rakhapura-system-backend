@@ -37,6 +37,7 @@ public class ClassServiceImpl implements ClassService {
         return optional.map(this.mapper::mapEntityToDto).orElse(null);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<String> findDistinctAll() {
         return this.classRepository.findDistinctAll();
@@ -51,6 +52,7 @@ public class ClassServiceImpl implements ClassService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<ClassDto> findAllByNameAndAcademicYearAndGrade(String name, Long academicYearId, Long gradeId) {
         return this.classRepository.findAllByNameAndAcademicYearIdAndGradeId(name, academicYearId, gradeId)
@@ -59,6 +61,7 @@ public class ClassServiceImpl implements ClassService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<ClassDto> findAllByAuthorizedStatus(boolean authorizedStatus) {
         return this.classRepository.findAllByAuthorizedStatus(authorizedStatus)
@@ -67,6 +70,7 @@ public class ClassServiceImpl implements ClassService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<ClassDto> findAllFilteredByAcademicYearAndGrade(Long academicYearId, Long gradeId) {
         return this.classRepository.findAllByAcademicYearIdAndGradeIdAndAuthorizedStatus(academicYearId, gradeId, true)
@@ -76,25 +80,6 @@ public class ClassServiceImpl implements ClassService {
     }
 
     @Transactional(readOnly = true)
-    @Override
-    public PaginationResponse<ClassDto> findEachPageSortById(int pageNumber, boolean isAscending) {
-        Pageable sortedById = null;
-        if(isAscending) {
-            sortedById = PageRequest.of(PaginationUtil.pageNumber(pageNumber),
-                    paginationUtil.getPageSize(), Sort.by("id").ascending());
-        } else {
-            sortedById = PageRequest.of(PaginationUtil.pageNumber(pageNumber),
-                    paginationUtil.getPageSize(), Sort.by("id").descending());
-        }
-        Page<Class> page = this.classRepository.findAll(sortedById);
-        PaginationResponse<ClassDto> res = new PaginationResponse<ClassDto>();
-        res.addList(page.stream().map(this.mapper::mapEntityToDto).collect(Collectors.toList()))
-                .addTotalElements(page.getTotalElements())
-                .addTotalPages(page.getTotalPages())
-                .addPageSize(page.getSize());
-        return res;
-    }
-
     @Override
     public PaginationResponse<ClassDto> findEachPageBySearchingSortById(int pageNumber, boolean isAscending, Long academicYearId, Long gradeId, String keyword) {
         Pageable sortedById = null;

@@ -5,8 +5,11 @@ import java.util.List;
 public final class PaginationResponse<T> {
 
     private List<T> elements;
+
     private long totalElements = 0;
+
     private int totalPages = 0;
+
     private int pageSize = 0;
 
     public PaginationResponse() {

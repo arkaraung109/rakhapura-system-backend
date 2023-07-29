@@ -19,6 +19,8 @@ public interface ExamSubjectRepository extends JpaRepository<ExamSubject, Long> 
 
     List<ExamSubject> findAllByExamId(Long examId);
 
+    List<ExamSubject> findAllByExamIdAndAuthorizedStatusOrderBySubjectIdAsc(Long examId, boolean authorizedStatus);
+
     List<ExamSubject> findAllByExamIdAndSubjectId(Long examId, Long subjectId);
 
     List<ExamSubject> findAllByAuthorizedStatus(boolean authorizedStatus);

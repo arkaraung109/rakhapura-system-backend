@@ -38,15 +38,6 @@ public class ExamTitleController {
         return new ResponseEntity<>(this.examTitleService.findAllByAuthorizedStatus(true), HttpStatus.OK);
     }
 
-    @GetMapping("/segment")
-    public PaginationResponse<ExamTitleDto> findEachPageSortById(@RequestParam int page, @RequestParam(required = false) String order) {
-        boolean isAscending = true;
-        if(order!=null && order.equals("desc")) {
-            isAscending = false;
-        }
-        return this.examTitleService.findEachPageSortById(page, isAscending);
-    }
-
     @GetMapping("/segment/search")
     public PaginationResponse<ExamTitleDto> findEachPageBySearchingSortById(@RequestParam int page, @RequestParam(required = false) String order, @RequestParam String keyword) {
         boolean isAscending = true;

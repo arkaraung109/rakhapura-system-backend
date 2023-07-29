@@ -38,15 +38,6 @@ public class RegionController {
         return new ResponseEntity<>(this.regionService.findAllByAuthorizedStatus(true), HttpStatus.OK);
     }
 
-    @GetMapping("/segment")
-    public PaginationResponse<RegionDto> findEachPageSortById(@RequestParam int page, @RequestParam(required = false) String order) {
-        boolean isAscending = true;
-        if(order!=null && order.equals("desc")) {
-            isAscending = false;
-        }
-        return this.regionService.findEachPageSortById(page, isAscending);
-    }
-
     @GetMapping("/segment/search")
     public PaginationResponse<RegionDto> findEachPageBySearchingSortById(@RequestParam int page, @RequestParam(required = false) String order, @RequestParam String keyword) {
         boolean isAscending = true;

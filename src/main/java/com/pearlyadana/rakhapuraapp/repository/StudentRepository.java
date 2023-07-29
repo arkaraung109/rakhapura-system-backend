@@ -15,10 +15,21 @@ import java.util.UUID;
 public interface StudentRepository extends JpaRepository<Student, UUID> {
 
     String joinQuery = "select s.* from student s where ((s.name like :keyword%) or (s.father_name like :keyword%) or (s.monastery_headmaster like :keyword%) or (s.monastery_name like :keyword%))";
+    String joinQueryOrderBy = " order by s.name, s.father_name";
 
     List<Student> findAllByNrc(String nrc);
 
-    List<Student> findByOrderByCreatedTimestampAsc();
+    //-----Student List-----
+
+    @Query(value = joinQuery + joinQueryOrderBy,
+            nativeQuery = true)
+    List<Student> findAllByKeyword(@Param("keyword") String keyword);
+
+    @Query(value = joinQuery + " and (s.region_id=:regionId)" + joinQueryOrderBy,
+            nativeQuery = true)
+    List<Student> findAllByRegionAndKeyword(@Param("regionId") Long regionId, @Param("keyword") String keyword);
+
+    //-----Student Page-----
 
     @Query(value = joinQuery,
             countQuery = joinQuery,

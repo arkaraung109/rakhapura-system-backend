@@ -1,11 +1,11 @@
 package com.pearlyadana.rakhapuraapp.rest;
 
 import com.pearlyadana.rakhapuraapp.http.AuthoritiesConstants;
-import com.pearlyadana.rakhapuraapp.model.request.AttendanceDto;
-import com.pearlyadana.rakhapuraapp.model.response.DataResponse;
-import com.pearlyadana.rakhapuraapp.model.response.PaginationResponse;
+import com.pearlyadana.rakhapuraapp.model.request.*;
+import com.pearlyadana.rakhapuraapp.model.response.*;
 import com.pearlyadana.rakhapuraapp.service.AttendanceService;
-import com.pearlyadana.rakhapuraapp.util.AttendenceExcelGenerator;
+import com.pearlyadana.rakhapuraapp.service.ExamService;
+import com.pearlyadana.rakhapuraapp.util.AttendanceExcelGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -26,6 +26,9 @@ import java.util.UUID;
 public class AttendanceController {
 
     @Autowired
+    private ExamService examService;
+
+    @Autowired
     private AttendanceService attendanceService;
 
     @GetMapping("/{id}")
@@ -33,23 +36,14 @@ public class AttendanceController {
         return new ResponseEntity<>(this.attendanceService.findById(id), HttpStatus.OK);
     }
 
-    @GetMapping("/student-class/{id}")
-    public ResponseEntity<List<AttendanceDto>> findByStudentClassId(@PathVariable("id") UUID id) {
-        return new ResponseEntity<>(this.attendanceService.findByStudentClassId(id), HttpStatus.OK);
+    @GetMapping("/student-class/present/{id}")
+    public ResponseEntity<List<AttendanceDto>> findByPresentStudentClassId(@PathVariable("id") UUID id) {
+        return new ResponseEntity<>(this.attendanceService.findByPresentStudentClassId(id), HttpStatus.OK);
     }
 
     @GetMapping("")
     public ResponseEntity<List<AttendanceDto>> findAll() {
         return new ResponseEntity<>(this.attendanceService.findAll(), HttpStatus.OK);
-    }
-
-    @GetMapping("/segment/not-present")
-    public PaginationResponse<AttendanceDto> findEachNotPresentPageSortByCreatedTimestamp(@RequestParam int page, @RequestParam(required = false) String order) {
-        boolean isAscending = true;
-        if(order!=null && order.equals("desc")) {
-            isAscending = false;
-        }
-        return this.attendanceService.findEachNotPresentPageSortByCreatedTimestamp(page, isAscending);
     }
 
     @GetMapping("/segment/not-present/search")
@@ -61,22 +55,35 @@ public class AttendanceController {
         return this.attendanceService.findEachNotPresentPageBySearchingSortByCreatedTimestamp(page, isAscending, academicYearId, examTitleId, subjectTypeId, keyword);
     }
 
-    @GetMapping("/segment/present")
-    public PaginationResponse<AttendanceDto> findEachPresentPageSortByCreatedTimestamp(@RequestParam int page, @RequestParam(required = false) String order) {
-        boolean isAscending = true;
-        if(order!=null && order.equals("desc")) {
-            isAscending = false;
+    private TableHeader setTableHeader(Long academicYearId, Long examTitleId, Long gradeId, String keyword) {
+        TableHeader tableHeader = new TableHeader();
+        List<ExamDto> examDtoList = this.examService.findAllFilteredByAcademicYearAndExamTitleAndGrade(academicYearId, examTitleId, gradeId);
+        List<CustomExam> customExamList = new ArrayList<>();
+        for(ExamDto examDto : examDtoList) {
+            CustomExam customExam = new CustomExam();
+            customExam.setExam(examDto);
+            customExamList.add(customExam);
         }
-        return this.attendanceService.findEachPresentPageSortByCreatedTimestamp(page, isAscending);
+
+        tableHeader.setAcademicYear(customExamList.get(0).getExam().getAcademicYear().getName());
+        tableHeader.setExamTitle(customExamList.get(0).getExam().getExamTitle().getName());
+        tableHeader.setGrade(customExamList.get(0).getExam().getSubjectType().getGrade().getName());
+        tableHeader.setCustomExamList(customExamList);
+        return tableHeader;
     }
 
     @GetMapping("/segment/present/search")
-    public PaginationResponse<AttendanceDto> findEachPresentPageBySearchingSortByCreatedTimestamp(@RequestParam int page, @RequestParam(required = false) String order, @RequestParam Long academicYearId, @RequestParam Long examTitleId, @RequestParam Long gradeId, @RequestParam String studentClass, @RequestParam String keyword) {
-        boolean isAscending = true;
-        if(order!=null && order.equals("desc")) {
-            isAscending = false;
+    public CustomPaginationResponse<ResultResponse> findEachPresentPageBySearching(@RequestParam int page, @RequestParam Long academicYearId, @RequestParam Long examTitleId, @RequestParam Long gradeId, @RequestParam String keyword) {
+        CustomPaginationResponse<ResultResponse> customPaginationResponse = this.attendanceService.findEachPageBySearching(page, academicYearId, examTitleId, gradeId, keyword);
+
+        for(ResultResponse element : customPaginationResponse.getElements()) {
+            List<AttendanceDto> attendedExamList = this.attendanceService.findByStudentClassId(element.getAttendance().getStudentClass().getId());
+            element.setAttendedExamList(attendedExamList);
         }
-        return this.attendanceService.findEachPresentPageBySearchingSortByCreatedTimestamp(page, isAscending, academicYearId, examTitleId, gradeId, studentClass, keyword);
+
+        TableHeader tableHeader = this.setTableHeader(academicYearId, examTitleId, gradeId, keyword);
+        customPaginationResponse.setTableHeader(tableHeader);
+        return customPaginationResponse;
     }
 
     @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -99,10 +106,19 @@ public class AttendanceController {
     }
 
     @GetMapping("/export-to-excel")
-    public void exportToExcelFile(HttpServletResponse response) throws IOException {
+    public void exportToExcelFile(@RequestParam Long academicYearId, @RequestParam Long examTitleId, @RequestParam Long gradeId, @RequestParam String keyword, HttpServletResponse response) throws IOException {
+        CustomPaginationResponse<ResultResponse> customPaginationResponse = new CustomPaginationResponse<>();
+        List<ResultResponse> resultResponseList = this.attendanceService.findBySearching(academicYearId, examTitleId, gradeId, keyword);
+        for(ResultResponse element : resultResponseList) {
+            List<AttendanceDto> attendedExamList = this.attendanceService.findByStudentClassId(element.getAttendance().getStudentClass().getId());
+            element.setAttendedExamList(attendedExamList);
+        }
+
+        TableHeader tableHeader = this.setTableHeader(academicYearId, examTitleId, gradeId, keyword);
+        customPaginationResponse.setElements(resultResponseList);
+        customPaginationResponse.setTableHeader(tableHeader);
         response.setContentType("application/octet-stream");
-        List<AttendanceDto> attendenceDtoList = this.attendanceService.findByOrderByCreatedTimestampAsc();
-        AttendenceExcelGenerator generator = new AttendenceExcelGenerator(attendenceDtoList);
+        AttendanceExcelGenerator generator = new AttendanceExcelGenerator(customPaginationResponse);
         generator.export(response);
     }
 

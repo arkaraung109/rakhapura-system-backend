@@ -41,15 +41,6 @@ public class StudentController {
         return new ResponseEntity<>(this.studentService.findAll(), HttpStatus.OK);
     }
 
-    @GetMapping("/segment")
-    public PaginationResponse<StudentDto> findEachPageSortByCreatedTimestamp(@RequestParam int page, @RequestParam(required = false) String order) {
-        boolean isAscending = true;
-        if(order!=null && order.equals("desc")) {
-            isAscending = false;
-        }
-        return this.studentService.findEachPageSortByCreatedTimestamp(page, isAscending);
-    }
-
     @GetMapping("/segment/search")
     public PaginationResponse<StudentDto> findEachPageBySearchingSortByCreatedTimestamp(@RequestParam int page, @RequestParam(required = false) String order, @RequestParam Long regionId, @RequestParam String keyword) {
         boolean isAscending = true;
@@ -111,9 +102,9 @@ public class StudentController {
     }
 
     @GetMapping("/export-to-excel")
-    public void exportToExcelFile(HttpServletResponse response) throws IOException {
+    public void exportToExcelFile(@RequestParam Long regionId, @RequestParam String keyword, HttpServletResponse response) throws IOException {
         response.setContentType("application/octet-stream");
-        List<StudentDto> studentDtoList = this.studentService.findByOrderByCreatedTimestampAsc();
+        List<StudentDto> studentDtoList = this.studentService.findAllBySearching(regionId, keyword);
         StudentExcelGenerator generator = new StudentExcelGenerator(studentDtoList);
         generator.export(response);
     }

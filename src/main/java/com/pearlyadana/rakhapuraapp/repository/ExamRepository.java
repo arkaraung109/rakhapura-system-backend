@@ -18,11 +18,11 @@ public interface ExamRepository extends JpaRepository<Exam, Long> {
 
     String joinQuery = "select e.* from exam e where ((e.exam_date like :keyword%) or (e.time like :keyword%) or (e.pass_mark like :keyword%) or (e.mark_percentage like :keyword%))";
 
-    Optional<Exam> findByAcademicYearIdAndExamTitleIdAndSubjectTypeId(Long academicYearId, Long examTitleId, Long subjectTypeId);
+    Optional<Exam> findFirstByAcademicYearIdAndExamTitleIdAndSubjectTypeId(Long academicYearId, Long examTitleId, Long subjectTypeId);
 
     List<Exam> findAllByAcademicYearIdAndExamTitleIdAndAuthorizedStatus(Long academicYearId, Long examTitleId, boolean authorizedStatus);
 
-    @Query(value = "select e.* from exam e, subject_type st where e.subject_type_id=st.id and e.academic_year_id=:academicYearId and e.exam_title_id=:examTitleId and st.grade_id=:gradeId and e.authorized_status=:authorizedStatus", nativeQuery = true)
+    @Query(value = "select e.* from exam e, subject_type st where e.subject_type_id=st.id and e.academic_year_id=:academicYearId and e.exam_title_id=:examTitleId and st.grade_id=:gradeId and e.authorized_status=:authorizedStatus order by e.subject_type_id asc", nativeQuery = true)
     List<Exam> findAllByAcademicYearIdAndExamTitleIdAndGradeIdAndAuthorizedStatus(@Param("academicYearId") Long academicYearId, @Param("examTitleId") Long examTitleId, @Param("gradeId") Long gradeId, @Param("authorizedStatus") boolean authorizedStatus);
 
     List<Exam> findAllByAcademicYearIdAndExamTitleIdAndSubjectTypeId(Long academicYearId, Long examTitleId, Long subjectTypeId);

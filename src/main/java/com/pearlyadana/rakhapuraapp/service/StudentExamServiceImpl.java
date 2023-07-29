@@ -1,12 +1,8 @@
 package com.pearlyadana.rakhapuraapp.service;
 
-import com.pearlyadana.rakhapuraapp.entity.Class;
 import com.pearlyadana.rakhapuraapp.entity.StudentExam;
-import com.pearlyadana.rakhapuraapp.mapper.ClassMapper;
 import com.pearlyadana.rakhapuraapp.mapper.StudentExamMapper;
-import com.pearlyadana.rakhapuraapp.model.request.ClassDto;
 import com.pearlyadana.rakhapuraapp.model.request.StudentExamDto;
-import com.pearlyadana.rakhapuraapp.repository.ClassRepository;
 import com.pearlyadana.rakhapuraapp.repository.StudentExamRepository;
 import com.pearlyadana.rakhapuraapp.util.PaginationUtil;
 import org.mapstruct.factory.Mappers;
@@ -32,9 +28,49 @@ public class StudentExamServiceImpl implements StudentExamService {
 
     @Transactional(readOnly = true)
     @Override
+    public Integer findTotalMark(UUID attendanceId) {
+        return this.studentExamRepository.findTotalMark(attendanceId);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Integer findResult(UUID attendanceId) {
+        if(this.studentExamRepository.findResult(attendanceId) == null) {
+            return 0;
+        }
+        return this.studentExamRepository.findResult(attendanceId);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
     public StudentExamDto findById(UUID id) {
         Optional<StudentExam> optional = this.studentExamRepository.findById(id);
         return optional.map(this.mapper::mapEntityToDto).orElse(null);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public StudentExamDto findByExamSubjectAndAttendance(Long examSubjectId, UUID attendanceId) {
+        Optional<StudentExam> optional = this.studentExamRepository.findFirstByExamSubjectIdAndAttendanceId(examSubjectId, attendanceId);
+        return optional.map(this.mapper::mapEntityToDto).orElse(null);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<StudentExamDto> findAllByExam(Long id) {
+        return this.studentExamRepository.findAllByExamId(id)
+                .stream()
+                .map(this.mapper::mapEntityToDto)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<StudentExamDto> findAllByAttendance(UUID id) {
+        return this.studentExamRepository.findAllByAttendanceIdOrderBySubjectIdAsc(id)
+                .stream()
+                .map(this.mapper::mapEntityToDto)
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
@@ -44,6 +80,18 @@ public class StudentExamServiceImpl implements StudentExamService {
                 .stream()
                 .map(this.mapper::mapEntityToDto)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    @Override
+    public StudentExamDto save(StudentExamDto studentExamDto) {
+        return this.mapper.mapEntityToDto(this.studentExamRepository.save(this.mapper.mapDtoToEntity(studentExamDto)));
+    }
+
+    @Transactional
+    @Override
+    public StudentExamDto update(StudentExamDto studentExamDto) {
+        return this.mapper.mapEntityToDto(this.studentExamRepository.save(this.mapper.mapDtoToEntity(studentExamDto)));
     }
 
 }

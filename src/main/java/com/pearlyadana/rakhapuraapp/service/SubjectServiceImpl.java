@@ -55,6 +55,7 @@ public class SubjectServiceImpl implements SubjectService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<SubjectDto> findAllByAuthorizedStatus(boolean authorizedStatus) {
         return this.subjectRepository.findAllByAuthorizedStatus(authorizedStatus)
@@ -64,25 +65,6 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Transactional(readOnly = true)
-    @Override
-    public PaginationResponse<SubjectDto> findEachPageSortById(int pageNumber, boolean isAscending) {
-        Pageable sortedById = null;
-        if(isAscending) {
-            sortedById = PageRequest.of(PaginationUtil.pageNumber(pageNumber),
-                    paginationUtil.getPageSize(), Sort.by("id").ascending());
-        } else {
-            sortedById = PageRequest.of(PaginationUtil.pageNumber(pageNumber),
-                    paginationUtil.getPageSize(), Sort.by("id").descending());
-        }
-        Page<Subject> page = this.subjectRepository.findAll(sortedById);
-        PaginationResponse<SubjectDto> res = new PaginationResponse<SubjectDto>();
-        res.addList(page.stream().map(this.mapper::mapEntityToDto).collect(Collectors.toList()))
-                .addTotalElements(page.getTotalElements())
-                .addTotalPages(page.getTotalPages())
-                .addPageSize(page.getSize());
-        return res;
-    }
-
     @Override
     public PaginationResponse<SubjectDto> findEachPageBySearchingSortById(int pageNumber, boolean isAscending, String keyword) {
         Pageable sortedById = null;

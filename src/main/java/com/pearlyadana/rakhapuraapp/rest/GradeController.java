@@ -38,15 +38,6 @@ public class GradeController {
         return new ResponseEntity<>(this.gradeService.findAllByAuthorizedStatus(true), HttpStatus.OK);
     }
 
-    @GetMapping("/segment")
-    public PaginationResponse<GradeDto> findEachPageSortById(@RequestParam int page, @RequestParam(required = false) String order) {
-        boolean isAscending = true;
-        if(order!=null && order.equals("desc")) {
-            isAscending = false;
-        }
-        return this.gradeService.findEachPageSortById(page, isAscending);
-    }
-
     @GetMapping("/segment/search")
     public PaginationResponse<GradeDto> findEachPageBySearchingSortById(@RequestParam int page, @RequestParam(required = false) String order, @RequestParam String keyword) {
         boolean isAscending = true;

@@ -48,15 +48,6 @@ public class ClassController {
         return new ResponseEntity<>(this.classService.findAllFilteredByAcademicYearAndGrade(academicYearId, gradeId), HttpStatus.OK);
     }
 
-    @GetMapping("/segment")
-    public PaginationResponse<ClassDto> findEachPageSortById(@RequestParam int page, @RequestParam(required = false) String order) {
-        boolean isAscending = true;
-        if(order!=null && order.equals("desc")) {
-            isAscending = false;
-        }
-        return this.classService.findEachPageSortById(page, isAscending);
-    }
-
     @GetMapping("/segment/search")
     public PaginationResponse<ClassDto> findEachPageBySearchingSortById(@RequestParam int page, @RequestParam(required = false) String order, @RequestParam Long academicYearId, @RequestParam Long gradeId, @RequestParam String keyword) {
         boolean isAscending = true;

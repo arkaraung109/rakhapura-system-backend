@@ -37,11 +37,6 @@ public class SubjectTypeServiceImpl implements SubjectTypeService {
         return optional.map(this.mapper::mapEntityToDto).orElse(null);
     }
 
-    @Override
-    public List<String> findDistinctAll() {
-        return this.subjectTypeRepository.findDistinctAll();
-    }
-
     @Transactional(readOnly = true)
     @Override
     public List<SubjectTypeDto> findAll() {
@@ -51,6 +46,7 @@ public class SubjectTypeServiceImpl implements SubjectTypeService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<SubjectTypeDto> findAllByNameAndGrade(String name, Long gradeId) {
         return this.subjectTypeRepository.findAllByNameAndGradeId(name, gradeId)
@@ -59,6 +55,7 @@ public class SubjectTypeServiceImpl implements SubjectTypeService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<SubjectTypeDto> findAllByAuthorizedStatus(boolean authorizedStatus) {
         return this.subjectTypeRepository.findAllByAuthorizedStatus(authorizedStatus)
@@ -67,6 +64,7 @@ public class SubjectTypeServiceImpl implements SubjectTypeService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<SubjectTypeDto> findAllFilteredByGrade(Long gradeId) {
         return this.subjectTypeRepository.findAllByGradeIdAndAuthorizedStatus(gradeId, true)
@@ -76,25 +74,6 @@ public class SubjectTypeServiceImpl implements SubjectTypeService {
     }
 
     @Transactional(readOnly = true)
-    @Override
-    public PaginationResponse<SubjectTypeDto> findEachPageSortById(int pageNumber, boolean isAscending) {
-        Pageable sortedById = null;
-        if(isAscending) {
-            sortedById = PageRequest.of(PaginationUtil.pageNumber(pageNumber),
-                    paginationUtil.getPageSize(), Sort.by("id").ascending());
-        } else {
-            sortedById = PageRequest.of(PaginationUtil.pageNumber(pageNumber),
-                    paginationUtil.getPageSize(), Sort.by("id").descending());
-        }
-        Page<SubjectType> page = this.subjectTypeRepository.findAll(sortedById);
-        PaginationResponse<SubjectTypeDto> res = new PaginationResponse<SubjectTypeDto>();
-        res.addList(page.stream().map(this.mapper::mapEntityToDto).collect(Collectors.toList()))
-                .addTotalElements(page.getTotalElements())
-                .addTotalPages(page.getTotalPages())
-                .addPageSize(page.getSize());
-        return res;
-    }
-
     @Override
     public PaginationResponse<SubjectTypeDto> findEachPageBySearchingSortById(int pageNumber, boolean isAscending, Long gradeId, String keyword) {
         Pageable sortedById = null;

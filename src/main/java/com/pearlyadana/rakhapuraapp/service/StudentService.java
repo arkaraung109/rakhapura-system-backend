@@ -12,11 +12,9 @@ public interface StudentService {
 
     List<StudentDto> findAll();
 
-    List<StudentDto> findByOrderByCreatedTimestampAsc();
-
     List<StudentDto> findAllByNrc(String nrc);
 
-    PaginationResponse<StudentDto> findEachPageSortByCreatedTimestamp(int pageNumber, boolean isAscending);
+    List<StudentDto> findAllBySearching(Long regionId, String keyword);
 
     PaginationResponse<StudentDto> findEachPageBySearchingSortByCreatedTimestamp(int pageNumber, boolean isAscending, Long regionId, String keyword);
 

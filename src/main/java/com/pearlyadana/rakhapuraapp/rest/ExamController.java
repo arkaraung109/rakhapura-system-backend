@@ -28,14 +28,6 @@ public class ExamController {
         return new ResponseEntity<>(this.examService.findById(id), HttpStatus.OK);
     }
 
-    @GetMapping("/filterOne")
-    public ResponseEntity<ExamDto> findByAcademicYearAndExamTitleAndSubjectType(@RequestParam Long academicYearId, @RequestParam Long examTitleId, @RequestParam Long subjectTypeId) {
-        if(this.examService.findByAcademicYearAndExamTitleAndSubjectType(academicYearId, examTitleId, subjectTypeId) == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(this.examService.findByAcademicYearAndExamTitleAndSubjectType(academicYearId, examTitleId, subjectTypeId), HttpStatus.OK);
-    }
-
     @GetMapping("/filter")
     public ResponseEntity<List<ExamDto>> findAllFilteredByAcademicYearAndExamTitle(@RequestParam Long academicYearId, @RequestParam Long examTitleId) {
         return new ResponseEntity<>(this.examService.findAllFilteredByAcademicYearAndExamTitle(academicYearId, examTitleId), HttpStatus.OK);
@@ -44,15 +36,6 @@ public class ExamController {
     @GetMapping("")
     public ResponseEntity<List<ExamDto>> findAll() {
         return new ResponseEntity<>(this.examService.findAll(), HttpStatus.OK);
-    }
-
-    @GetMapping("/segment")
-    public PaginationResponse<ExamDto> findEachPageSortById(@RequestParam int page, @RequestParam(required = false) String order) {
-        boolean isAscending = true;
-        if(order!=null && order.equals("desc")) {
-            isAscending = false;
-        }
-        return this.examService.findEachPageSortById(page, isAscending);
     }
 
     @GetMapping("/segment/search")

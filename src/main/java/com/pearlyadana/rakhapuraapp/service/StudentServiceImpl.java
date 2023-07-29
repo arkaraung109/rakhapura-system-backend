@@ -50,14 +50,7 @@ public class StudentServiceImpl implements StudentService {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public List<StudentDto> findByOrderByCreatedTimestampAsc() {
-        return this.studentRepository.findByOrderByCreatedTimestampAsc()
-                .stream()
-                .map(this.mapper::mapEntityToDto)
-                .collect(Collectors.toList());
-    }
-
+    @Transactional(readOnly = true)
     @Override
     public List<StudentDto> findAllByNrc(String nrc) {
         return this.studentRepository.findAllByNrc(nrc)
@@ -68,24 +61,20 @@ public class StudentServiceImpl implements StudentService {
 
     @Transactional(readOnly = true)
     @Override
-    public PaginationResponse<StudentDto> findEachPageSortByCreatedTimestamp(int pageNumber, boolean isAscending) {
-        Pageable sortedByCreatedTimestamp = null;
-        if(isAscending) {
-            sortedByCreatedTimestamp = PageRequest.of(PaginationUtil.pageNumber(pageNumber),
-                    paginationUtil.getPageSize(), Sort.by("createdTimestamp").ascending());
+    public List<StudentDto> findAllBySearching(Long regionId, String keyword) {
+        List<Student> studentList;
+        if(regionId == 0) {
+            studentList = this.studentRepository.findAllByKeyword(keyword);
         } else {
-            sortedByCreatedTimestamp = PageRequest.of(PaginationUtil.pageNumber(pageNumber),
-                    paginationUtil.getPageSize(), Sort.by("createdTimestamp").descending());
+            studentList = this.studentRepository.findAllByRegionAndKeyword(regionId, keyword);
         }
-        Page<Student> page = this.studentRepository.findAll(sortedByCreatedTimestamp);
-        PaginationResponse<StudentDto> res = new PaginationResponse<StudentDto>();
-        res.addList(page.stream().map(this.mapper::mapEntityToDto).collect(Collectors.toList()))
-                .addTotalElements(page.getTotalElements())
-                .addTotalPages(page.getTotalPages())
-                .addPageSize(page.getSize());
-        return res;
+        return studentList
+                .stream()
+                .map(this.mapper::mapEntityToDto)
+                .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public PaginationResponse<StudentDto> findEachPageBySearchingSortByCreatedTimestamp(int pageNumber, boolean isAscending, Long regionId, String keyword) {
         Pageable sortedByCreatedTimestamp = null;

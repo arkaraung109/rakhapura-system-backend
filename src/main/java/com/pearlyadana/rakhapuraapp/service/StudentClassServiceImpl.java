@@ -31,6 +31,7 @@ public class StudentClassServiceImpl implements StudentClassService {
 
     private final StudentClassMapper mapper = Mappers.getMapper(StudentClassMapper.class);
 
+    @Transactional(readOnly = true)
     @Override
     public int findMaxRegSeqNo(Long examTitleId, Long academicYearId, Long gradeId) {
         return this.studentClassRepository.findMaxRegSeqNo(examTitleId, academicYearId, gradeId);
@@ -43,6 +44,7 @@ public class StudentClassServiceImpl implements StudentClassService {
         return optional.map(this.mapper::mapEntityToDto).orElse(null);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<StudentClassDto> findAllByStudentId(UUID id) {
         return this.studentClassRepository.findAllByStudentId(id)
@@ -60,14 +62,7 @@ public class StudentClassServiceImpl implements StudentClassService {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public List<StudentClassDto> findByOrderByCreatedTimestampAsc() {
-        return this.studentClassRepository.findByOrderByCreatedTimestampAsc()
-                .stream()
-                .map(this.mapper::mapEntityToDto)
-                .collect(Collectors.toList());
-    }
-
+    @Transactional(readOnly = true)
     @Override
     public List<StudentClassDto> findAllByExamTitleAndAcademicYearAndStudent(Long examTitleId, Long academicYearId, UUID studentId) {
         return this.studentClassRepository.findAllByExamTitleIdAndAcademicYearIdAndStudentId(examTitleId, academicYearId, studentId)
@@ -78,24 +73,48 @@ public class StudentClassServiceImpl implements StudentClassService {
 
     @Transactional(readOnly = true)
     @Override
-    public PaginationResponse<StudentClassDto> findEachPageSortByCreatedTimestamp(int pageNumber, boolean isAscending) {
-        Pageable sortedByCreatedTimestamp = null;
-        if(isAscending) {
-            sortedByCreatedTimestamp = PageRequest.of(PaginationUtil.pageNumber(pageNumber),
-                    paginationUtil.getPageSize(), Sort.by("createdTimestamp").ascending());
+    public List<StudentClassDto> findAllBySearching(Long examTitleId, Long academicYearId, Long gradeId, String studentClass, String keyword) {
+        List<StudentClass> studentClassList;
+        if(examTitleId == 0 && academicYearId == 0 && gradeId == 0 && studentClass.equals("All")) {
+            studentClassList = this.studentClassRepository.findAllByKeyword(keyword);
+        } else if(examTitleId != 0 && academicYearId == 0 && gradeId == 0 && studentClass.equals("All")) {
+            studentClassList = this.studentClassRepository.findAllByExamTitleAndKeyword(examTitleId, keyword);
+        } else if(examTitleId == 0 && academicYearId != 0 && gradeId == 0 && studentClass.equals("All")) {
+            studentClassList = this.studentClassRepository.findAllByAcademicYearAndKeyword(academicYearId, keyword);
+        } else if(examTitleId == 0 && academicYearId == 0 && gradeId != 0 && studentClass.equals("All")) {
+            studentClassList = this.studentClassRepository.findAllByGradeAndKeyword(gradeId, keyword);
+        } else if(examTitleId == 0 && academicYearId == 0 && gradeId == 0 && !studentClass.equals("All")) {
+            studentClassList = this.studentClassRepository.findAllByClassAndKeyword(studentClass, keyword);
+        } else if(examTitleId != 0 && academicYearId != 0 && gradeId == 0 && studentClass.equals("All")) {
+            studentClassList = this.studentClassRepository.findAllByExamTitleAndAcademicYearAndKeyword(examTitleId, academicYearId, keyword);
+        } else if(examTitleId != 0 && academicYearId == 0 && gradeId != 0 && studentClass.equals("All")) {
+            studentClassList = this.studentClassRepository.findAllByExamTitleAndGradeAndKeyword(examTitleId, gradeId, keyword);
+        } else if(examTitleId != 0 && academicYearId == 0 && gradeId == 0 && !studentClass.equals("All")) {
+            studentClassList = this.studentClassRepository.findAllByExamTitleAndClassAndKeyword(examTitleId, studentClass, keyword);
+        } else if(examTitleId == 0 && academicYearId != 0 && gradeId != 0 && studentClass.equals("All")) {
+            studentClassList = this.studentClassRepository.findAllByAcademicYearAndGradeAndKeyword(academicYearId, gradeId, keyword);
+        } else if(examTitleId == 0 && academicYearId != 0 && gradeId == 0 && !studentClass.equals("All")) {
+            studentClassList = this.studentClassRepository.findAllByAcademicYearAndClassAndKeyword(academicYearId, studentClass, keyword);
+        } else if(examTitleId == 0 && academicYearId == 0 && gradeId != 0 && !studentClass.equals("All")) {
+            studentClassList = this.studentClassRepository.findAllByGradeAndClassAndKeyword(gradeId, studentClass, keyword);
+        } else if(examTitleId != 0 && academicYearId != 0 && gradeId != 0 && studentClass.equals("All")) {
+            studentClassList = this.studentClassRepository.findAllByExamTitleAndAcademicYearAndGradeAndKeyword(examTitleId, academicYearId, gradeId, keyword);
+        } else if(examTitleId != 0 && academicYearId != 0 && gradeId == 0 && !studentClass.equals("All")) {
+            studentClassList = this.studentClassRepository.findAllByExamTitleAndAcademicYearAndClassAndKeyword(examTitleId, academicYearId, studentClass, keyword);
+        } else if(examTitleId != 0 && academicYearId == 0 && gradeId != 0 && !studentClass.equals("All")) {
+            studentClassList = this.studentClassRepository.findAllByExamTitleAndGradeAndClassAndKeyword(examTitleId, gradeId, studentClass, keyword);
+        } else if(examTitleId == 0 && academicYearId != 0 && gradeId != 0 && !studentClass.equals("All")) {
+            studentClassList = this.studentClassRepository.findAllByAcademicYearAndGradeAndClassAndKeyword(academicYearId, gradeId, studentClass, keyword);
         } else {
-            sortedByCreatedTimestamp = PageRequest.of(PaginationUtil.pageNumber(pageNumber),
-                    paginationUtil.getPageSize(), Sort.by("createdTimestamp").descending());
+            studentClassList = this.studentClassRepository.findAllByExamTitleAndAcademicYearAndGradeAndClassAndKeyword(examTitleId, academicYearId, gradeId, studentClass, keyword);
         }
-        Page<StudentClass> page = this.studentClassRepository.findAll(sortedByCreatedTimestamp);
-        PaginationResponse<StudentClassDto> res = new PaginationResponse<StudentClassDto>();
-        res.addList(page.stream().map(this.mapper::mapEntityToDto).collect(Collectors.toList()))
-                .addTotalElements(page.getTotalElements())
-                .addTotalPages(page.getTotalPages())
-                .addPageSize(page.getSize());
-        return res;
+        return studentClassList
+                .stream()
+                .map(this.mapper::mapEntityToDto)
+                .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public PaginationResponse<StudentClassDto> findEachPageBySearchingSortByCreatedTimestamp(int pageNumber, boolean isAscending, Long examTitleId, Long academicYearId, Long gradeId, String studentClass, String keyword) {
         Pageable sortedByCreatedTimestamp = null;

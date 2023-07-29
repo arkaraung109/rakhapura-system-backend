@@ -19,8 +19,6 @@ public interface ClassService {
 
     List<ClassDto> findAllFilteredByAcademicYearAndGrade(Long academicYearId, Long gradeId);
 
-    PaginationResponse<ClassDto> findEachPageSortById(int pageNumber, boolean isAscending);
-
     PaginationResponse<ClassDto> findEachPageBySearchingSortById(int pageNumber, boolean isAscending, Long academicYearId, Long gradeId, String keyword);
 
     ClassDto save(ClassDto classDto);

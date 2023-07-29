@@ -15,8 +15,6 @@ public interface SubjectService {
 
     List<SubjectDto> findAllByAuthorizedStatus(boolean authorizedStatus);
 
-    PaginationResponse<SubjectDto> findEachPageSortById(int pageNumber, boolean isAscending);
-
     PaginationResponse<SubjectDto> findEachPageBySearchingSortById(int pageNumber, boolean isAscending, String keyword);
 
     SubjectDto save(SubjectDto subjectDto);

@@ -28,11 +28,6 @@ public class SubjectTypeController {
         return new ResponseEntity<>(this.subjectTypeService.findById(id), HttpStatus.OK);
     }
 
-    @GetMapping("/distinct")
-    public ResponseEntity<List<String>> findDistinctAll() {
-        return new ResponseEntity<>(this.subjectTypeService.findDistinctAll(), HttpStatus.OK);
-    }
-
     @GetMapping("")
     public ResponseEntity<List<SubjectTypeDto>> findAll() {
         return new ResponseEntity<>(this.subjectTypeService.findAll(), HttpStatus.OK);
@@ -46,15 +41,6 @@ public class SubjectTypeController {
     @GetMapping("/filter")
     public ResponseEntity<List<SubjectTypeDto>> findAllFilteredByGrade(@RequestParam Long gradeId) {
         return new ResponseEntity<>(this.subjectTypeService.findAllFilteredByGrade(gradeId), HttpStatus.OK);
-    }
-
-    @GetMapping("/segment")
-    public PaginationResponse<SubjectTypeDto> findEachPageSortById(@RequestParam int page, @RequestParam(required = false) String order) {
-        boolean isAscending = true;
-        if(order!=null && order.equals("desc")) {
-            isAscending = false;
-        }
-        return this.subjectTypeService.findEachPageSortById(page, isAscending);
     }
 
     @GetMapping("/segment/search")

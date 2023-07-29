@@ -1,9 +1,7 @@
 package com.pearlyadana.rakhapuraapp.util;
 
 import com.pearlyadana.rakhapuraapp.model.request.StudentDto;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -32,24 +30,27 @@ public class StudentExcelGenerator {
         sheet = workbook.createSheet("Students");
         Row row = sheet.createRow(0);
         CellStyle style = workbook.createCellStyle();
+        style.setVerticalAlignment(VerticalAlignment.CENTER);
+        style.setAlignment(HorizontalAlignment.CENTER);
         XSSFFont font = workbook.createFont();
+        font.setFontHeight(11);
         font.setBold(true);
-        font.setFontHeight(13);
         style.setFont(font);
 
-        createCell(row, 0, "စာရင်းသွင်းသည့်နေ့", style);
-        createCell(row, 1, "အမည်", style);
-        createCell(row, 2, "မွေးသက္ကရာဇ်", style);
-        createCell(row, 3, "ကျား/မ", style);
-        createCell(row, 4, "လူမျိုး", style);
-        createCell(row, 5, "သာသနာရေးမှတ်ပုံတင်နံပါတ်", style);
-        createCell(row, 6, "အဖအမည်", style);
-        createCell(row, 7, "အမိအမည်", style);
-        createCell(row, 8, "နေရပ်လိပ်စာ", style);
-        createCell(row, 9, "ပြည်နယ်/တိုင်း", style);
-        createCell(row, 10, "ကျောင်းတိုက်", style);
-        createCell(row, 11, "ကျောင်းထိုင်ဆရာတော်", style);
-        createCell(row, 12, "ကျောင်းတိုက်တည်နေရာ(မြို့နယ်)", style);
+        createCell(row, 0, "စဉ်", style);
+        createCell(row, 1, "စာရင်းသွင်းသည့်နေ့", style);
+        createCell(row, 2, "အမည်", style);
+        createCell(row, 3, "မွေးသက္ကရာဇ်", style);
+        createCell(row, 4, "ကျား/မ", style);
+        createCell(row, 5, "လူမျိုး", style);
+        createCell(row, 6, "သာသနာရေးမှတ်ပုံတင်နံပါတ်", style);
+        createCell(row, 7, "အဖအမည်", style);
+        createCell(row, 8, "အမိအမည်", style);
+        createCell(row, 9, "နေရပ်လိပ်စာ", style);
+        createCell(row, 10, "ပြည်နယ်/တိုင်း", style);
+        createCell(row, 11, "ကျောင်းတိုက်", style);
+        createCell(row, 12, "ကျောင်းထိုင်ဆရာတော်", style);
+        createCell(row, 13, "ကျောင်းတိုက်တည်နေရာ(မြို့နယ်)", style);
     }
 
     private void createCell(Row row, int columnCount, Object value, CellStyle style) {
@@ -67,7 +68,10 @@ public class StudentExcelGenerator {
 
     private void writeDataLines() {
         int rowCount = 1;
+        int seqNo = 1;
         CellStyle style = workbook.createCellStyle();
+        style.setVerticalAlignment(VerticalAlignment.CENTER);
+        style.setAlignment(HorizontalAlignment.CENTER);
         XSSFFont font = workbook.createFont();
         font.setFontHeight(11);
         style.setFont(font);
@@ -76,6 +80,7 @@ public class StudentExcelGenerator {
             Row row = sheet.createRow(rowCount++);
             int columnCount = 0;
 
+            createCell(row, columnCount++, seqNo++, style);
             createCell(row, columnCount++, studentDto.getRegDate(), style);
             createCell(row, columnCount++, studentDto.getName(), style);
             createCell(row, columnCount++, studentDto.getDob(), style);

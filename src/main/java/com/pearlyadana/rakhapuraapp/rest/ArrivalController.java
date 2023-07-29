@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/api/v1/arrivals", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -32,15 +31,6 @@ public class ArrivalController {
 
     @Autowired
     private ArrivalService arrivalService;
-
-    @GetMapping("/segment")
-    public PaginationResponse<StudentClassDto> findEachPageSortByCreatedTimestamp(@RequestParam int page, @RequestParam(required = false) String order, @RequestParam boolean arrival) {
-        boolean isAscending = true;
-        if(order!=null && order.equals("desc")) {
-            isAscending = false;
-        }
-        return this.arrivalService.findEachPageSortByCreatedTimestamp(page, isAscending, arrival);
-    }
 
     @GetMapping("/segment/search")
     public PaginationResponse<StudentClassDto> findEachPageBySearchingSortByCreatedTimestamp(@RequestParam int page, @RequestParam(required = false) String order, @RequestParam boolean arrival, @RequestParam Long examTitleId, @RequestParam Long academicYearId, @RequestParam Long gradeId, @RequestParam String studentClass, @RequestParam String keyword) {
@@ -71,9 +61,9 @@ public class ArrivalController {
     }
 
     @GetMapping("/export-to-excel")
-    public void exportToExcelFile(HttpServletResponse response) throws IOException {
+    public void exportToExcelFile(@RequestParam Long examTitleId,@RequestParam Long academicYearId,@RequestParam Long gradeId, @RequestParam String studentClass, @RequestParam String keyword, HttpServletResponse response) throws IOException {
         response.setContentType("application/octet-stream");
-        List<StudentClassDto> studentClassDtoList = (List<StudentClassDto>) this.studentClassService.findByOrderByCreatedTimestampAsc().stream().filter(StudentClassDto::isArrival).collect(Collectors.toList());
+        List<StudentClassDto> studentClassDtoList = this.arrivalService.findAllBySearching(examTitleId, academicYearId, gradeId, studentClass, keyword);
         ArrivedStudentExcelGenerator generator = new ArrivedStudentExcelGenerator(studentClassDtoList);
         generator.export(response);
     }

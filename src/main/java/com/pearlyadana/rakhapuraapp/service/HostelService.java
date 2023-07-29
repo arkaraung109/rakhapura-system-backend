@@ -15,8 +15,6 @@ public interface HostelService {
 
     List<HostelDto> findAllByAuthorizedStatus(boolean authorizedStatus);
 
-    PaginationResponse<HostelDto> findEachPageSortById(int pageNumber, boolean isAscending);
-
     PaginationResponse<HostelDto> findEachPageBySearchingSortById(int pageNumber, boolean isAscending, String keyword);
 
     HostelDto save(HostelDto hostelDto);

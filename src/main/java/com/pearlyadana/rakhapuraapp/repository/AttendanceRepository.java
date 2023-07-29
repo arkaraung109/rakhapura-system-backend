@@ -20,17 +20,11 @@ public interface AttendanceRepository extends JpaRepository<Attendance, UUID> {
 
     List<Attendance> findByOrderByCreatedTimestampAsc();
 
-    List<Attendance> findByStudentClassId(UUID id);
+    @Query(value = "select a.* from attendance a, exam e where a.exam_id=e.id and a.student_class_id=?1 order by e.subject_type_id asc", nativeQuery = true)
+    List<Attendance> findAllByStudentClassIdOrderBySubjectTypeIdAsc(UUID id);
 
-    @Query(value = "select a.* from attendance a, exam e, student_class sc, student s where a.exam_id=e.id and a.student_class_id=sc.id and sc.student_id=s.id and a.present=false",
-            countQuery = "select a.* from attendance a, exam e, student_class sc, student s where a.exam_id=e.id and a.student_class_id=sc.id and sc.student_id=s.id and a.present=false",
-            nativeQuery = true)
-    Page<Attendance> findAllByNotPresent(Pageable sortedByCreatedTimestamp);
-
-    @Query(value = "select a.* from attendance a, exam e, student_class sc, student s where a.exam_id=e.id and a.student_class_id=sc.id and sc.student_id=s.id and a.present=true" + groupByQuery,
-            countQuery = "select a.* from attendance a, exam e, student_class sc, student s where a.exam_id=e.id and a.student_class_id=sc.id and sc.student_id=s.id and a.present=true" + groupByQuery,
-            nativeQuery = true)
-    Page<Attendance> findAllByPresent(Pageable sortedByCreatedTimestamp);
+    @Query(value = "select a.* from attendance a, exam e where a.exam_id=e.id and a.student_class_id=?1 and a.present=true order by e.subject_type_id asc", nativeQuery = true)
+    List<Attendance> findAllByStudentClassIdAndPresentOrderBySubjectTypeIdAsc(UUID id);
 
     //-----Not Present-----
 
@@ -155,5 +149,16 @@ public interface AttendanceRepository extends JpaRepository<Attendance, UUID> {
             countQuery = joinQueryPresent + " and (sc.exam_title_id=:examTitleId) and (c.academic_year_id=:academicYearId) and (c.grade_id=:gradeId) and (c.name=:studentClass)" + groupByQuery,
             nativeQuery = true)
     Page<Attendance> findAllByExamTitleAndAcademicYearAndGradeAndClassAndKeywordAndPresent(@Param("examTitleId") Long examTitleId, @Param("academicYearId") Long academicYearId, @Param("gradeId") Long gradeId, @Param("studentClass") String studentClass, @Param("keyword") String keyword, Pageable sortedByCreatedTimestamp);
+
+
+    //-----Student Exam-----
+    @Query(value = joinQueryPresent + " and (sc.exam_title_id=:examTitleId) and (c.academic_year_id=:academicYearId) and (c.grade_id=:gradeId)" + groupByQuery + " order by sc.reg_no",
+            nativeQuery = true)
+    List<Attendance> findAllByAcademicYearAndExamTitleAndGradeAndKeyword(@Param("academicYearId") Long academicYearId, @Param("examTitleId") Long examTitleId, @Param("gradeId") Long gradeId, @Param("keyword") String keyword);
+
+    @Query(value = joinQueryPresent + " and (sc.exam_title_id=:examTitleId) and (c.academic_year_id=:academicYearId) and (c.grade_id=:gradeId)" + groupByQuery + " order by sc.reg_no",
+            countQuery = joinQueryPresent + " and (sc.exam_title_id=:examTitleId) and (c.academic_year_id=:academicYearId) and (c.grade_id=:gradeId)" + groupByQuery + " order by sc.reg_no",
+            nativeQuery = true)
+    Page<Attendance> findAllByAcademicYearAndExamTitleAndGradeAndKeyword(@Param("academicYearId") Long academicYearId, @Param("examTitleId") Long examTitleId, @Param("gradeId") Long gradeId, @Param("keyword") String keyword, Pageable pageable);
 
 }

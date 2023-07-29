@@ -16,8 +16,6 @@ public interface AcademicYearService {
 
     List<AcademicYearDto> findAllByAuthorizedStatus(boolean authorizedStatus);
 
-    PaginationResponse<AcademicYearDto> findEachPageSortById(int pageNumber, boolean isAscending);
-
     PaginationResponse<AcademicYearDto> findEachPageBySearchingSortById(int pageNumber, boolean isAscending, String keyword);
 
     AcademicYearDto save(AcademicYearDto academicYearDto);

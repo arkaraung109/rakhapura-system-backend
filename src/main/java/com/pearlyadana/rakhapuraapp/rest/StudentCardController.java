@@ -39,15 +39,6 @@ public class StudentCardController {
     @Autowired
     private AttendanceService attendanceService;
 
-    @GetMapping("/segment")
-    public PaginationResponse<StudentClassDto> findEachPageSortByCreatedTimestamp(@RequestParam int page, @RequestParam(required = false) String order) {
-        boolean isAscending = true;
-        if(order!=null && order.equals("desc")) {
-            isAscending = false;
-        }
-        return this.studentCardService.findEachPageSortByCreatedTimestamp(page, isAscending);
-    }
-
     @GetMapping("/segment/search")
     public PaginationResponse<StudentClassDto> findEachPageBySearchingSortByCreatedTimestamp(@RequestParam int page, @RequestParam(required = false) String order, @RequestParam Long examTitleId, @RequestParam Long academicYearId, @RequestParam Long gradeId, @RequestParam String studentClass, @RequestParam String keyword) {
         boolean isAscending = true;
@@ -78,18 +69,18 @@ public class StudentCardController {
                 createdList.add(id);
 
                 for(ExamDto examDto : examDtoList) {
-                    AttendanceDto attendenceDto = new AttendanceDto();
-                    attendenceDto.setPresent(false);
-                    attendenceDto.setExam(examDto);
-                    attendenceDto.setStudentClass(studentClassDto);
-                    if(this.attendanceService.save(attendenceDto) == null) {
+                    AttendanceDto attendanceDto = new AttendanceDto();
+                    attendanceDto.setPresent(false);
+                    attendanceDto.setExam(examDto);
+                    attendanceDto.setStudentClass(studentClassDto);
+                    if(this.attendanceService.save(attendanceDto) == null) {
                         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
                     }
                 }
             }
         }
         if(!createdList.isEmpty() && errorList.isEmpty()) {
-            DataResponse res = new DataResponse(HttpStatus.CREATED.value(), createdList.size(), errorList.size());
+            DataResponse res = new DataResponse(HttpStatus.CREATED.value(), createdList.size(), 0);
             return new ResponseEntity<>(res, HttpStatus.CREATED);
         }
         if(!errorList.isEmpty()) {

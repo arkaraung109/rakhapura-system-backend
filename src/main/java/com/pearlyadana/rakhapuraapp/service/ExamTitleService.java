@@ -15,8 +15,6 @@ public interface ExamTitleService {
 
     List<ExamTitleDto> findAllByAuthorizedStatus(boolean authorizedStatus);
 
-    PaginationResponse<ExamTitleDto> findEachPageSortById(int pageNumber, boolean isAscending);
-
     PaginationResponse<ExamTitleDto> findEachPageBySearchingSortById(int pageNumber, boolean isAscending, String keyword);
 
     ExamTitleDto save(ExamTitleDto examTitleDto);
