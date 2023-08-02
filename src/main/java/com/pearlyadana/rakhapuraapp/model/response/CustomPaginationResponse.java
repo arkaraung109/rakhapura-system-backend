@@ -14,9 +14,9 @@ public class CustomPaginationResponse<T> {
 
     private int totalAnswered;
 
-    private int totalNormalPassed;
+    private int totalPassed;
 
-    private int totalModeratePassed;
+    private int totalModerated;
 
     private int totalFailed;
 
@@ -25,14 +25,14 @@ public class CustomPaginationResponse<T> {
     public CustomPaginationResponse() {
     }
 
-    public CustomPaginationResponse(List<T> elements, long totalElements, int totalPages, int pageSize, int totalAnswered, int totalNormalPassed, int totalModeratePassed, int totalFailed, TableHeader tableHeader) {
+    public CustomPaginationResponse(List<T> elements, long totalElements, int totalPages, int pageSize, int totalAnswered, int totalPassed, int totalModerated, int totalFailed, TableHeader tableHeader) {
         this.elements = elements;
         this.totalElements = totalElements;
         this.totalPages = totalPages;
         this.pageSize = pageSize;
         this.totalAnswered = totalAnswered;
-        this.totalNormalPassed = totalNormalPassed;
-        this.totalModeratePassed = totalModeratePassed;
+        this.totalPassed = totalPassed;
+        this.totalModerated = totalModerated;
         this.totalFailed = totalFailed;
         this.tableHeader = tableHeader;
     }
@@ -97,20 +97,20 @@ public class CustomPaginationResponse<T> {
         this.totalAnswered = totalAnswered;
     }
 
-    public int getTotalNormalPassed() {
-        return totalNormalPassed;
+    public int getTotalPassed() {
+        return totalPassed;
     }
 
-    public void setTotalNormalPassed(int totalNormalPassed) {
-        this.totalNormalPassed = totalNormalPassed;
+    public void setTotalPassed(int totalPassed) {
+        this.totalPassed = totalPassed;
     }
 
-    public int getTotalModeratePassed() {
-        return totalModeratePassed;
+    public int getTotalModerated() {
+        return totalModerated;
     }
 
-    public void setTotalModeratePassed(int totalModeratePassed) {
-        this.totalModeratePassed = totalModeratePassed;
+    public void setTotalModerated(int totalModerated) {
+        this.totalModerated = totalModerated;
     }
 
     public int getTotalFailed() {

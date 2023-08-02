@@ -16,19 +16,19 @@ import java.util.List;
 
 @Component
 @ApplicationScope
-public class StudentExamExcelGenerator {
+public class StudentExamModerateExcelGenerator {
 
     private XSSFWorkbook workbook;
     private XSSFSheet sheet;
     private CustomPaginationResponse<ResultResponse> customPaginationResponse;
 
-    public StudentExamExcelGenerator(CustomPaginationResponse<ResultResponse> customPaginationResponse) {
+    public StudentExamModerateExcelGenerator(CustomPaginationResponse<ResultResponse> customPaginationResponse) {
         this.customPaginationResponse = customPaginationResponse;
         workbook = new XSSFWorkbook();
     }
 
     private void writeHeaderLine() {
-        sheet = workbook.createSheet("Student Exam Marks");
+        sheet = workbook.createSheet("Student Exam Moderate Marks");
         Row row0 = sheet.createRow(0);
         Row row1 = sheet.createRow(1);
         Row row2 = sheet.createRow(2);

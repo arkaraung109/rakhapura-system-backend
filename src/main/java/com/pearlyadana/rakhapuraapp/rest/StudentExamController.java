@@ -180,9 +180,8 @@ public class StudentExamController {
                         subjectResult.setMark(String.valueOf(studentExamDto.getMark()));
                         if(studentExamModerateDto != null) {
                             hasModeration = true;
-                            subjectResult.setStatus("moderate");
-                        }
-                        else {
+                            subjectResult.setStatus("moderation");
+                        } else {
                             if(studentExamDto.isPass()) {
                                 subjectResult.setStatus("pass");
                             } else {
@@ -212,17 +211,17 @@ public class StudentExamController {
             } else {
                 overAllMarkObject.setStatus("pass");
                 element.setStatus("pass");
-                if(hasModeration) {
-                    element.setStatus("moderate");
-                }
+            }
+            if(hasModeration) {
+                element.setStatus("moderation");
             }
             element.setOverAllMark(overAllMarkObject);
         }
 
         List<ResultResponse> resultResponseList = this.attendanceService.findBySearching(academicYearId, examTitleId, gradeId, keyword);
         int totalAnswered = resultResponseList.size();
-        int totalNormalPassed = 0;
-        int totalModeratePassed = 0;
+        int totalPassed = 0;
+        int totalModerated = 0;
         int totalFailed = 0;
         for(ResultResponse element : resultResponseList) {
             List<AttendanceDto> attendanceDtoList = this.attendanceService.findByStudentClassId(element.getAttendance().getStudentClass().getId());
@@ -246,17 +245,16 @@ public class StudentExamController {
             if(overAllMark < overAllPassMark) {
                 totalFailed++;
             } else {
-                if(hasModeration) {
-                    totalModeratePassed++;
-                } else {
-                    totalNormalPassed++;
-                }
+                totalPassed++;
+            }
+            if(hasModeration) {
+                totalModerated++;
             }
         }
         TableHeader tableHeader = this.setTableHeader(academicYearId, examTitleId, gradeId, keyword);
         customPaginationResponse.setTotalAnswered(totalAnswered);
-        customPaginationResponse.setTotalNormalPassed(totalNormalPassed);
-        customPaginationResponse.setTotalModeratePassed(totalModeratePassed);
+        customPaginationResponse.setTotalPassed(totalPassed);
+        customPaginationResponse.setTotalModerated(totalModerated);
         customPaginationResponse.setTotalFailed(totalFailed);
         customPaginationResponse.setTableHeader(tableHeader);
         return customPaginationResponse;
@@ -272,8 +270,8 @@ public class StudentExamController {
             overAllPassMark += examDto.getPassMark();
         }
         int totalAnswered = resultResponseList.size();
-        int totalNormalPassed = 0;
-        int totalModeratePassed = 0;
+        int totalPassed = 0;
+        int totalModerated = 0;
         int totalFailed = 0;
         for(ResultResponse element : resultResponseList) {
             List<AttendanceDto> attendanceDtoList = this.attendanceService.findByStudentClassId(element.getAttendance().getStudentClass().getId());
@@ -304,7 +302,7 @@ public class StudentExamController {
                         subjectResult.setMark(String.valueOf(studentExamDto.getMark()));
                         if(studentExamModerateDto != null) {
                             hasModeration = true;
-                            subjectResult.setStatus("moderate");
+                            subjectResult.setStatus("moderation");
                         }
                         else {
                             if(studentExamDto.isPass()) {
@@ -333,29 +331,23 @@ public class StudentExamController {
             if(overAllMark < overAllPassMark) {
                 overAllMarkObject.setStatus("fail");
                 element.setStatus("fail");
+                totalFailed++;
             } else {
                 overAllMarkObject.setStatus("pass");
                 element.setStatus("pass");
-                if(hasModeration) {
-                    element.setStatus("moderate");
-                }
+                totalPassed++;
+            }
+            if(hasModeration) {
+                element.setStatus("moderate");
+                totalModerated++;
             }
             element.setOverAllMark(overAllMarkObject);
-            if(overAllMark < overAllPassMark) {
-                totalFailed++;
-            } else {
-                if(hasModeration) {
-                    totalModeratePassed++;
-                } else {
-                    totalNormalPassed++;
-                }
-            }
         }
         TableHeader tableHeader = this.setTableHeader(academicYearId, examTitleId, gradeId, keyword);
         customPaginationResponse.setElements(resultResponseList);
         customPaginationResponse.setTotalAnswered(totalAnswered);
-        customPaginationResponse.setTotalNormalPassed(totalNormalPassed);
-        customPaginationResponse.setTotalModeratePassed(totalModeratePassed);
+        customPaginationResponse.setTotalPassed(totalPassed);
+        customPaginationResponse.setTotalModerated(totalModerated);
         customPaginationResponse.setTotalFailed(totalFailed);
         customPaginationResponse.setTableHeader(tableHeader);
 

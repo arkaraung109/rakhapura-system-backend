@@ -5,6 +5,6 @@ import com.pearlyadana.rakhapuraapp.model.response.PaginationResponse;
 
 public interface StudentCardService {
 
-    PaginationResponse<StudentClassDto> findEachPageBySearchingSortByCreatedTimestamp(int pageNumber, boolean isAscending, Long examTitleId, Long academicYearId, Long gradeId, String studentClass, String keyword);
+    PaginationResponse<StudentClassDto> findEachPageBySearchingSortByCreatedTimestamp(int pageNumber, boolean isAscending, Long examTitleId, Long academicYearId, Long gradeId);
 
 }

@@ -70,15 +70,6 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<AttendanceDto> findByOrderByCreatedTimestampAsc() {
-        return this.attendanceRepository.findByOrderByCreatedTimestampAsc()
-                .stream()
-                .map(this.mapper::mapEntityToDto)
-                .collect(Collectors.toList());
-    }
-
-    @Transactional(readOnly = true)
-    @Override
     public PaginationResponse<AttendanceDto> findEachNotPresentPageBySearchingSortByCreatedTimestamp(int pageNumber, boolean isAscending, Long academicYearId, Long examTitleId, Long subjectTypeId, String keyword) {
         Pageable sortedByCreatedTimestamp = null;
         if(isAscending) {
@@ -114,60 +105,6 @@ public class AttendanceServiceImpl implements AttendanceService {
                 .addPageSize(page.getSize());
         return res;
     }
-
-//    @Transactional(readOnly = true)
-//    @Override
-//    public PaginationResponse<AttendanceDto> findEachPresentPageBySearchingSortByCreatedTimestamp(int pageNumber, boolean isAscending, Long academicYearId, Long examTitleId, Long gradeId, String studentClass, String keyword) {
-//        Pageable sortedByCreatedTimestamp = null;
-//        if(isAscending) {
-//            sortedByCreatedTimestamp = PageRequest.of(PaginationUtil.pageNumber(pageNumber),
-//                    paginationUtil.getPageSize(), Sort.by("createdTimestamp").ascending());
-//        } else {
-//            sortedByCreatedTimestamp = PageRequest.of(PaginationUtil.pageNumber(pageNumber),
-//                    paginationUtil.getPageSize(), Sort.by("createdTimestamp").descending());
-//        }
-//        Page<Attendance> page = null;
-//        if(examTitleId == 0 && academicYearId == 0 && gradeId == 0 && studentClass.equals("All")) {
-//            page = this.attendanceRepository.findAllByKeywordAndPresent(keyword, sortedByCreatedTimestamp);
-//        } else if(examTitleId != 0 && academicYearId == 0 && gradeId == 0 && studentClass.equals("All")) {
-//            page = this.attendanceRepository.findAllByExamTitleAndKeywordAndPresent(examTitleId, keyword, sortedByCreatedTimestamp);
-//        } else if(examTitleId == 0 && academicYearId != 0 && gradeId == 0 && studentClass.equals("All")) {
-//            page = this.attendanceRepository.findAllByAcademicYearAndKeywordAndPresent(academicYearId, keyword, sortedByCreatedTimestamp);
-//        } else if(examTitleId == 0 && academicYearId == 0 && gradeId != 0 && studentClass.equals("All")) {
-//            page = this.attendanceRepository.findAllByGradeAndKeywordAndPresent(gradeId, keyword, sortedByCreatedTimestamp);
-//        } else if(examTitleId == 0 && academicYearId == 0 && gradeId == 0 && !studentClass.equals("All")) {
-//            page = this.attendanceRepository.findAllByClassAndKeywordAndPresent(studentClass, keyword, sortedByCreatedTimestamp);
-//        } else if(examTitleId != 0 && academicYearId != 0 && gradeId == 0 && studentClass.equals("All")) {
-//            page = this.attendanceRepository.findAllByExamTitleAndAcademicYearAndKeywordAndPresent(examTitleId, academicYearId, keyword, sortedByCreatedTimestamp);
-//        } else if(examTitleId != 0 && academicYearId == 0 && gradeId != 0 && studentClass.equals("All")) {
-//            page = this.attendanceRepository.findAllByExamTitleAndGradeAndKeywordAndPresent(examTitleId, gradeId, keyword, sortedByCreatedTimestamp);
-//        } else if(examTitleId != 0 && academicYearId == 0 && gradeId == 0 && !studentClass.equals("All")) {
-//            page = this.attendanceRepository.findAllByExamTitleAndClassAndKeywordAndPresent(examTitleId, studentClass, keyword, sortedByCreatedTimestamp);
-//        } else if(examTitleId == 0 && academicYearId != 0 && gradeId != 0 && studentClass.equals("All")) {
-//            page = this.attendanceRepository.findAllByAcademicYearAndGradeAndKeywordAndPresent(academicYearId, gradeId, keyword, sortedByCreatedTimestamp);
-//        } else if(examTitleId == 0 && academicYearId != 0 && gradeId == 0 && !studentClass.equals("All")) {
-//            page = this.attendanceRepository.findAllByAcademicYearAndClassAndKeywordAndPresent(academicYearId, studentClass, keyword, sortedByCreatedTimestamp);
-//        } else if(examTitleId == 0 && academicYearId == 0 && gradeId != 0 && !studentClass.equals("All")) {
-//            page = this.attendanceRepository.findAllByGradeAndClassAndKeywordAndPresent(gradeId, studentClass, keyword, sortedByCreatedTimestamp);
-//        } else if(examTitleId != 0 && academicYearId != 0 && gradeId != 0 && studentClass.equals("All")) {
-//            page = this.attendanceRepository.findAllByExamTitleAndAcademicYearAndGradeAndKeywordAndPresent(examTitleId, academicYearId, gradeId, keyword, sortedByCreatedTimestamp);
-//        } else if(examTitleId != 0 && academicYearId != 0 && gradeId == 0 && !studentClass.equals("All")) {
-//            page = this.attendanceRepository.findAllByExamTitleAndAcademicYearAndClassAndKeywordAndPresent(examTitleId, academicYearId, studentClass, keyword, sortedByCreatedTimestamp);
-//        } else if(examTitleId != 0 && academicYearId == 0 && gradeId != 0 && !studentClass.equals("All")) {
-//            page = this.attendanceRepository.findAllByExamTitleAndGradeAndClassAndKeywordAndPresent(examTitleId, gradeId, studentClass, keyword, sortedByCreatedTimestamp);
-//        } else if(examTitleId == 0 && academicYearId != 0 && gradeId != 0 && !studentClass.equals("All")) {
-//            page = this.attendanceRepository.findAllByAcademicYearAndGradeAndClassAndKeywordAndPresent(academicYearId, gradeId, studentClass, keyword, sortedByCreatedTimestamp);
-//        } else {
-//            page = this.attendanceRepository.findAllByExamTitleAndAcademicYearAndGradeAndClassAndKeywordAndPresent(examTitleId, academicYearId, gradeId, studentClass, keyword, sortedByCreatedTimestamp);
-//        }
-//
-//        PaginationResponse<AttendanceDto> res = new PaginationResponse<AttendanceDto>();
-//        res.addList(page.stream().map(this.mapper::mapEntityToDto).collect(Collectors.toList()))
-//                .addTotalElements(page.getTotalElements())
-//                .addTotalPages(page.getTotalPages())
-//                .addPageSize(page.getSize());
-//        return res;
-//    }
 
     @Transactional(readOnly = true)
     @Override
@@ -205,6 +142,44 @@ public class AttendanceServiceImpl implements AttendanceService {
         }
         return resultResponseList;
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public CustomPaginationResponse<ResultResponse> findEachModerationPageBySearching(int pageNumber, Long academicYearId, Long examTitleId, Long gradeId, String keyword) {
+        Pageable pageable = PageRequest.of(PaginationUtil.pageNumber(pageNumber), paginationUtil.getPageSize());
+        Page<Attendance> page = this.attendanceRepository.findAllModerationByAcademicYearAndExamTitleAndGradeAndKeyword(academicYearId, examTitleId, gradeId, keyword, pageable);
+
+        CustomPaginationResponse<ResultResponse> res = new CustomPaginationResponse<ResultResponse>();
+        List<ResultResponse> resultResponseList = new ArrayList<>();
+
+        List<AttendanceDto> attendanceDtoList = page.stream().map(this.mapper::mapEntityToDto).collect(Collectors.toList());
+        for(AttendanceDto attendanceDto : attendanceDtoList) {
+            ResultResponse rs = new ResultResponse();
+            rs.setAttendance(attendanceDto);
+            resultResponseList.add(rs);
+        }
+
+        res.addList(resultResponseList)
+                .addTotalElements(page.getTotalElements())
+                .addTotalPages(page.getTotalPages())
+                .addPageSize(page.getSize());
+        return res;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<ResultResponse> findModerationBySearching(Long academicYearId, Long examTitleId, Long gradeId, String keyword) {
+        List<Attendance> attendanceList = this.attendanceRepository.findAllModerationByAcademicYearAndExamTitleAndGradeAndKeyword(academicYearId, examTitleId, gradeId, keyword);
+        List<ResultResponse> resultResponseList = new ArrayList<>();
+        List<AttendanceDto> attendanceDtoList = attendanceList.stream().map(this.mapper::mapEntityToDto).collect(Collectors.toList());
+        for(AttendanceDto attendanceDto : attendanceDtoList) {
+            ResultResponse rs = new ResultResponse();
+            rs.setAttendance(attendanceDto);
+            resultResponseList.add(rs);
+        }
+        return resultResponseList;
+    }
+
 
     @Transactional
     @Override

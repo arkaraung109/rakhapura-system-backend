@@ -18,13 +18,15 @@ public interface AttendanceService {
 
     List<AttendanceDto> findAll();
 
-    List<AttendanceDto> findByOrderByCreatedTimestampAsc();
-
     PaginationResponse<AttendanceDto> findEachNotPresentPageBySearchingSortByCreatedTimestamp(int pageNumber, boolean isAscending, Long academicYearId, Long examTitleId, Long subjectTypeId, String keyword);
 
     CustomPaginationResponse<ResultResponse> findEachPageBySearching(int pageNumber, Long academicYearId, Long examTitleId, Long gradeId, String keyword);
 
     List<ResultResponse> findBySearching(Long academicYearId, Long examTitleId, Long gradeId, String keyword);
+
+    CustomPaginationResponse<ResultResponse> findEachModerationPageBySearching(int pageNumber, Long academicYearId, Long examTitleId, Long gradeId, String keyword);
+
+    List<ResultResponse> findModerationBySearching(Long academicYearId, Long examTitleId, Long gradeId, String keyword);
 
     AttendanceDto save(AttendanceDto attendanceDto);
 

@@ -16,7 +16,7 @@ public interface StudentClassRepository extends JpaRepository<StudentClass, UUID
 
     String joinQueryStudentClass = "select sc.* from student_class sc, class c, student s where sc.class_id=c.id and sc.student_id=s.id and ((sc.reg_no like :keyword%) or (s.name like :keyword%) or (s.father_name like :keyword%) or (s.monastery_headmaster like :keyword%) or (s.monastery_name like :keyword%))";
     String joinQueryArrival = "select sc.* from student_class sc, class c, student s where sc.class_id=c.id and sc.student_id=s.id and sc.arrival=:arrival and ((sc.reg_no like :keyword%) or (s.name like :keyword%) or (s.father_name like :keyword%))";
-    String joinQueryStudentCard = "select sc.* from student_class sc, class c, student s where sc.class_id=c.id and sc.student_id=s.id and sc.reg_no is null and sc.reg_seq_no=0 and sc.arrival=true and sc.hostel_id is not null and ((s.name like :keyword%) or (s.father_name like :keyword%))";
+    String joinQueryStudentCard = "select sc.* from student_class sc, class c, student s where sc.class_id=c.id and sc.student_id=s.id and sc.reg_no is null and sc.reg_seq_no=0 and sc.arrival=true and sc.hostel_id is not null";
     String joinQueryHostelNotPresent = "select sc.* from student_class sc, class c, student s where sc.class_id=c.id and sc.student_id=s.id and sc.reg_no is null and sc.reg_seq_no=0 and sc.arrival=true and sc.hostel_id is null and ((s.name like :keyword%) or (s.father_name like :keyword%))";
     String joinQueryHostelPresent = "select sc.* from student_class sc, class c, student s where sc.class_id=c.id and sc.student_id=s.id and sc.hostel_id is not null and ((sc.reg_no like :keyword%) or (s.name like :keyword%) or (s.father_name like :keyword%))";
     String joinQueryOrderBy = " order by c.academic_year_id, sc.exam_title_id, c.grade_id, sc.reg_no";
@@ -330,82 +330,42 @@ public interface StudentClassRepository extends JpaRepository<StudentClass, UUID
     @Query(value = joinQueryStudentCard,
             countQuery = joinQueryStudentCard,
             nativeQuery = true)
-    Page<StudentClass> findAllByKeywordAndRegNoAndRegSeqNo(@Param("keyword") String keyword, Pageable sortedByCreatedTimestamp);
+    Page<StudentClass> findAllForStudentCard(Pageable sortedByCreatedTimestamp);
 
     @Query(value = joinQueryStudentCard + " and (sc.exam_title_id=:examTitleId)",
             countQuery = joinQueryStudentCard + " and (sc.exam_title_id=:examTitleId)",
             nativeQuery = true)
-    Page<StudentClass> findAllByExamTitleAndKeywordAndRegNoAndRegSeqNo(@Param("examTitleId") Long examTitleId, @Param("keyword") String keyword, Pageable sortedByCreatedTimestamp);
+    Page<StudentClass> findAllByExamTitleForStudentCard(@Param("examTitleId") Long examTitleId, Pageable sortedByCreatedTimestamp);
 
     @Query(value = joinQueryStudentCard + " and (c.academic_year_id=:academicYearId)",
             countQuery = joinQueryStudentCard + " and (c.academic_year_id=:academicYearId)",
             nativeQuery = true)
-    Page<StudentClass> findAllByAcademicYearAndKeywordAndRegNoAndRegSeqNo(@Param("academicYearId") Long academicYearId, @Param("keyword") String keyword, Pageable sortedByCreatedTimestamp);
+    Page<StudentClass> findAllByAcademicYearForStudentCard(@Param("academicYearId") Long academicYearId, Pageable sortedByCreatedTimestamp);
 
     @Query(value = joinQueryStudentCard + " and (c.grade_id=:gradeId)",
             countQuery = joinQueryStudentCard + " and (c.grade_id=:gradeId)",
             nativeQuery = true)
-    Page<StudentClass> findAllByGradeAndKeywordAndRegNoAndRegSeqNo(@Param("gradeId") Long gradeId, @Param("keyword") String keyword, Pageable sortedByCreatedTimestamp);
-
-    @Query(value = joinQueryStudentCard + " and (c.name=:studentClass)",
-            countQuery = joinQueryStudentCard + " and (c.name=:studentClass)",
-            nativeQuery = true)
-    Page<StudentClass> findAllByClassAndKeywordAndRegNoAndRegSeqNo(@Param("studentClass") String studentClass, @Param("keyword") String keyword, Pageable sortedByCreatedTimestamp);
+    Page<StudentClass> findAllByGradeForStudentCard(@Param("gradeId") Long gradeId, Pageable sortedByCreatedTimestamp);
 
     @Query(value = joinQueryStudentCard + " and (sc.exam_title_id=:examTitleId) and (c.academic_year_id=:academicYearId)",
             countQuery = joinQueryStudentCard + " and (sc.exam_title_id=:examTitleId) and (c.academic_year_id=:academicYearId)",
             nativeQuery = true)
-    Page<StudentClass> findAllByExamTitleAndAcademicYearAndKeywordAndRegNoAndRegSeqNo(@Param("examTitleId") Long examTitleId, @Param("academicYearId") Long academicYearId, @Param("keyword") String keyword, Pageable sortedByCreatedTimestamp);
+    Page<StudentClass> findAllByExamTitleAndAcademicYearForStudentCard(@Param("examTitleId") Long examTitleId, @Param("academicYearId") Long academicYearId, Pageable sortedByCreatedTimestamp);
 
     @Query(value = joinQueryStudentCard + " and (sc.exam_title_id=:examTitleId) and (c.grade_id=:gradeId)",
             countQuery = joinQueryStudentCard + " and (sc.exam_title_id=:examTitleId) and (c.grade_id=:gradeId)",
             nativeQuery = true)
-    Page<StudentClass> findAllByExamTitleAndGradeAndKeywordAndRegNoAndRegSeqNo(@Param("examTitleId") Long examTitleId, @Param("gradeId") Long gradeId, @Param("keyword") String keyword, Pageable sortedByCreatedTimestamp);
-
-    @Query(value = joinQueryStudentCard + " and (sc.exam_title_id=:examTitleId) and (c.name=:studentClass)",
-            countQuery = joinQueryStudentCard + " and (sc.exam_title_id=:examTitleId) and (c.name=:studentClass)",
-            nativeQuery = true)
-    Page<StudentClass> findAllByExamTitleAndClassAndKeywordAndRegNoAndRegSeqNo(@Param("examTitleId") Long examTitleId, @Param("studentClass") String studentClass, @Param("keyword") String keyword, Pageable sortedByCreatedTimestamp);
+    Page<StudentClass> findAllByExamTitleAndGradeForStudentCard(@Param("examTitleId") Long examTitleId, @Param("gradeId") Long gradeId, Pageable sortedByCreatedTimestamp);
 
     @Query(value = joinQueryStudentCard + " and (c.academic_year_id=:academicYearId) and (c.grade_id=:gradeId)",
             countQuery = joinQueryStudentCard + " and (c.academic_year_id=:academicYearId) and (c.grade_id=:gradeId)",
             nativeQuery = true)
-    Page<StudentClass> findAllByAcademicYearAndGradeAndKeywordAndRegNoAndRegSeqNo(@Param("academicYearId") Long academicYearId, @Param("gradeId") Long gradeId, @Param("keyword") String keyword, Pageable sortedByCreatedTimestamp);
-
-    @Query(value = joinQueryStudentCard + " and (c.academic_year_id=:academicYearId) and (c.name=:studentClass)",
-            countQuery = joinQueryStudentCard + " and (c.academic_year_id=:academicYearId) and (c.name=:studentClass)",
-            nativeQuery = true)
-    Page<StudentClass> findAllByAcademicYearAndClassAndKeywordAndRegNoAndRegSeqNo(@Param("academicYearId") Long academicYearId, @Param("studentClass") String studentClass, @Param("keyword") String keyword, Pageable sortedByCreatedTimestamp);
-
-    @Query(value = joinQueryStudentCard + " and (c.grade_id=:gradeId) and (c.name=:studentClass)",
-            countQuery = joinQueryStudentCard + " and (c.grade_id=:gradeId) and (c.name=:studentClass)",
-            nativeQuery = true)
-    Page<StudentClass> findAllByGradeAndClassAndKeywordAndRegNoAndRegSeqNo(@Param("gradeId") Long gradeId, @Param("studentClass") String studentClass, @Param("keyword") String keyword, Pageable sortedByCreatedTimestamp);
+    Page<StudentClass> findAllByAcademicYearAndGradeForStudentCard(@Param("academicYearId") Long academicYearId, @Param("gradeId") Long gradeId, Pageable sortedByCreatedTimestamp);
 
     @Query(value = joinQueryStudentCard + " and (sc.exam_title_id=:examTitleId) and (c.academic_year_id=:academicYearId) and (c.grade_id=:gradeId)",
             countQuery = joinQueryStudentCard + " and (sc.exam_title_id=:examTitleId) and (c.academic_year_id=:academicYearId) and (c.grade_id=:gradeId)",
             nativeQuery = true)
-    Page<StudentClass> findAllByExamTitleAndAcademicYearAndGradeAndKeywordAndRegNoAndRegSeqNo(@Param("examTitleId") Long examTitleId, @Param("academicYearId") Long academicYearId, @Param("gradeId") Long gradeId, @Param("keyword") String keyword, Pageable sortedByCreatedTimestamp);
-
-    @Query(value = joinQueryStudentCard + " and (sc.exam_title_id=:examTitleId) and (c.academic_year_id=:academicYearId) and (c.name=:studentClass)",
-            countQuery = joinQueryStudentCard + " and (sc.exam_title_id=:examTitleId) and (c.academic_year_id=:academicYearId) and (c.name=:studentClass)",
-            nativeQuery = true)
-    Page<StudentClass> findAllByExamTitleAndAcademicYearAndClassAndKeywordAndRegNoAndRegSeqNo(@Param("examTitleId") Long examTitleId, @Param("academicYearId") Long academicYearId, @Param("studentClass") String studentClass, @Param("keyword") String keyword, Pageable sortedByCreatedTimestamp);
-
-    @Query(value = joinQueryStudentCard + " and (sc.exam_title_id=:examTitleId) and (c.grade_id=:gradeId) and (c.name=:studentClass)",
-            countQuery = joinQueryStudentCard + " and (sc.exam_title_id=:examTitleId) and (c.grade_id=:gradeId) and (c.name=:studentClass)",
-            nativeQuery = true)
-    Page<StudentClass> findAllByExamTitleAndGradeAndClassAndKeywordAndRegNoAndRegSeqNo(@Param("examTitleId") Long examTitleId, @Param("gradeId") Long gradeId, @Param("studentClass") String studentClass, @Param("keyword") String keyword, Pageable sortedByCreatedTimestamp);
-
-    @Query(value = joinQueryStudentCard + " and (c.academic_year_id=:academicYearId) and (c.grade_id=:gradeId) and (c.name=:studentClass)",
-            countQuery = joinQueryStudentCard + " and (c.academic_year_id=:academicYearId) and (c.grade_id=:gradeId) and (c.name=:studentClass)",
-            nativeQuery = true)
-    Page<StudentClass> findAllByAcademicYearAndGradeAndClassAndKeywordAndRegNoAndRegSeqNo(@Param("academicYearId") Long academicYearId, @Param("gradeId") Long gradeId, @Param("studentClass") String studentClass, @Param("keyword") String keyword, Pageable sortedByCreatedTimestamp);
-
-    @Query(value = joinQueryStudentCard + " and (sc.exam_title_id=:examTitleId) and (c.academic_year_id=:academicYearId) and (c.grade_id=:gradeId) and (c.name=:studentClass)",
-            countQuery = joinQueryStudentCard + " and (sc.exam_title_id=:examTitleId) and (c.academic_year_id=:academicYearId) and (c.grade_id=:gradeId) and (c.name=:studentClass)",
-            nativeQuery = true)
-    Page<StudentClass> findAllByExamTitleAndAcademicYearAndGradeAndClassAndKeywordAndRegNoAndRegSeqNo(@Param("examTitleId") Long examTitleId, @Param("academicYearId") Long academicYearId, @Param("gradeId") Long gradeId, @Param("studentClass") String studentClass, @Param("keyword") String keyword, Pageable sortedByCreatedTimestamp);
+    Page<StudentClass> findAllByExamTitleAndAcademicYearAndGradeForStudentCard(@Param("examTitleId") Long examTitleId, @Param("academicYearId") Long academicYearId, @Param("gradeId") Long gradeId, Pageable sortedByCreatedTimestamp);
 
     //-----Hostel Not Present Page-----
 
