@@ -49,12 +49,12 @@ public class ClassController {
     }
 
     @GetMapping("/segment/search")
-    public PaginationResponse<ClassDto> findEachPageBySearchingSortById(@RequestParam int page, @RequestParam(required = false) String order, @RequestParam Long academicYearId, @RequestParam Long gradeId, @RequestParam String keyword) {
+    public ResponseEntity<PaginationResponse<ClassDto>> findEachPageBySearchingSortById(@RequestParam int page, @RequestParam(required = false) String order, @RequestParam Long academicYearId, @RequestParam Long gradeId, @RequestParam String keyword) {
         boolean isAscending = true;
         if(order!=null && order.equals("desc")) {
             isAscending = false;
         }
-        return this.classService.findEachPageBySearchingSortById(page, isAscending, academicYearId, gradeId, keyword);
+        return new ResponseEntity<>(this.classService.findEachPageBySearchingSortById(page, isAscending, academicYearId, gradeId, keyword), HttpStatus.OK);
     }
 
     @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -76,16 +76,16 @@ public class ClassController {
     public ResponseEntity<CustomHttpResponse> update(@RequestBody ClassDto body, @PathVariable("id") Long id) {
         ClassDto dto = this.classService.findById(id);
         if(dto == null) {
-            CustomHttpResponse res = new CustomHttpResponse(HttpStatus.NO_CONTENT.value(),"object does not exist.");
-            return new ResponseEntity<>(res, HttpStatus.NO_CONTENT);
-        }
-        if(!this.classService.findAllByNameAndAcademicYearAndGrade(body.getName(), body.getAcademicYear().getId(), body.getGrade().getId()).isEmpty() && (!body.getName().equals(dto.getName()) || !body.getAcademicYear().getId().equals(dto.getAcademicYear().getId()) || !body.getGrade().getId().equals(dto.getGrade().getId()))) {
-            CustomHttpResponse res = new CustomHttpResponse(HttpStatus.CONFLICT.value(),"object has already been created.");
-            return new ResponseEntity<>(res, HttpStatus.CONFLICT);
+            CustomHttpResponse res = new CustomHttpResponse(HttpStatus.NOT_FOUND.value(),"object does not exist.");
+            return new ResponseEntity<>(res, HttpStatus.NOT_FOUND);
         }
         if(dto.isAuthorizedStatus()) {
             CustomHttpResponse res = new CustomHttpResponse(HttpStatus.NOT_ACCEPTABLE.value(),"authorized object cannot be updated.");
             return new ResponseEntity<>(res, HttpStatus.NOT_ACCEPTABLE);
+        }
+        if(!this.classService.findAllByNameAndAcademicYearAndGrade(body.getName(), body.getAcademicYear().getId(), body.getGrade().getId()).isEmpty() && (!body.getName().equals(dto.getName()) || !body.getAcademicYear().getId().equals(dto.getAcademicYear().getId()) || !body.getGrade().getId().equals(dto.getGrade().getId()))) {
+            CustomHttpResponse res = new CustomHttpResponse(HttpStatus.CONFLICT.value(),"object has already been created.");
+            return new ResponseEntity<>(res, HttpStatus.CONFLICT);
         }
         if(this.classService.update(body, id) != null) {
             CustomHttpResponse res = new CustomHttpResponse(HttpStatus.OK.value(),"object is updated.");
@@ -99,8 +99,8 @@ public class ClassController {
     public ResponseEntity<CustomHttpResponse> delete(@PathVariable("id") Long id) {
         ClassDto dto = this.classService.findById(id);
         if(dto == null) {
-            CustomHttpResponse res = new CustomHttpResponse(HttpStatus.NO_CONTENT.value(),"object does not exist.");
-            return new ResponseEntity<>(res, HttpStatus.NO_CONTENT);
+            CustomHttpResponse res = new CustomHttpResponse(HttpStatus.NOT_FOUND.value(),"object does not exist.");
+            return new ResponseEntity<>(res, HttpStatus.NOT_FOUND);
         }
         if(dto.isAuthorizedStatus()) {
             CustomHttpResponse res = new CustomHttpResponse(HttpStatus.NOT_ACCEPTABLE.value(),"authorized object cannot be deleted.");
@@ -115,8 +115,8 @@ public class ClassController {
     @RolesAllowed(AuthoritiesConstants.ADMIN)
     public ResponseEntity<CustomHttpResponse> authorize(@PathVariable("id") Long id, @PathVariable("authorizedUserId") Long authorizedUserId) {
         if(this.classService.findById(id) == null) {
-            CustomHttpResponse res = new CustomHttpResponse(HttpStatus.NO_CONTENT.value(),"object does not exist.");
-            return new ResponseEntity<>(res, HttpStatus.NO_CONTENT);
+            CustomHttpResponse res = new CustomHttpResponse(HttpStatus.NOT_FOUND.value(),"object does not exist.");
+            return new ResponseEntity<>(res, HttpStatus.NOT_FOUND);
         }
         this.classService.authorizeById(id, authorizedUserId);
         CustomHttpResponse res = new CustomHttpResponse(HttpStatus.OK.value(),"object is authorized.");

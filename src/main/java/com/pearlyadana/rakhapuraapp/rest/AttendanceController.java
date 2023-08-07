@@ -47,12 +47,12 @@ public class AttendanceController {
     }
 
     @GetMapping("/segment/not-present/search")
-    public PaginationResponse<AttendanceDto> findEachNotPresentPageBySearchingSortByCreatedTimestamp(@RequestParam int page, @RequestParam(required = false) String order, @RequestParam Long academicYearId, @RequestParam Long examTitleId, @RequestParam Long subjectTypeId, @RequestParam String keyword) {
+    public ResponseEntity<PaginationResponse<AttendanceDto>> findEachNotPresentPageBySearchingSortByCreatedTimestamp(@RequestParam int page, @RequestParam(required = false) String order, @RequestParam Long academicYearId, @RequestParam Long examTitleId, @RequestParam Long subjectTypeId, @RequestParam String keyword) {
         boolean isAscending = true;
         if(order!=null && order.equals("desc")) {
             isAscending = false;
         }
-        return this.attendanceService.findEachNotPresentPageBySearchingSortByCreatedTimestamp(page, isAscending, academicYearId, examTitleId, subjectTypeId, keyword);
+        return new ResponseEntity<>(this.attendanceService.findEachNotPresentPageBySearchingSortByCreatedTimestamp(page, isAscending, academicYearId, examTitleId, subjectTypeId, keyword), HttpStatus.OK);
     }
 
     private TableHeader setTableHeader(Long academicYearId, Long examTitleId, Long gradeId, String keyword) {
@@ -73,7 +73,7 @@ public class AttendanceController {
     }
 
     @GetMapping("/segment/present/search")
-    public CustomPaginationResponse<ResultResponse> findEachPresentPageBySearching(@RequestParam int page, @RequestParam Long academicYearId, @RequestParam Long examTitleId, @RequestParam Long gradeId, @RequestParam String keyword) {
+    public ResponseEntity<CustomPaginationResponse<ResultResponse>> findEachPresentPageBySearching(@RequestParam int page, @RequestParam Long academicYearId, @RequestParam Long examTitleId, @RequestParam Long gradeId, @RequestParam String keyword) {
         CustomPaginationResponse<ResultResponse> customPaginationResponse = this.attendanceService.findEachPageBySearching(page, academicYearId, examTitleId, gradeId, keyword);
 
         for(ResultResponse element : customPaginationResponse.getElements()) {
@@ -83,7 +83,7 @@ public class AttendanceController {
 
         TableHeader tableHeader = this.setTableHeader(academicYearId, examTitleId, gradeId, keyword);
         customPaginationResponse.setTableHeader(tableHeader);
-        return customPaginationResponse;
+        return new ResponseEntity<>(customPaginationResponse, HttpStatus.OK);
     }
 
     @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)

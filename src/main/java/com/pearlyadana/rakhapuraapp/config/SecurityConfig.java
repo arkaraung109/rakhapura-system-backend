@@ -80,7 +80,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http
 		.authorizeRequests()
 			.antMatchers("/api/v1/authenticate").permitAll()
-			.anyRequest().authenticated();
+		.anyRequest().authenticated();
 	
 		http
         .csrf()

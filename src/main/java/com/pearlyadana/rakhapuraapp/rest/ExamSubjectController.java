@@ -43,8 +43,8 @@ public class ExamSubjectController {
     }
 
     @GetMapping("/exam/{id}")
-    public ResponseEntity<List<ExamSubjectDto>> findAllByAuthorizedExam(@PathVariable("id") Long id) {
-        return new ResponseEntity<>(this.examSubjectService.findAllByAuthorizedExam(id), HttpStatus.OK);
+    public ResponseEntity<List<ExamSubjectDto>> findAllAuthorizedByExam(@PathVariable("id") Long id) {
+        return new ResponseEntity<>(this.examSubjectService.findAllAuthorizedByExam(id), HttpStatus.OK);
     }
 
     @GetMapping("/authorized")
@@ -53,12 +53,12 @@ public class ExamSubjectController {
     }
 
     @GetMapping("/segment/search")
-    public PaginationResponse<ExamSubjectDto> findEachPageBySearchingSortById(@RequestParam int page, @RequestParam(required = false) String order, @RequestParam Long academicYearId, @RequestParam Long examTitleId, @RequestParam Long subjectTypeId, @RequestParam Long subjectId, @RequestParam String keyword) {
+    public ResponseEntity<PaginationResponse<ExamSubjectDto>> findEachPageBySearchingSortById(@RequestParam int page, @RequestParam(required = false) String order, @RequestParam Long academicYearId, @RequestParam Long examTitleId, @RequestParam Long subjectTypeId, @RequestParam Long subjectId, @RequestParam String keyword) {
         boolean isAscending = true;
         if(order!=null && order.equals("desc")) {
             isAscending = false;
         }
-        return this.examSubjectService.findEachPageBySearchingSortById(page, isAscending, academicYearId, examTitleId, subjectTypeId, subjectId, keyword);
+        return new ResponseEntity<>(this.examSubjectService.findEachPageBySearchingSortById(page, isAscending, academicYearId, examTitleId, subjectTypeId, subjectId, keyword), HttpStatus.OK);
     }
 
     @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -67,12 +67,12 @@ public class ExamSubjectController {
         ExamDto examDto = this.examService.findByAcademicYearAndExamTitleAndSubjectType(body.getExam().getAcademicYear().getId(), body.getExam().getExamTitle().getId(), body.getExam().getSubjectType().getId());
         body.setExam(examDto);
 
-        if(!this.examSubjectService.findAllByExamAndSubject(body.getExam().getId(), body.getSubject().getId()).isEmpty()) {
-            CustomHttpResponse res = new CustomHttpResponse(HttpStatus.CONFLICT.value(),"object has already been created.");
-            return new ResponseEntity<>(res, HttpStatus.CONFLICT);
-        }
         if(!this.studentExamService.findAllByExam(body.getExam().getId()).isEmpty()) {
             CustomHttpResponse res = new CustomHttpResponse(HttpStatus.CONFLICT.value(),"used object cannot be created.");
+            return new ResponseEntity<>(res, HttpStatus.CONFLICT);
+        }
+        if(!this.examSubjectService.findAllByExamAndSubject(body.getExam().getId(), body.getSubject().getId()).isEmpty()) {
+            CustomHttpResponse res = new CustomHttpResponse(HttpStatus.CONFLICT.value(),"object has already been created.");
             return new ResponseEntity<>(res, HttpStatus.CONFLICT);
         }
 
@@ -116,8 +116,16 @@ public class ExamSubjectController {
         body.setExam(examDto);
 
         if(dto == null) {
-            CustomHttpResponse res = new CustomHttpResponse(HttpStatus.NO_CONTENT.value(),"object does not exist.");
-            return new ResponseEntity<>(res, HttpStatus.NO_CONTENT);
+            CustomHttpResponse res = new CustomHttpResponse(HttpStatus.NOT_FOUND.value(),"object does not exist.");
+            return new ResponseEntity<>(res, HttpStatus.NOT_FOUND);
+        }
+        if(dto.isAuthorizedStatus()) {
+            CustomHttpResponse res = new CustomHttpResponse(HttpStatus.CONFLICT.value(),"authorized object cannot be updated.");
+            return new ResponseEntity<>(res, HttpStatus.CONFLICT);
+        }
+        if(!this.studentExamService.findAllByExam(body.getExam().getId()).isEmpty()) {
+            CustomHttpResponse res = new CustomHttpResponse(HttpStatus.CONFLICT.value(),"used object cannot be updated.");
+            return new ResponseEntity<>(res, HttpStatus.CONFLICT);
         }
         if(!this.examSubjectService.findAllByExamAndSubject(body.getExam().getId(), body.getSubject().getId()).isEmpty() && (!body.getExam().getId().equals(dto.getExam().getId()) || !body.getSubject().getId().equals(dto.getSubject().getId()))) {
             CustomHttpResponse res = new CustomHttpResponse(HttpStatus.CONFLICT.value(),"object has already been created.");
@@ -150,10 +158,6 @@ public class ExamSubjectController {
             CustomHttpResponse res = new CustomHttpResponse(HttpStatus.NOT_ACCEPTABLE.value(), message);
             return new ResponseEntity<>(res, HttpStatus.NOT_ACCEPTABLE);
         }
-        if(dto.isAuthorizedStatus()) {
-            CustomHttpResponse res = new CustomHttpResponse(HttpStatus.NOT_ACCEPTABLE.value(),"authorized object cannot be updated.");
-            return new ResponseEntity<>(res, HttpStatus.NOT_ACCEPTABLE);
-        }
         if(this.examSubjectService.update(body, id) != null) {
             CustomHttpResponse res = new CustomHttpResponse(HttpStatus.OK.value(),"object is updated.");
             return new ResponseEntity<>(res, HttpStatus.OK);
@@ -166,8 +170,8 @@ public class ExamSubjectController {
     public ResponseEntity<CustomHttpResponse> delete(@PathVariable("id") Long id) {
         ExamSubjectDto dto = this.examSubjectService.findById(id);
         if(dto == null) {
-            CustomHttpResponse res = new CustomHttpResponse(HttpStatus.NO_CONTENT.value(),"object does not exist.");
-            return new ResponseEntity<>(res, HttpStatus.NO_CONTENT);
+            CustomHttpResponse res = new CustomHttpResponse(HttpStatus.NOT_FOUND.value(),"object does not exist.");
+            return new ResponseEntity<>(res, HttpStatus.NOT_FOUND);
         }
         if(dto.isAuthorizedStatus()) {
             CustomHttpResponse res = new CustomHttpResponse(HttpStatus.NOT_ACCEPTABLE.value(),"authorized object cannot be updated.");
@@ -182,8 +186,8 @@ public class ExamSubjectController {
     @RolesAllowed(AuthoritiesConstants.ADMIN)
     public ResponseEntity<CustomHttpResponse> authorize(@PathVariable("id") Long id, @PathVariable("authorizedUserId") Long authorizedUserId) {
         if(this.examSubjectService.findById(id) == null) {
-            CustomHttpResponse res = new CustomHttpResponse(HttpStatus.NO_CONTENT.value(),"object does not exist.");
-            return new ResponseEntity<>(res, HttpStatus.NO_CONTENT);
+            CustomHttpResponse res = new CustomHttpResponse(HttpStatus.NOT_FOUND.value(),"object does not exist.");
+            return new ResponseEntity<>(res, HttpStatus.NOT_FOUND);
         }
         this.examSubjectService.authorizeById(id, authorizedUserId);
         CustomHttpResponse res = new CustomHttpResponse(HttpStatus.OK.value(),"object is authorized.");

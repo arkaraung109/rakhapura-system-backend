@@ -39,12 +39,12 @@ public class ExamTitleController {
     }
 
     @GetMapping("/segment/search")
-    public PaginationResponse<ExamTitleDto> findEachPageBySearchingSortById(@RequestParam int page, @RequestParam(required = false) String order, @RequestParam String keyword) {
+    public ResponseEntity<PaginationResponse<ExamTitleDto>> findEachPageBySearchingSortById(@RequestParam int page, @RequestParam(required = false) String order, @RequestParam String keyword) {
         boolean isAscending = true;
         if(order!=null && order.equals("desc")) {
             isAscending = false;
         }
-        return this.examTitleService.findEachPageBySearchingSortById(page, isAscending, keyword);
+        return new ResponseEntity<>(this.examTitleService.findEachPageBySearchingSortById(page, isAscending, keyword), HttpStatus.OK);
     }
 
     @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -66,16 +66,16 @@ public class ExamTitleController {
     public ResponseEntity<CustomHttpResponse> update(@RequestBody ExamTitleDto body, @PathVariable("id") Long id) {
         ExamTitleDto dto = this.examTitleService.findById(id);
         if(dto == null) {
-            CustomHttpResponse res = new CustomHttpResponse(HttpStatus.NO_CONTENT.value(),"object does not exist.");
-            return new ResponseEntity<>(res, HttpStatus.NO_CONTENT);
-        }
-        if(!this.examTitleService.findAllByName(body.getName()).isEmpty() && !body.getName().equals(dto.getName())) {
-            CustomHttpResponse res = new CustomHttpResponse(HttpStatus.CONFLICT.value(),"object has already been created.");
-            return new ResponseEntity<>(res, HttpStatus.CONFLICT);
+            CustomHttpResponse res = new CustomHttpResponse(HttpStatus.NOT_FOUND.value(),"object does not exist.");
+            return new ResponseEntity<>(res, HttpStatus.NOT_FOUND);
         }
         if(dto.isAuthorizedStatus()) {
             CustomHttpResponse res = new CustomHttpResponse(HttpStatus.NOT_ACCEPTABLE.value(),"authorized object cannot be updated.");
             return new ResponseEntity<>(res, HttpStatus.NOT_ACCEPTABLE);
+        }
+        if(!this.examTitleService.findAllByName(body.getName()).isEmpty() && !body.getName().equals(dto.getName())) {
+            CustomHttpResponse res = new CustomHttpResponse(HttpStatus.CONFLICT.value(),"object has already been created.");
+            return new ResponseEntity<>(res, HttpStatus.CONFLICT);
         }
         if(this.examTitleService.update(body, id) != null) {
             CustomHttpResponse res = new CustomHttpResponse(HttpStatus.OK.value(),"object is updated.");
@@ -89,8 +89,8 @@ public class ExamTitleController {
     public ResponseEntity<CustomHttpResponse> delete(@PathVariable("id") Long id) {
         ExamTitleDto dto = this.examTitleService.findById(id);
         if(dto == null) {
-            CustomHttpResponse res = new CustomHttpResponse(HttpStatus.NO_CONTENT.value(),"object does not exist.");
-            return new ResponseEntity<>(res, HttpStatus.NO_CONTENT);
+            CustomHttpResponse res = new CustomHttpResponse(HttpStatus.NOT_FOUND.value(),"object does not exist.");
+            return new ResponseEntity<>(res, HttpStatus.NOT_FOUND);
         }
         if(dto.isAuthorizedStatus()) {
             CustomHttpResponse res = new CustomHttpResponse(HttpStatus.NOT_ACCEPTABLE.value(),"authorized object cannot be deleted.");
@@ -105,8 +105,8 @@ public class ExamTitleController {
     @RolesAllowed(AuthoritiesConstants.ADMIN)
     public ResponseEntity<CustomHttpResponse> authorize(@PathVariable("id") Long id, @PathVariable("authorizedUserId") Long authorizedUserId) {
         if(this.examTitleService.findById(id) == null) {
-            CustomHttpResponse res = new CustomHttpResponse(HttpStatus.NO_CONTENT.value(),"object does not exist.");
-            return new ResponseEntity<>(res, HttpStatus.NO_CONTENT);
+            CustomHttpResponse res = new CustomHttpResponse(HttpStatus.NOT_FOUND.value(),"object does not exist.");
+            return new ResponseEntity<>(res, HttpStatus.NOT_FOUND);
         }
         this.examTitleService.authorizeById(id, authorizedUserId);
         CustomHttpResponse res = new CustomHttpResponse(HttpStatus.OK.value(),"object is authorized.");

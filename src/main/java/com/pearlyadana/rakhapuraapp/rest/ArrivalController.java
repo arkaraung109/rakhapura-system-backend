@@ -33,12 +33,12 @@ public class ArrivalController {
     private ArrivalService arrivalService;
 
     @GetMapping("/segment/search")
-    public PaginationResponse<StudentClassDto> findEachPageBySearchingSortByCreatedTimestamp(@RequestParam int page, @RequestParam(required = false) String order, @RequestParam boolean arrival, @RequestParam Long examTitleId, @RequestParam Long academicYearId, @RequestParam Long gradeId, @RequestParam String studentClass, @RequestParam String keyword) {
+    public ResponseEntity<PaginationResponse<StudentClassDto>> findEachPageBySearchingSortByCreatedTimestamp(@RequestParam int page, @RequestParam(required = false) String order, @RequestParam boolean arrival, @RequestParam Long examTitleId, @RequestParam Long academicYearId, @RequestParam Long gradeId, @RequestParam String studentClass, @RequestParam String keyword) {
         boolean isAscending = true;
         if(order!=null && order.equals("desc")) {
             isAscending = false;
         }
-        return this.arrivalService.findEachPageBySearchingSortByCreatedTimestamp(page, isAscending, arrival, examTitleId, academicYearId, gradeId, studentClass, keyword);
+        return new ResponseEntity<>(this.arrivalService.findEachPageBySearchingSortByCreatedTimestamp(page, isAscending, arrival, examTitleId, academicYearId, gradeId, studentClass, keyword), HttpStatus.OK);
     }
 
     @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)

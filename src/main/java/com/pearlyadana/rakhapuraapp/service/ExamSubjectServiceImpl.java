@@ -57,7 +57,7 @@ public class ExamSubjectServiceImpl implements ExamSubjectService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<ExamSubjectDto> findAllByAuthorizedExam(Long examId) {
+    public List<ExamSubjectDto> findAllAuthorizedByExam(Long examId) {
         return this.examSubjectRepository.findAllByExamIdAndAuthorizedStatusOrderBySubjectIdAsc(examId, true)
                 .stream()
                 .map(this.mapper::mapEntityToDto)

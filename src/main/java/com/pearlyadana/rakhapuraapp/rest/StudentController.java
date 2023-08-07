@@ -42,12 +42,12 @@ public class StudentController {
     }
 
     @GetMapping("/segment/search")
-    public PaginationResponse<StudentDto> findEachPageBySearchingSortByCreatedTimestamp(@RequestParam int page, @RequestParam(required = false) String order, @RequestParam Long regionId, @RequestParam String keyword) {
+    public ResponseEntity<PaginationResponse<StudentDto>> findEachPageBySearchingSortByCreatedTimestamp(@RequestParam int page, @RequestParam(required = false) String order, @RequestParam Long regionId, @RequestParam String keyword) {
         boolean isAscending = true;
         if(order!=null && order.equals("desc")) {
             isAscending = false;
         }
-        return this.studentService.findEachPageBySearchingSortByCreatedTimestamp(page, isAscending, regionId, keyword);
+        return new ResponseEntity<>(this.studentService.findEachPageBySearchingSortByCreatedTimestamp(page, isAscending, regionId, keyword), HttpStatus.OK);
     }
 
     @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -69,8 +69,8 @@ public class StudentController {
     public ResponseEntity<CustomHttpResponse> update(@RequestBody StudentDto body, @PathVariable("id") UUID id) {
         StudentDto dto = this.studentService.findById(id);
         if(dto == null) {
-            CustomHttpResponse res = new CustomHttpResponse(HttpStatus.NO_CONTENT.value(),"object does not exist.");
-            return new ResponseEntity<>(res, HttpStatus.NO_CONTENT);
+            CustomHttpResponse res = new CustomHttpResponse(HttpStatus.NOT_FOUND.value(),"object does not exist.");
+            return new ResponseEntity<>(res, HttpStatus.NOT_FOUND);
         }
         if(!this.studentService.findAllByNrc(body.getNrc()).isEmpty() && !body.getNrc().equals(dto.getNrc())) {
             CustomHttpResponse res = new CustomHttpResponse(HttpStatus.CONFLICT.value(),"object has already been created.");
@@ -89,8 +89,8 @@ public class StudentController {
     @RolesAllowed(AuthoritiesConstants.STUDENT_ENTRY)
     public ResponseEntity<CustomHttpResponse> delete(@PathVariable("id") UUID id) {
         if(this.studentService.findById(id) == null) {
-            CustomHttpResponse res = new CustomHttpResponse(HttpStatus.NO_CONTENT.value(),"object does not exist.");
-            return new ResponseEntity<>(res, HttpStatus.NO_CONTENT);
+            CustomHttpResponse res = new CustomHttpResponse(HttpStatus.NOT_FOUND.value(),"object does not exist.");
+            return new ResponseEntity<>(res, HttpStatus.NOT_FOUND);
         }
         if(!this.studentClassService.findAllByStudentId(id).isEmpty()) {
             CustomHttpResponse res = new CustomHttpResponse(HttpStatus.NOT_ACCEPTABLE.value(),"assigned object cannot be deleted.");

@@ -26,7 +26,7 @@ public class ApplicationUserController {
         if(dto.isPresent()) {
             return new ResponseEntity<>(dto.get(), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 

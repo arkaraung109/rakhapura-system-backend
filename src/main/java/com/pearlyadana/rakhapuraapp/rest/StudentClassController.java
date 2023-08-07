@@ -41,12 +41,12 @@ public class StudentClassController {
     }
 
     @GetMapping("/segment/search")
-    public PaginationResponse<StudentClassDto> findEachPageBySearchingSortByCreatedTimestamp(@RequestParam int page, @RequestParam(required = false) String order, @RequestParam Long examTitleId, @RequestParam Long academicYearId, @RequestParam Long gradeId, @RequestParam String studentClass, @RequestParam String keyword) {
+    public ResponseEntity<PaginationResponse<StudentClassDto>> findEachPageBySearchingSortByCreatedTimestamp(@RequestParam int page, @RequestParam(required = false) String order, @RequestParam Long examTitleId, @RequestParam Long academicYearId, @RequestParam Long gradeId, @RequestParam String studentClass, @RequestParam String keyword) {
         boolean isAscending = true;
         if(order!=null && order.equals("desc")) {
             isAscending = false;
         }
-        return this.studentClassService.findEachPageBySearchingSortByCreatedTimestamp(page, isAscending, examTitleId, academicYearId, gradeId, studentClass, keyword);
+        return new ResponseEntity<>(this.studentClassService.findEachPageBySearchingSortByCreatedTimestamp(page, isAscending, examTitleId, academicYearId, gradeId, studentClass, keyword), HttpStatus.OK);
     }
 
     @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -85,16 +85,16 @@ public class StudentClassController {
     public ResponseEntity<CustomHttpResponse> update(@RequestBody StudentClassDto body, @PathVariable("id") UUID id) {
         StudentClassDto dto = this.studentClassService.findById(id);
         if(dto == null) {
-            CustomHttpResponse res = new CustomHttpResponse(HttpStatus.NO_CONTENT.value(),"object does not exist.");
-            return new ResponseEntity<>(res, HttpStatus.NO_CONTENT);
-        }
-        if(!this.studentClassService.findAllByExamTitleAndAcademicYearAndStudent(body.getExamTitle().getId(), body.getStudentClass().getAcademicYear().getId(), body.getStudent().getId()).isEmpty() && (!body.getExamTitle().getId().equals(dto.getExamTitle().getId()) || !body.getStudentClass().getAcademicYear().getId().equals(dto.getStudentClass().getAcademicYear().getId()))) {
-            CustomHttpResponse res = new CustomHttpResponse(HttpStatus.CONFLICT.value(),"object has already been created.");
-            return new ResponseEntity<>(res, HttpStatus.CONFLICT);
+            CustomHttpResponse res = new CustomHttpResponse(HttpStatus.NOT_FOUND.value(),"object does not exist.");
+            return new ResponseEntity<>(res, HttpStatus.NOT_FOUND);
         }
         if(dto.isArrival()) {
             CustomHttpResponse res = new CustomHttpResponse(HttpStatus.NOT_ACCEPTABLE.value(),"arrived object cannot be updated.");
             return new ResponseEntity<>(res, HttpStatus.NOT_ACCEPTABLE);
+        }
+        if(!this.studentClassService.findAllByExamTitleAndAcademicYearAndStudent(body.getExamTitle().getId(), body.getStudentClass().getAcademicYear().getId(), body.getStudent().getId()).isEmpty() && (!body.getExamTitle().getId().equals(dto.getExamTitle().getId()) || !body.getStudentClass().getAcademicYear().getId().equals(dto.getStudentClass().getAcademicYear().getId()))) {
+            CustomHttpResponse res = new CustomHttpResponse(HttpStatus.CONFLICT.value(),"object has already been created.");
+            return new ResponseEntity<>(res, HttpStatus.CONFLICT);
         }
         body.setRegNo(dto.getRegNo());
         body.setRegSeqNo(dto.getRegSeqNo());
@@ -113,8 +113,8 @@ public class StudentClassController {
     public ResponseEntity<CustomHttpResponse> delete(@PathVariable("id") UUID id) {
         StudentClassDto dto = this.studentClassService.findById(id);
         if(dto == null) {
-            CustomHttpResponse res = new CustomHttpResponse(HttpStatus.NO_CONTENT.value(),"object does not exist.");
-            return new ResponseEntity<>(res, HttpStatus.NO_CONTENT);
+            CustomHttpResponse res = new CustomHttpResponse(HttpStatus.NOT_FOUND.value(),"object does not exist.");
+            return new ResponseEntity<>(res, HttpStatus.NOT_FOUND);
         }
         if(dto.isArrival()) {
             CustomHttpResponse res = new CustomHttpResponse(HttpStatus.NOT_ACCEPTABLE.value(),"arrived object cannot be deleted.");

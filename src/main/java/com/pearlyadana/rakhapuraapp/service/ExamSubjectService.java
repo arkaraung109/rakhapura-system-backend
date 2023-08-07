@@ -13,7 +13,7 @@ public interface ExamSubjectService {
 
     List<ExamSubjectDto> findAllByExam(Long examId);
 
-    List<ExamSubjectDto> findAllByAuthorizedExam(Long examId);
+    List<ExamSubjectDto> findAllAuthorizedByExam(Long examId);
 
     List<ExamSubjectDto> findAllByExamAndSubject(Long examId, Long subjectId);
 

@@ -77,7 +77,7 @@ public class StudentExamModerateController {
         int totalPassMark = 0;
         int totalMarkPercentage = 0;
         for(ExamDto examDto : examDtoList) {
-            List<ExamSubjectDto> examSubjectDtoList = this.examSubjectService.findAllByAuthorizedExam(examDto.getId());
+            List<ExamSubjectDto> examSubjectDtoList = this.examSubjectService.findAllAuthorizedByExam(examDto.getId());
             for(ExamSubjectDto examSubjectDto : examSubjectDtoList) {
                 examSubjectList.add(examSubjectDto.getSubject().getName());
                 givenMarkList.add(examSubjectDto.getPassMark() + "/" + examSubjectDto.getMarkPercentage());
@@ -118,7 +118,7 @@ public class StudentExamModerateController {
             int overAllMark = 0;
             boolean hasModeration = false;
             for(AttendanceDto attendanceDto : attendanceDtoList) {
-                List<ExamSubjectDto> examSubjectDtoList = this.examSubjectService.findAllByAuthorizedExam(attendanceDto.getExam().getId());
+                List<ExamSubjectDto> examSubjectDtoList = this.examSubjectService.findAllAuthorizedByExam(attendanceDto.getExam().getId());
                 int result = this.studentExamService.findResult(attendanceDto.getId());
                 Integer totalMark = this.studentExamService.findTotalMark(attendanceDto.getId());
                 ExamResult examResult = new ExamResult();
@@ -240,7 +240,7 @@ public class StudentExamModerateController {
             int overAllMark = 0;
             boolean hasModeration = false;
             for(AttendanceDto attendanceDto : attendanceDtoList) {
-                List<ExamSubjectDto> examSubjectDtoList = this.examSubjectService.findAllByAuthorizedExam(attendanceDto.getExam().getId());
+                List<ExamSubjectDto> examSubjectDtoList = this.examSubjectService.findAllAuthorizedByExam(attendanceDto.getExam().getId());
                 int result = this.studentExamService.findResult(attendanceDto.getId());
                 Integer totalMark = this.studentExamService.findTotalMark(attendanceDto.getId());
                 ExamResult examResult = new ExamResult();

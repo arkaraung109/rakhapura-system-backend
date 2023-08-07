@@ -35,21 +35,21 @@ public class StudentHostelController {
     private StudentHostelService studentHostelService;
 
     @GetMapping("/segment/not-present/search")
-    public PaginationResponse<StudentClassDto> findEachNotPresentPageBySearchingSortByCreatedTimestamp(@RequestParam int page, @RequestParam(required = false) String order, @RequestParam Long examTitleId, @RequestParam Long academicYearId, @RequestParam Long gradeId, @RequestParam String keyword) {
+    public ResponseEntity<PaginationResponse<StudentClassDto>> findEachNotPresentPageBySearchingSortByCreatedTimestamp(@RequestParam int page, @RequestParam(required = false) String order, @RequestParam Long examTitleId, @RequestParam Long academicYearId, @RequestParam Long gradeId, @RequestParam String keyword) {
         boolean isAscending = true;
         if(order!=null && order.equals("desc")) {
             isAscending = false;
         }
-        return this.studentHostelService.findEachNotPresentPageBySearchingSortByCreatedTimestamp(page, isAscending, examTitleId, academicYearId, gradeId, keyword);
+        return new ResponseEntity<>(this.studentHostelService.findEachNotPresentPageBySearchingSortByCreatedTimestamp(page, isAscending, examTitleId, academicYearId, gradeId, keyword), HttpStatus.OK);
     }
 
     @GetMapping("/segment/present/search")
-    public PaginationResponse<StudentClassDto> findEachPresentPageBySearchingSortByCreatedTimestamp(@RequestParam int page, @RequestParam(required = false) String order, @RequestParam Long examTitleId, @RequestParam Long academicYearId, @RequestParam Long gradeId, @RequestParam Long hostelId, @RequestParam String keyword) {
+    public ResponseEntity<PaginationResponse<StudentClassDto>> findEachPresentPageBySearchingSortByCreatedTimestamp(@RequestParam int page, @RequestParam(required = false) String order, @RequestParam Long examTitleId, @RequestParam Long academicYearId, @RequestParam Long gradeId, @RequestParam Long hostelId, @RequestParam String keyword) {
         boolean isAscending = true;
         if(order!=null && order.equals("desc")) {
             isAscending = false;
         }
-        return this.studentHostelService.findEachPresentPageBySearchingSortByCreatedTimestamp(page, isAscending, examTitleId, academicYearId, gradeId, hostelId, keyword);
+        return new ResponseEntity<>(this.studentHostelService.findEachPresentPageBySearchingSortByCreatedTimestamp(page, isAscending, examTitleId, academicYearId, gradeId, hostelId, keyword), HttpStatus.OK);
     }
 
     @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -78,8 +78,8 @@ public class StudentHostelController {
     public ResponseEntity<CustomHttpResponse> update(@RequestBody StudentClassDto body, @PathVariable("id") UUID id) {
         StudentClassDto dto = this.studentClassService.findById(id);
         if(dto == null) {
-            CustomHttpResponse res = new CustomHttpResponse(HttpStatus.NO_CONTENT.value(),"object does not exist.");
-            return new ResponseEntity<>(res, HttpStatus.NO_CONTENT);
+            CustomHttpResponse res = new CustomHttpResponse(HttpStatus.NOT_FOUND.value(),"object does not exist.");
+            return new ResponseEntity<>(res, HttpStatus.NOT_FOUND);
         }
         if(dto.getRegNo() != null && dto.getRegSeqNo() != 0) {
             CustomHttpResponse res = new CustomHttpResponse(HttpStatus.NOT_ACCEPTABLE.value(),"used object cannot be updated.");
@@ -100,8 +100,8 @@ public class StudentHostelController {
     public ResponseEntity<CustomHttpResponse> delete(@PathVariable("id") UUID id) {
         StudentClassDto dto = this.studentClassService.findById(id);
         if(dto == null) {
-            CustomHttpResponse res = new CustomHttpResponse(HttpStatus.NO_CONTENT.value(),"object does not exist.");
-            return new ResponseEntity<>(res, HttpStatus.NO_CONTENT);
+            CustomHttpResponse res = new CustomHttpResponse(HttpStatus.NOT_FOUND.value(),"object does not exist.");
+            return new ResponseEntity<>(res, HttpStatus.NOT_FOUND);
         }
         if(dto.getRegNo() != null && dto.getRegSeqNo() != 0) {
             CustomHttpResponse res = new CustomHttpResponse(HttpStatus.NOT_ACCEPTABLE.value(),"used object cannot be deleted.");

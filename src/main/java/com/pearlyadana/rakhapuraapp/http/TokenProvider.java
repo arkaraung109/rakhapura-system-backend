@@ -17,8 +17,8 @@ import java.util.stream.Stream;
 
 @Component
 public class TokenProvider {
-    private static final long TOKEN_VALIDITY_IN_MILI_SECOND =1000*60*60*24;
-    private static final String ROLE_PREFIX="ROLE_";
+    private static final long TOKEN_VALIDITY_IN_MILI_SECOND = 1000 * 60 * 60 * 24;
+    private static final String ROLE_PREFIX = "ROLE_";
     private static final String AUTHORITIES_KEY = "auth";
 
     private Key key;
