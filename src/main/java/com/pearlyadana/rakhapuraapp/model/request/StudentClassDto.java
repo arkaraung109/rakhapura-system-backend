@@ -14,6 +14,8 @@ public class StudentClassDto implements Serializable {
 
     private boolean arrival;
 
+    private boolean published;
+
     private LocalDateTime createdTimestamp;
 
     private ExamTitleDto examTitle;
@@ -27,11 +29,12 @@ public class StudentClassDto implements Serializable {
     public StudentClassDto() {
     }
 
-    public StudentClassDto(UUID id, String regNo, int regSeqNo, boolean arrival, LocalDateTime createdTimestamp, ExamTitleDto examTitle, ClassDto studentClass, HostelDto hostel, StudentDto student) {
+    public StudentClassDto(UUID id, String regNo, int regSeqNo, boolean arrival, boolean published, LocalDateTime createdTimestamp, ExamTitleDto examTitle, ClassDto studentClass, HostelDto hostel, StudentDto student) {
         this.id = id;
         this.regNo = regNo;
         this.regSeqNo = regSeqNo;
         this.arrival = arrival;
+        this.published = published;
         this.createdTimestamp = createdTimestamp;
         this.examTitle = examTitle;
         this.studentClass = studentClass;
@@ -69,6 +72,14 @@ public class StudentClassDto implements Serializable {
 
     public void setArrival(boolean arrival) {
         this.arrival = arrival;
+    }
+
+    public boolean isPublished() {
+        return published;
+    }
+
+    public void setPublished(boolean published) {
+        this.published = published;
     }
 
     public LocalDateTime getCreatedTimestamp() {

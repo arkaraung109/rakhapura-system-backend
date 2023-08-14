@@ -22,12 +22,20 @@ public interface StudentClassRepository extends JpaRepository<StudentClass, UUID
     String joinQueryOrderBy = " order by c.academic_year_id, sc.exam_title_id, c.grade_id, sc.reg_no";
 
     @Query(value = "select max(sc.reg_seq_no) from student_class sc, class c where sc.class_id=c.id and sc.exam_title_id=:examTitleId and c.academic_year_id=:academicYearId and c.grade_id=:gradeId", nativeQuery = true)
-    int findMaxRegSeqNo(@Param("examTitleId") Long examTitleId, @Param("academicYearId") Long academicYearId, @Param("gradeId") Long gradeId);
+    Integer findMaxRegSeqNo(@Param("examTitleId") Long examTitleId, @Param("academicYearId") Long academicYearId, @Param("gradeId") Long gradeId);
 
     List<StudentClass> findAllByStudentId(UUID id);
 
     @Query(value = "select sc.* from student_class sc, class c where sc.class_id=c.id and sc.exam_title_id=:examTitleId and c.academic_year_id=:academicYearId and sc.student_id=:studentId", nativeQuery = true)
     List<StudentClass> findAllByExamTitleIdAndAcademicYearIdAndStudentId(@Param("examTitleId") Long examTitleId, @Param("academicYearId") Long academicYearId, @Param("studentId") UUID studentId);
+
+    @Query(value = "select sc.* from student_class sc, class c, public_exam_result per where sc.class_id=c.id and sc.id=per.student_class_id and c.academic_year_id=:academicYearId and sc.exam_title_id=:examTitleId and c.grade_id=:gradeId order by sc.reg_no", nativeQuery = true)
+    List<StudentClass> findPassedAllByAcademicYearAndExamTitleAndGrade(@Param("academicYearId") Long academicYearId, @Param("examTitleId") Long examTitleId, @Param("gradeId") Long gradeId);
+
+    @Query(value = "select sc.* from student_class sc, class c, student s, public_exam_result per where sc.class_id=c.id and sc.student_id=s.id and sc.id=per.student_class_id and c.academic_year_id=:academicYearId and sc.exam_title_id=:examTitleId and c.grade_id=:gradeId and ((sc.reg_no like :keyword%) or (s.name like :keyword%) or (s.father_name like :keyword%)) order by sc.reg_no",
+            countQuery = "select sc.* from student_class sc, class c, student s, public_exam_result per where sc.class_id=c.id and sc.student_id=s.id and sc.id=per.student_class_id and c.academic_year_id=:academicYearId and sc.exam_title_id=:examTitleId and c.grade_id=:gradeId and ((sc.reg_no like :keyword%) or (s.name like :keyword%) or (s.father_name like :keyword%)) order by sc.reg_no",
+            nativeQuery = true)
+    Page<StudentClass> findPassedAllByAcademicYearAndExamTitleAndGrade(@Param("academicYearId") Long academicYearId, @Param("examTitleId") Long examTitleId, @Param("gradeId") Long gradeId, @Param("keyword") String keyword, Pageable pageable);
 
     //-----Student Class List-----
 

@@ -1,7 +1,6 @@
 package com.pearlyadana.rakhapuraapp.model.request;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class StudentExamDto implements Serializable {
@@ -12,8 +11,6 @@ public class StudentExamDto implements Serializable {
 
     private boolean pass;
 
-    private LocalDateTime createdTimestamp;
-
     private ExamSubjectDto examSubject;
 
     private AttendanceDto attendance;
@@ -21,11 +18,10 @@ public class StudentExamDto implements Serializable {
     public StudentExamDto() {
     }
 
-    public StudentExamDto(UUID id, int mark, boolean pass, LocalDateTime createdTimestamp, ExamSubjectDto examSubject, AttendanceDto attendance) {
+    public StudentExamDto(UUID id, int mark, boolean pass, ExamSubjectDto examSubject, AttendanceDto attendance) {
         this.id = id;
         this.mark = mark;
         this.pass = pass;
-        this.createdTimestamp = createdTimestamp;
         this.examSubject = examSubject;
         this.attendance = attendance;
     }
@@ -52,14 +48,6 @@ public class StudentExamDto implements Serializable {
 
     public void setPass(boolean pass) {
         this.pass = pass;
-    }
-
-    public LocalDateTime getCreatedTimestamp() {
-        return createdTimestamp;
-    }
-
-    public void setCreatedTimestamp(LocalDateTime createdTimestamp) {
-        this.createdTimestamp = createdTimestamp;
     }
 
     public ExamSubjectDto getExamSubject() {

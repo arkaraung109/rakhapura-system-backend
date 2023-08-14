@@ -35,10 +35,11 @@ public class StudentExamServiceImpl implements StudentExamService {
     @Transactional(readOnly = true)
     @Override
     public Integer findResult(UUID attendanceId) {
-        if(this.studentExamRepository.findResult(attendanceId) == null) {
-            return 0;
+        Integer result = this.studentExamRepository.findResult(attendanceId);
+        if(result == null) {
+            result = 0;
         }
-        return this.studentExamRepository.findResult(attendanceId);
+        return result;
     }
 
     @Transactional(readOnly = true)

@@ -1,11 +1,13 @@
 package com.pearlyadana.rakhapuraapp.rest;
 
 import com.pearlyadana.rakhapuraapp.http.AuthoritiesConstants;
+import com.pearlyadana.rakhapuraapp.model.request.ExamDto;
 import com.pearlyadana.rakhapuraapp.model.request.StudentClassDto;
 import com.pearlyadana.rakhapuraapp.model.request.StudentDto;
 import com.pearlyadana.rakhapuraapp.model.response.CustomHttpResponse;
 import com.pearlyadana.rakhapuraapp.model.response.DataResponse;
 import com.pearlyadana.rakhapuraapp.model.response.PaginationResponse;
+import com.pearlyadana.rakhapuraapp.service.ExamService;
 import com.pearlyadana.rakhapuraapp.service.StudentClassService;
 import com.pearlyadana.rakhapuraapp.util.StudentClassExcelGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,9 @@ import java.util.UUID;
 @RequestMapping(value = "/api/v1/student-classes", produces = MediaType.APPLICATION_JSON_VALUE)
 @Validated
 public class StudentClassController {
+
+    @Autowired
+    private ExamService examService;
 
     @Autowired
     private StudentClassService studentClassService;
@@ -56,6 +61,14 @@ public class StudentClassController {
         List<UUID> errorList = new ArrayList<>();
         Long examTitleId = body.getExamTitle().getId();
         Long academicYearId = body.getStudentClass().getAcademicYear().getId();
+        Long gradeId = body.getStudentClass().getGrade().getId();
+        List<ExamDto> examDtoList = this.examService.findAllFilteredByAcademicYearAndExamTitleAndGrade(academicYearId, examTitleId, gradeId);
+        if(!examDtoList.isEmpty()) {
+            if(examDtoList.get(0).isPublished()) {
+                DataResponse res = new DataResponse(HttpStatus.NOT_ACCEPTABLE.value(), 0, 0);
+                return new ResponseEntity<>(res, HttpStatus.NOT_ACCEPTABLE);
+            }
+        }
         for(UUID id : idList) {
             if(!this.studentClassService.findAllByExamTitleAndAcademicYearAndStudent(examTitleId, academicYearId, id).isEmpty()) {
                 errorList.add(id);
@@ -99,6 +112,7 @@ public class StudentClassController {
         body.setRegNo(dto.getRegNo());
         body.setRegSeqNo(dto.getRegSeqNo());
         body.setArrival(dto.isArrival());
+        body.setPublished(dto.isPublished());
         body.setCreatedTimestamp(dto.getCreatedTimestamp());
         body.setHostel(dto.getHostel());
         if(this.studentClassService.update(body, id) != null) {

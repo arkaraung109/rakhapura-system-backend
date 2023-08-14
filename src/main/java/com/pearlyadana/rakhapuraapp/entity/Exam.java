@@ -23,6 +23,9 @@ public class Exam {
     @Column(name = "mark_percentage")
     private int markPercentage;
 
+    @Column(name = "published")
+    private boolean published;
+
     @Column(name = "authorized_status")
     private boolean authorizedStatus;
 
@@ -44,12 +47,13 @@ public class Exam {
     public Exam() {
     }
 
-    public Exam(Long id, String examDate, String time, int passMark, int markPercentage, boolean authorizedStatus, Long authorizedUserId, AcademicYear academicYear, ExamTitle examTitle, SubjectType subjectType) {
+    public Exam(Long id, String examDate, String time, int passMark, int markPercentage, boolean published, boolean authorizedStatus, Long authorizedUserId, AcademicYear academicYear, ExamTitle examTitle, SubjectType subjectType) {
         this.id = id;
         this.examDate = examDate;
         this.time = time;
         this.passMark = passMark;
         this.markPercentage = markPercentage;
+        this.published = published;
         this.authorizedStatus = authorizedStatus;
         this.authorizedUserId = authorizedUserId;
         this.academicYear = academicYear;
@@ -95,6 +99,14 @@ public class Exam {
 
     public void setMarkPercentage(int markPercentage) {
         this.markPercentage = markPercentage;
+    }
+
+    public boolean isPublished() {
+        return published;
+    }
+
+    public void setPublished(boolean published) {
+        this.published = published;
     }
 
     public boolean isAuthorizedStatus() {

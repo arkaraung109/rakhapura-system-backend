@@ -1,10 +1,8 @@
 package com.pearlyadana.rakhapuraapp.entity;
 
-import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -23,10 +21,6 @@ public class StudentExam {
     @Column(name = "pass")
     private boolean pass;
 
-    @Column(name = "createdTimestamp")
-    @CreationTimestamp
-    private LocalDateTime createdTimestamp;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "exam_subject_id")
     private ExamSubject examSubject;
@@ -38,11 +32,10 @@ public class StudentExam {
     public StudentExam() {
     }
 
-    public StudentExam(UUID id, int mark, boolean pass, LocalDateTime createdTimestamp, ExamSubject examSubject, Attendance attendance) {
+    public StudentExam(UUID id, int mark, boolean pass, ExamSubject examSubject, Attendance attendance) {
         this.id = id;
         this.mark = mark;
         this.pass = pass;
-        this.createdTimestamp = createdTimestamp;
         this.examSubject = examSubject;
         this.attendance = attendance;
     }
@@ -69,14 +62,6 @@ public class StudentExam {
 
     public void setPass(boolean pass) {
         this.pass = pass;
-    }
-
-    public LocalDateTime getCreatedTimestamp() {
-        return createdTimestamp;
-    }
-
-    public void setCreatedTimestamp(LocalDateTime createdTimestamp) {
-        this.createdTimestamp = createdTimestamp;
     }
 
     public ExamSubject getExamSubject() {

@@ -106,8 +106,7 @@ public class StudentServiceImpl implements StudentService {
         SimpleDateFormat inputDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat outputDateFormat = new SimpleDateFormat("dd-MM-yyyy");
         try {
-            Date dob = inputDateFormat.parse(studentDto.getDob());
-            studentDto.setDob(outputDateFormat.format(dob));
+            studentDto.setDob(outputDateFormat.format(inputDateFormat.parse(studentDto.getDob())));
             studentDto.setRegDate(outputDateFormat.format(new Date()));
         } catch(ParseException e) {
             throw new RuntimeException(e);
@@ -121,8 +120,7 @@ public class StudentServiceImpl implements StudentService {
         SimpleDateFormat inputDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat outputDateFormat = new SimpleDateFormat("dd-MM-yyyy");
         try {
-            Date dob = inputDateFormat.parse(studentDto.getDob());
-            studentDto.setDob(outputDateFormat.format(dob));
+            studentDto.setDob(outputDateFormat.format(inputDateFormat.parse(studentDto.getDob())));
         } catch(ParseException e) {
             throw new RuntimeException(e);
         }

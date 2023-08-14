@@ -18,7 +18,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -72,7 +71,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(this.userDetailsServiceImpl).passwordEncoder(NoOpPasswordEncoder.getInstance());
+		auth.userDetailsService(this.userDetailsServiceImpl).passwordEncoder(passwordEncoder());
 	}
 	
 	@Override
@@ -80,6 +79,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http
 		.authorizeRequests()
 			.antMatchers("/api/v1/authenticate").permitAll()
+				.antMatchers("/api/v1/academic-years/authorized").permitAll()
+				.antMatchers("/api/v1/exam-titles/authorized").permitAll()
+				.antMatchers("/api/v1/grades/authorized").permitAll()
+				.antMatchers("/api/v1/public-exam-results/segment/search").permitAll()
 		.anyRequest().authenticated();
 	
 		http

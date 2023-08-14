@@ -2,9 +2,11 @@ package com.pearlyadana.rakhapuraapp.rest;
 
 import com.pearlyadana.rakhapuraapp.http.AuthoritiesConstants;
 import com.pearlyadana.rakhapuraapp.model.request.ExamDto;
+import com.pearlyadana.rakhapuraapp.model.request.SubjectTypeDto;
 import com.pearlyadana.rakhapuraapp.model.response.CustomHttpResponse;
 import com.pearlyadana.rakhapuraapp.model.response.PaginationResponse;
 import com.pearlyadana.rakhapuraapp.service.ExamService;
+import com.pearlyadana.rakhapuraapp.service.SubjectTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,6 +23,9 @@ import java.util.List;
 public class ExamController {
 
     @Autowired
+    private SubjectTypeService subjectTypeService;
+
+    @Autowired
     private ExamService examService;
 
     @GetMapping("/{id}")
@@ -31,6 +36,11 @@ public class ExamController {
     @GetMapping("/filter")
     public ResponseEntity<List<ExamDto>> findAllFilteredByAcademicYearAndExamTitle(@RequestParam Long academicYearId, @RequestParam Long examTitleId) {
         return new ResponseEntity<>(this.examService.findAllFilteredByAcademicYearAndExamTitle(academicYearId, examTitleId), HttpStatus.OK);
+    }
+
+    @GetMapping("/filterAll")
+    public ResponseEntity<List<ExamDto>> findAllFilteredByAcademicYearAndExamTitleAndGrade(@RequestParam Long academicYearId, @RequestParam Long examTitleId, @RequestParam Long gradeId) {
+        return new ResponseEntity<>(this.examService.findAllFilteredByAcademicYearAndExamTitleAndGrade(academicYearId, examTitleId, gradeId), HttpStatus.OK);
     }
 
     @GetMapping("")
@@ -50,6 +60,14 @@ public class ExamController {
     @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
     @RolesAllowed(AuthoritiesConstants.EXAM_ENTRY)
     public ResponseEntity<CustomHttpResponse> save(@RequestBody ExamDto body) {
+        SubjectTypeDto subjectTypeDto = this.subjectTypeService.findById(body.getSubjectType().getId());
+        List<ExamDto> examDtoList = this.examService.findAllFilteredByAcademicYearAndExamTitleAndGrade(body.getAcademicYear().getId(), body.getExamTitle().getId(), subjectTypeDto.getGrade().getId());
+        if(!examDtoList.isEmpty()) {
+            if(examDtoList.get(0).isPublished()) {
+                CustomHttpResponse res = new CustomHttpResponse(HttpStatus.NOT_ACCEPTABLE.value(), "object cannot be created because of published exam results.");
+                return new ResponseEntity<>(res, HttpStatus.NOT_ACCEPTABLE);
+            }
+        }
         if(!this.examService.findAllByAcademicYearAndExamTitleAndSubjectType(body.getAcademicYear().getId(), body.getExamTitle().getId(), body.getSubjectType().getId()).isEmpty()) {
             CustomHttpResponse res = new CustomHttpResponse(HttpStatus.CONFLICT.value(),"object has already been created.");
             return new ResponseEntity<>(res, HttpStatus.CONFLICT);
@@ -77,6 +95,7 @@ public class ExamController {
             CustomHttpResponse res = new CustomHttpResponse(HttpStatus.CONFLICT.value(),"object has already been created.");
             return new ResponseEntity<>(res, HttpStatus.CONFLICT);
         }
+        body.setPublished(dto.isPublished());
         if(this.examService.update(body, id) != null) {
             CustomHttpResponse res = new CustomHttpResponse(HttpStatus.OK.value(),"object is updated.");
             return new ResponseEntity<>(res, HttpStatus.OK);

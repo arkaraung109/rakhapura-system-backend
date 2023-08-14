@@ -33,8 +33,12 @@ public class StudentClassServiceImpl implements StudentClassService {
 
     @Transactional(readOnly = true)
     @Override
-    public int findMaxRegSeqNo(Long examTitleId, Long academicYearId, Long gradeId) {
-        return this.studentClassRepository.findMaxRegSeqNo(examTitleId, academicYearId, gradeId);
+    public Integer findMaxRegSeqNo(Long examTitleId, Long academicYearId, Long gradeId) {
+        Integer maxRegSeqNo = this.studentClassRepository.findMaxRegSeqNo(examTitleId, academicYearId, gradeId);
+        if(maxRegSeqNo == null) {
+            maxRegSeqNo = 0;
+        }
+        return maxRegSeqNo;
     }
 
     @Transactional(readOnly = true)
@@ -171,6 +175,7 @@ public class StudentClassServiceImpl implements StudentClassService {
     @Transactional
     @Override
     public StudentClassDto save(StudentClassDto studentClassDto) {
+        studentClassDto.setPublished(false);
         return this.mapper.mapEntityToDto(this.studentClassRepository.save(this.mapper.mapDtoToEntity(studentClassDto)));
     }
 

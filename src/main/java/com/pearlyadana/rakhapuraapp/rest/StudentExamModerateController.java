@@ -95,9 +95,11 @@ public class StudentExamModerateController {
         }
         givenMarkList.add(totalPassMark + "/" + totalMarkPercentage);
 
-        tableHeader.setAcademicYear(customExamList.get(0).getExam().getAcademicYear().getName());
-        tableHeader.setExamTitle(customExamList.get(0).getExam().getExamTitle().getName());
-        tableHeader.setGrade(customExamList.get(0).getExam().getSubjectType().getGrade().getName());
+        if(!customExamList.isEmpty()) {
+            tableHeader.setAcademicYear(customExamList.get(0).getExam().getAcademicYear().getName());
+            tableHeader.setExamTitle(customExamList.get(0).getExam().getExamTitle().getName());
+            tableHeader.setGrade(customExamList.get(0).getExam().getSubjectType().getGrade().getName());
+        }
         tableHeader.setCustomExamList(customExamList);
         tableHeader.setExamSubjectList(examSubjectList);
         tableHeader.setGivenMarkList(givenMarkList);

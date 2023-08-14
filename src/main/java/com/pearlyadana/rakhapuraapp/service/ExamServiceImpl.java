@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -127,11 +126,11 @@ public class ExamServiceImpl implements ExamService {
         SimpleDateFormat inputDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat outputDateFormat = new SimpleDateFormat("dd-MM-yyyy");
         try {
-            Date examDate = inputDateFormat.parse(examDto.getExamDate());
-            examDto.setExamDate(outputDateFormat.format(examDate));
+            examDto.setExamDate(outputDateFormat.format(inputDateFormat.parse(examDto.getExamDate())));
         } catch(ParseException e) {
             throw new RuntimeException(e);
         }
+        examDto.setPublished(false);
         examDto.setAuthorizedStatus(false);
         return this.mapper.mapEntityToDto(this.examRepository.save(this.mapper.mapDtoToEntity(examDto)));
     }
@@ -142,8 +141,7 @@ public class ExamServiceImpl implements ExamService {
         SimpleDateFormat inputDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat outputDateFormat = new SimpleDateFormat("dd-MM-yyyy");
         try {
-            Date examDate = inputDateFormat.parse(examDto.getExamDate());
-            examDto.setExamDate(outputDateFormat.format(examDate));
+            examDto.setExamDate(outputDateFormat.format(inputDateFormat.parse(examDto.getExamDate())));
         } catch(ParseException e) {
             throw new RuntimeException(e);
         }
