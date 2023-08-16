@@ -20,6 +20,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -56,6 +57,7 @@ public class StudentCardController {
             StudentClassDto studentClassDto = this.studentClassService.findById(id);
             studentClassDtoList.add(studentClassDto);
         }
+        studentClassDtoList.sort(Comparator.comparing(obj -> obj.getStudent().getName()));
         this.studentCardService.generate(body, studentClassDtoList, examDtoList, response);
     }
 

@@ -112,7 +112,6 @@ public class StudentClassController {
         body.setRegNo(dto.getRegNo());
         body.setRegSeqNo(dto.getRegSeqNo());
         body.setArrival(dto.isArrival());
-        body.setPublished(dto.isPublished());
         body.setCreatedTimestamp(dto.getCreatedTimestamp());
         body.setHostel(dto.getHostel());
         if(this.studentClassService.update(body, id) != null) {

@@ -175,7 +175,6 @@ public class StudentClassServiceImpl implements StudentClassService {
     @Transactional
     @Override
     public StudentClassDto save(StudentClassDto studentClassDto) {
-        studentClassDto.setPublished(false);
         return this.mapper.mapEntityToDto(this.studentClassRepository.save(this.mapper.mapDtoToEntity(studentClassDto)));
     }
 

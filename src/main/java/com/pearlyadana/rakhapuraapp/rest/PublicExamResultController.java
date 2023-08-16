@@ -8,7 +8,6 @@ import com.pearlyadana.rakhapuraapp.model.response.CustomHttpResponse;
 import com.pearlyadana.rakhapuraapp.model.response.PaginationResponse;
 import com.pearlyadana.rakhapuraapp.service.ExamService;
 import com.pearlyadana.rakhapuraapp.service.PublicExamResultService;
-import com.pearlyadana.rakhapuraapp.service.StudentClassService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -27,9 +26,6 @@ public class PublicExamResultController {
 
     @Autowired
     private ExamService examService;
-
-    @Autowired
-    private StudentClassService studentClassService;
 
     @Autowired
     private PublicExamResultService publicExamResultService;
@@ -51,13 +47,7 @@ public class PublicExamResultController {
             int maxSerialNo = this.publicExamResultService.findMaxSerialNo();
             publicExamResultDto.setSerialNo(maxSerialNo);
 
-            if(this.publicExamResultService.save(publicExamResultDto) != null) {
-                StudentClassDto dto = this.studentClassService.findById(id);
-                dto.setPublished(true);
-                if(this.studentClassService.update(dto, id) == null) {
-                    return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-                }
-            } else {
+            if(this.publicExamResultService.save(publicExamResultDto) == null) {
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }

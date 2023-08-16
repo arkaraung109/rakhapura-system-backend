@@ -26,9 +26,6 @@ public class StudentClass {
     @Column(name = "arrival")
     private boolean arrival;
 
-    @Column(name = "published")
-    private boolean published;
-
     @Column(name = "createdTimestamp")
     @CreationTimestamp
     private LocalDateTime createdTimestamp;
@@ -52,12 +49,11 @@ public class StudentClass {
     public StudentClass() {
     }
 
-    public StudentClass(UUID id, String regNo, int regSeqNo, boolean arrival, boolean published, LocalDateTime createdTimestamp, ExamTitle examTitle, Class studentClass, Hostel hostel, Student student) {
+    public StudentClass(UUID id, String regNo, int regSeqNo, boolean arrival, LocalDateTime createdTimestamp, ExamTitle examTitle, Class studentClass, Hostel hostel, Student student) {
         this.id = id;
         this.regNo = regNo;
         this.regSeqNo = regSeqNo;
         this.arrival = arrival;
-        this.published = published;
         this.createdTimestamp = createdTimestamp;
         this.examTitle = examTitle;
         this.studentClass = studentClass;
@@ -95,14 +91,6 @@ public class StudentClass {
 
     public void setArrival(boolean arrival) {
         this.arrival = arrival;
-    }
-
-    public boolean isPublished() {
-        return published;
-    }
-
-    public void setPublished(boolean published) {
-        this.published = published;
     }
 
     public LocalDateTime getCreatedTimestamp() {
