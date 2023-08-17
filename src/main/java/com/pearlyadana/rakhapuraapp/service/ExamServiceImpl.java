@@ -85,7 +85,7 @@ public class ExamServiceImpl implements ExamService {
     @Transactional(readOnly = true)
     @Override
     public PaginationResponse<ExamDto> findEachPageBySearchingSortById(int pageNumber, boolean isAscending, Long academicYearId, Long examTitleId, Long subjectTypeId, String keyword) {
-        Pageable sortedById = null;
+        Pageable sortedById;
         if(isAscending) {
             sortedById = PageRequest.of(PaginationUtil.pageNumber(pageNumber),
                     paginationUtil.getPageSize(), Sort.by("id").ascending());

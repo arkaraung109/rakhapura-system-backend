@@ -76,7 +76,7 @@ public class SubjectTypeServiceImpl implements SubjectTypeService {
     @Transactional(readOnly = true)
     @Override
     public PaginationResponse<SubjectTypeDto> findEachPageBySearchingSortById(int pageNumber, boolean isAscending, Long gradeId, String keyword) {
-        Pageable sortedById = null;
+        Pageable sortedById;
         if(isAscending) {
             sortedById = PageRequest.of(PaginationUtil.pageNumber(pageNumber),
                     paginationUtil.getPageSize(), Sort.by("id").ascending());

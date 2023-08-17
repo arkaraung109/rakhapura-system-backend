@@ -68,7 +68,6 @@ public class AttendanceExcelGenerator {
     }
 
     private void createCell(Row row, int columnCount, Object value, CellStyle style) {
-        sheet.autoSizeColumn(columnCount);
         Cell cell = row.createCell(columnCount);
         if(value instanceof Integer) {
             cell.setCellValue((Integer) value);
@@ -106,6 +105,9 @@ public class AttendanceExcelGenerator {
                     createCell(row, columnCount++, String.valueOf('\u2718'), style);
                 }
             }
+        }
+        for(int i = 0 ; i < this.customPaginationResponse.getElements().size() + 4; i++) {
+            sheet.autoSizeColumn(i);
         }
     }
 

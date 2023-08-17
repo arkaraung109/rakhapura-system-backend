@@ -72,93 +72,66 @@ public class CertificateServiceImpl implements CertificateService {
             entry.setStream(pdfStream);
             map.add(entry);
 
-            Document doc = new Document(PageSize.A4, 36, 36, 90, 36);
+            Document doc = new Document(PageSize.A4, 36, 36, 36, 36);
             doc.setMargins((float) 0.5, (float) 0.5, (float) 0.5, (float) 0.5);
             PdfWriter writer = PdfWriter.getInstance(doc, pdfStream);
             doc.open();
 
-            Phrase examHoldingTimesPhrase = new Phrase(zawgyiConverter.convert("(" + certificate.getExamHoldingTimes() + ")" + " အကြိမ်"), titleFont);
-            PdfContentByte examNameTitleCanvas = writer.getDirectContent();
-            ColumnText.showTextAligned(examNameTitleCanvas, Element.ALIGN_LEFT, examHoldingTimesPhrase, 245, 510, 0);
+            Image img = Image.getInstance("src/main/resources/imgs/favicon.png");
+            img.scaleAbsolute(150f, 130f);
+            img.setAbsolutePosition(224, 700);
+            img.setAlignment(Image.MIDDLE);
+            doc.add(img);
 
-            Phrase tharthanarYearPhrase = new Phrase(zawgyiConverter.convert(certificate.getTharthanarYear()), font);
-            PdfContentByte allYearCanvas = writer.getDirectContent();
-            ColumnText.showTextAligned(allYearCanvas, Element.ALIGN_LEFT, tharthanarYearPhrase, 65, 470, 0);
+            Paragraph titleParagraph = new Paragraph(
+                    zawgyiConverter.convert(
+                    "("
+                            + certificate.getExamHoldingTimes()
+                            + ") အကြိမ်\nရက္ခပူရသာသနာလင်္ကာရစာမေးပွဲ\n"
+                            + studentClass.getStudentClass().getGrade().getName()), titleFont
+            );
+            titleParagraph.setAlignment(Element.ALIGN_CENTER);
+            titleParagraph.setSpacingBefore(150);
+            doc.add(titleParagraph);
 
-            Phrase kawzarYearPhrase = new Phrase(zawgyiConverter.convert(certificate.getKawzarYear()), font);
-            ColumnText.showTextAligned(allYearCanvas, Element.ALIGN_LEFT, kawzarYearPhrase, 260, 470, 0);
+            Paragraph yearParagraph = new Paragraph(
+                    zawgyiConverter.convert(
+                            "သာသနာတော်နှစ် ("
+                                    + certificate.getTharthanarYear() + ")  ကောဇာသက္ကရာဇ် ("
+                                    + certificate.getKawzarYear() + ")  ခရစ်နှစ် ("
+                                    + certificate.getChrisYear() + ")"
+                    )
+                    , titleFont
+            );
+            yearParagraph.setAlignment(Element.ALIGN_CENTER);
+            doc.add(yearParagraph);
 
-            Phrase chrisYearPhrase = new Phrase(zawgyiConverter.convert(certificate.getChrisYear()), font);
-            ColumnText.showTextAligned(allYearCanvas, Element.ALIGN_LEFT, chrisYearPhrase, 455, 470, 0);
-
-            Phrase monasteryTownshipPhrase = new Phrase(zawgyiConverter.convert(studentClass.getStudent().getMonasteryTownship()), font);
-            PdfContentByte line1Canvas = writer.getDirectContent();
-            ColumnText.showTextAligned(line1Canvas, Element.ALIGN_LEFT, monasteryTownshipPhrase, 35, 425, 0);
-
-            Phrase text1 = new Phrase(zawgyiConverter.convert("မြို့"), font);
-            ColumnText.showTextAligned(line1Canvas, Element.ALIGN_LEFT, text1, 195, 425, 0);
-
-            Phrase monasteryNamePhrase = new Phrase(zawgyiConverter.convert(studentClass.getStudent().getMonasteryName()), font);
-            ColumnText.showTextAligned(line1Canvas, Element.ALIGN_LEFT, monasteryNamePhrase, 245, 425, 0);
-
-            Phrase text2 = new Phrase(zawgyiConverter.convert("မှ"), font);
-            ColumnText.showTextAligned(line1Canvas, Element.ALIGN_LEFT, text2, 470, 425, 0);
-
-            Phrase text3 = new Phrase(zawgyiConverter.convert("ပဓာနနာယကဆရာတော်"), font);
-            ColumnText.showTextAligned(line1Canvas, Element.ALIGN_LEFT, text3, 35, 400, 0);
-
-            Phrase monasteryHeadmasterPhrase = new Phrase(zawgyiConverter.convert(studentClass.getStudent().getMonasteryHeadmaster()), font);
-            ColumnText.showTextAligned(line1Canvas, Element.ALIGN_LEFT, monasteryHeadmasterPhrase, 250, 400, 0);
-
-            Phrase text4 = new Phrase(zawgyiConverter.convert("၏တပည့်"), font);
-            ColumnText.showTextAligned(line1Canvas, Element.ALIGN_LEFT, text4, 505, 400, 0);
-
-            Phrase address = new Phrase(zawgyiConverter.convert(studentClass.getStudent().getAddress()), font);
-            ColumnText.showTextAligned(line1Canvas, Element.ALIGN_LEFT, address, 35, 375, 0);
-
-            Phrase text5 = new Phrase(zawgyiConverter.convert("နေ"), font);
-            ColumnText.showTextAligned(line1Canvas, Element.ALIGN_LEFT, text5, 275, 375, 0);
-
-            Phrase parentsPhrase = new Phrase(zawgyiConverter.convert(studentClass.getStudent().getFatherName()) + " + " + zawgyiConverter.convert(studentClass.getStudent().getMotherName()), font);
-            ColumnText.showTextAligned(line1Canvas, Element.ALIGN_LEFT, parentsPhrase, 295, 375, 0);
-
-            Phrase text6 = new Phrase(zawgyiConverter.convert("တို့၏သား"), font);
-            ColumnText.showTextAligned(line1Canvas, Element.ALIGN_LEFT, text6, 505, 375, 0);
-
-            Phrase namePhrase = new Phrase(zawgyiConverter.convert(studentClass.getStudent().getName()), font);
-            ColumnText.showTextAligned(line1Canvas, Element.ALIGN_LEFT, namePhrase, 35, 350, 0);
-
-            Phrase text7 = new Phrase(zawgyiConverter.convert("သည်"), font);
-            ColumnText.showTextAligned(line1Canvas, Element.ALIGN_LEFT, text7, 160, 350, 0);
-
-            Phrase examDatePhrase = new Phrase(zawgyiConverter.convert(certificate.getExamDate()), font);
-            ColumnText.showTextAligned(line1Canvas, Element.ALIGN_LEFT, examDatePhrase, 200, 350, 0);
-
-            Phrase text8 = new Phrase(zawgyiConverter.convert("ရက်တို့၌  ဆင်ယင်ကျင်းပပြုလုပ်ခဲ့သော"), font);
-            ColumnText.showTextAligned(line1Canvas, Element.ALIGN_LEFT, text8, 350, 350, 0);
-
-            Phrase text9 = new Phrase(zawgyiConverter.convert("ရက္ခပူရသာသနာလင်္ကာရစာမေးပွဲတွင်"), font);
-            ColumnText.showTextAligned(line1Canvas, Element.ALIGN_LEFT, text9, 35, 325, 0);
-
-            Phrase text10 = new Phrase(zawgyiConverter.convert("အောင်စဉ်အမှတ် ("), font);
-            ColumnText.showTextAligned(line1Canvas, Element.ALIGN_LEFT, text10, 219, 325, 0);
-
-            Phrase regSeqNoPhrase = new Phrase(String.valueOf(publicExamResultDto.getSerialNo()), font);
-            ColumnText.showTextAligned(line1Canvas, Element.ALIGN_LEFT, regSeqNoPhrase, 305, 325, 0);
-
-            Phrase text11 = new Phrase(zawgyiConverter.convert(") ဖြင့် ဖြေဆိုအောင်မြင်တော်မူသောကြောင့်"), font);
-            ColumnText.showTextAligned(line1Canvas, Element.ALIGN_LEFT, text11, 360, 325, 0);
-
-            Phrase text12 = new Phrase(zawgyiConverter.convert("ရက္ခပူရသာသနာလင်္ကာရအသင်းကြီးက ဤအောင်လက်မှတ်ကို ကြည်ညို‌ လေးမြတ်စွာ ဆက်ကပ်ပါသည်။"), font);
-            ColumnText.showTextAligned(line1Canvas, Element.ALIGN_LEFT, text12, 35, 300, 0);
+            Paragraph dataParagraph = new Paragraph(
+                zawgyiConverter.convert(
+                    studentClass.getStudent().getMonasteryTownship() + "မြို့နယ်၊ "
+                    + studentClass.getStudent().getMonasteryName() + "ကျောင်းတိုက်မှ\n\n"
+                    + "ပဓာနနာယကဆရာတော် "
+                    + studentClass.getStudent().getMonasteryHeadmaster() + "၏တပည့်\n\n"
+                    + studentClass.getStudent().getAddress() + "နေ "
+                    + studentClass.getStudent().getFatherName() + " + "
+                        + studentClass.getStudent().getMotherName() + " တို့၏သား\n\n"
+                        + studentClass.getStudent().getName() + "သည် "
+                        + certificate.getExamDate() + "တွင်  ဆင်ယင်ကျင်းပပြုလုပ်ခဲ့သော\n\nရက္ခပူရသာသနာလင်္ကာရစာမေးပွဲတွင် အောင်စဥ္အမှတ်("
+                        + publicExamResultDto.getSerialNo() + ") ဖြင့်\nဖြေဆိုအောင်မြင်တော်မူသောကြောင့်\n\nရက္ခပူရသာသနာလင်္ကာရအသင်းကြီးက ဤအောင်လက်မှတ်ကို\nကြည်ညိဳလေးမြတ်စွာ ဆက်ကပ်ပါသည်။"
+                )
+                , titleFont
+            );
+            dataParagraph.setAlignment(Element.ALIGN_CENTER);
+            dataParagraph.setSpacingBefore(60);
+            doc.add(dataParagraph);
 
             Phrase releasedDateMyanPhrase = new Phrase(zawgyiConverter.convert(this.getReleasedDateInMyanmar(certificate.getReleasedDate())), font);
             PdfContentByte releaseDateMyanCanvas = writer.getDirectContent();
-            ColumnText.showTextAligned(releaseDateMyanCanvas, Element.ALIGN_LEFT, releasedDateMyanPhrase, 30, 9, 0);
+            ColumnText.showTextAligned(releaseDateMyanCanvas, Element.ALIGN_LEFT, releasedDateMyanPhrase, 30, 36, 0);
 
             Phrase releasedDateEngPhrase = new Phrase(zawgyiConverter.convert(certificate.getReleasedDate()), font);
             PdfContentByte releaseDateEngCanvas = writer.getDirectContent();
-            ColumnText.showTextAligned(releaseDateEngCanvas, Element.ALIGN_LEFT, releasedDateEngPhrase, 320, 9, 0);
+            ColumnText.showTextAligned(releaseDateEngCanvas, Element.ALIGN_LEFT, releasedDateEngPhrase, 505, 36, 0);
 
             doc.close();
             writer.close();

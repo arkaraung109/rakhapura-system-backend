@@ -75,7 +75,7 @@ public class ArrivalServiceImpl implements ArrivalService {
     @Transactional(readOnly = true)
     @Override
     public PaginationResponse<StudentClassDto> findEachPageBySearchingSortByCreatedTimestamp(int pageNumber, boolean isAscending, boolean arrival, Long examTitleId, Long academicYearId, Long gradeId, String studentClass, String keyword) {
-        Pageable sortedByCreatedTimestamp = null;
+        Pageable sortedByCreatedTimestamp;
         if(isAscending) {
             sortedByCreatedTimestamp = PageRequest.of(PaginationUtil.pageNumber(pageNumber),
                     paginationUtil.getPageSize(), Sort.by("createdTimestamp").ascending());

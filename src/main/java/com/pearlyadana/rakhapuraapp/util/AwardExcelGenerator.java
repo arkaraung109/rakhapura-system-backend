@@ -46,7 +46,6 @@ public class AwardExcelGenerator {
     }
 
     private void createCell(Row row, int columnCount, Object value, CellStyle style) {
-        sheet.autoSizeColumn(columnCount);
         Cell cell = row.createCell(columnCount);
         if(value instanceof Integer) {
             cell.setCellValue((Integer) value);
@@ -78,6 +77,9 @@ public class AwardExcelGenerator {
             createCell(row, columnCount++, awardDto.getAward(), style);
             createCell(row, columnCount++, awardDto.getDescription(), style);
             createCell(row, columnCount++, awardDto.getEventDate(), style);
+        }
+        for(int i = 0 ; i < 6; i++) {
+            sheet.autoSizeColumn(i);
         }
     }
 

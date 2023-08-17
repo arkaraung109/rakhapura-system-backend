@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -70,32 +69,25 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     @Transactional(readOnly = true)
     @Override
-    public PaginationResponse<AttendanceDto> findEachNotPresentPageBySearchingSortByCreatedTimestamp(int pageNumber, boolean isAscending, Long academicYearId, Long examTitleId, Long subjectTypeId, String keyword) {
-        Pageable sortedByCreatedTimestamp = null;
-        if(isAscending) {
-            sortedByCreatedTimestamp = PageRequest.of(PaginationUtil.pageNumber(pageNumber),
-                    paginationUtil.getPageSize(), Sort.by("createdTimestamp").ascending());
-        } else {
-            sortedByCreatedTimestamp = PageRequest.of(PaginationUtil.pageNumber(pageNumber),
-                    paginationUtil.getPageSize(), Sort.by("createdTimestamp").descending());
-        }
-        Page<Attendance> page = null;
+    public PaginationResponse<AttendanceDto> findEachNotPresentPageBySearching(int pageNumber, Long academicYearId, Long examTitleId, Long subjectTypeId, String keyword) {
+        Pageable pageable = PageRequest.of(PaginationUtil.pageNumber(pageNumber), paginationUtil.getPageSize());
+        Page<Attendance> page;
         if(academicYearId == 0 && examTitleId == 0 && subjectTypeId == 0) {
-            page = this.attendanceRepository.findAllByKeywordAndNotPresent(keyword, sortedByCreatedTimestamp);
+            page = this.attendanceRepository.findAllByKeywordAndNotPresent(keyword, pageable);
         } else if(academicYearId != 0 && examTitleId == 0 && subjectTypeId == 0) {
-            page = this.attendanceRepository.findAllByAcademicYearAndKeywordAndNotPresent(academicYearId, keyword, sortedByCreatedTimestamp);
+            page = this.attendanceRepository.findAllByAcademicYearAndKeywordAndNotPresent(academicYearId, keyword, pageable);
         } else if(academicYearId == 0 && examTitleId != 0 && subjectTypeId == 0) {
-            page = this.attendanceRepository.findAllByExamTitleAndKeywordAndNotPresent(examTitleId, keyword, sortedByCreatedTimestamp);
+            page = this.attendanceRepository.findAllByExamTitleAndKeywordAndNotPresent(examTitleId, keyword, pageable);
         } else if(academicYearId == 0 && examTitleId == 0 && subjectTypeId != 0) {
-            page = this.attendanceRepository.findAllBySubjectTypeAndKeywordAndNotPresent(subjectTypeId, keyword, sortedByCreatedTimestamp);
+            page = this.attendanceRepository.findAllBySubjectTypeAndKeywordAndNotPresent(subjectTypeId, keyword, pageable);
         } else if(academicYearId != 0 && examTitleId != 0 && subjectTypeId == 0) {
-            page = this.attendanceRepository.findAllByAcademicYearAndExamTitleAndKeywordAndNotPresent(academicYearId, examTitleId, keyword, sortedByCreatedTimestamp);
+            page = this.attendanceRepository.findAllByAcademicYearAndExamTitleAndKeywordAndNotPresent(academicYearId, examTitleId, keyword, pageable);
         } else if(academicYearId != 0 && examTitleId == 0 && subjectTypeId != 0) {
-            page = this.attendanceRepository.findAllByAcademicYearAndSubjectTypeAndKeywordAndNotPresent(academicYearId, subjectTypeId, keyword, sortedByCreatedTimestamp);
+            page = this.attendanceRepository.findAllByAcademicYearAndSubjectTypeAndKeywordAndNotPresent(academicYearId, subjectTypeId, keyword, pageable);
         } else if(academicYearId == 0 && examTitleId != 0 && subjectTypeId != 0) {
-            page = this.attendanceRepository.findAllByExamTitleAndSubjectTypeAndKeywordAndNotPresent(examTitleId, subjectTypeId, keyword, sortedByCreatedTimestamp);
+            page = this.attendanceRepository.findAllByExamTitleAndSubjectTypeAndKeywordAndNotPresent(examTitleId, subjectTypeId, keyword, pageable);
         } else {
-            page = this.attendanceRepository.findAllByAcademicYearAndExamTitleAndSubjectTypeAndKeywordAndNotPresent(academicYearId, examTitleId, subjectTypeId, keyword, sortedByCreatedTimestamp);
+            page = this.attendanceRepository.findAllByAcademicYearAndExamTitleAndSubjectTypeAndKeywordAndNotPresent(academicYearId, examTitleId, subjectTypeId, keyword, pageable);
         }
 
         PaginationResponse<AttendanceDto> res = new PaginationResponse<AttendanceDto>();

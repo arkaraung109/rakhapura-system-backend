@@ -18,7 +18,7 @@ public interface AttendanceService {
 
     List<AttendanceDto> findAll();
 
-    PaginationResponse<AttendanceDto> findEachNotPresentPageBySearchingSortByCreatedTimestamp(int pageNumber, boolean isAscending, Long academicYearId, Long examTitleId, Long subjectTypeId, String keyword);
+    PaginationResponse<AttendanceDto> findEachNotPresentPageBySearching(int pageNumber, Long academicYearId, Long examTitleId, Long subjectTypeId, String keyword);
 
     CustomPaginationResponse<ResultResponse> findEachPageBySearching(int pageNumber, Long academicYearId, Long examTitleId, Long gradeId, String keyword);
 

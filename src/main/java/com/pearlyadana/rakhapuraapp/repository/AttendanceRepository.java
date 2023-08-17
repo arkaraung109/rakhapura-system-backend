@@ -29,45 +29,45 @@ public interface AttendanceRepository extends JpaRepository<Attendance, UUID> {
 
     //-----Not Present-----
 
-    @Query(value = joinQueryNotPresent,
-            countQuery = joinQueryNotPresent,
+    @Query(value = joinQueryNotPresent + " order by sc.reg_no, a.exam_id",
+            countQuery = joinQueryNotPresent + " order by sc.reg_no, a.exam_id",
             nativeQuery = true)
-    Page<Attendance> findAllByKeywordAndNotPresent(@Param("keyword") String keyword, Pageable sortedById);
+    Page<Attendance> findAllByKeywordAndNotPresent(@Param("keyword") String keyword, Pageable pageable);
 
-    @Query(value = joinQueryNotPresent + " and (e.academic_year_id=:academicYearId)",
-            countQuery = joinQueryNotPresent + " and (e.academic_year_id=:academicYearId)",
+    @Query(value = joinQueryNotPresent + " and (e.academic_year_id=:academicYearId)" + " order by sc.reg_no, a.exam_id",
+            countQuery = joinQueryNotPresent + " and (e.academic_year_id=:academicYearId)" + " order by sc.reg_no, a.exam_id",
             nativeQuery = true)
-    Page<Attendance> findAllByAcademicYearAndKeywordAndNotPresent(@Param("academicYearId") Long academicYearId, @Param("keyword") String keyword, Pageable sortedById);
+    Page<Attendance> findAllByAcademicYearAndKeywordAndNotPresent(@Param("academicYearId") Long academicYearId, @Param("keyword") String keyword, Pageable pageable);
 
-    @Query(value = joinQueryNotPresent + " and (e.exam_title_id=:examTitleId)",
-            countQuery = joinQueryNotPresent + " and (e.exam_title_id=:examTitleId)",
+    @Query(value = joinQueryNotPresent + " and (e.exam_title_id=:examTitleId)" + " order by sc.reg_no, a.exam_id",
+            countQuery = joinQueryNotPresent + " and (e.exam_title_id=:examTitleId)" + " order by sc.reg_no, a.exam_id",
             nativeQuery = true)
-    Page<Attendance> findAllByExamTitleAndKeywordAndNotPresent(@Param("examTitleId") Long examTitleId, @Param("keyword") String keyword, Pageable sortedById);
+    Page<Attendance> findAllByExamTitleAndKeywordAndNotPresent(@Param("examTitleId") Long examTitleId, @Param("keyword") String keyword, Pageable pageable);
 
-    @Query(value = joinQueryNotPresent + " and (e.subject_type_id=:subjectTypeId)",
-            countQuery = joinQueryNotPresent + " and (e.subject_type_id=:subjectTypeId)",
+    @Query(value = joinQueryNotPresent + " and (e.subject_type_id=:subjectTypeId)" + " order by sc.reg_no, a.exam_id",
+            countQuery = joinQueryNotPresent + " and (e.subject_type_id=:subjectTypeId)" + " order by sc.reg_no, a.exam_id",
             nativeQuery = true)
-    Page<Attendance> findAllBySubjectTypeAndKeywordAndNotPresent(@Param("subjectTypeId") Long subjectTypeId, @Param("keyword") String keyword, Pageable sortedById);
+    Page<Attendance> findAllBySubjectTypeAndKeywordAndNotPresent(@Param("subjectTypeId") Long subjectTypeId, @Param("keyword") String keyword, Pageable pageable);
 
-    @Query(value = joinQueryNotPresent + " and (e.academic_year_id=:academicYearId) and (e.exam_title_id=:examTitleId)",
-            countQuery = joinQueryNotPresent + " and (e.academic_year_id=:academicYearId) and (e.exam_title_id=:examTitleId)",
+    @Query(value = joinQueryNotPresent + " and (e.academic_year_id=:academicYearId) and (e.exam_title_id=:examTitleId)" + " order by sc.reg_no, a.exam_id",
+            countQuery = joinQueryNotPresent + " and (e.academic_year_id=:academicYearId) and (e.exam_title_id=:examTitleId)" + " order by sc.reg_no, a.exam_id",
             nativeQuery = true)
-    Page<Attendance> findAllByAcademicYearAndExamTitleAndKeywordAndNotPresent(@Param("academicYearId") Long academicYearId, @Param("examTitleId") Long examTitleId, @Param("keyword") String keyword, Pageable sortedById);
+    Page<Attendance> findAllByAcademicYearAndExamTitleAndKeywordAndNotPresent(@Param("academicYearId") Long academicYearId, @Param("examTitleId") Long examTitleId, @Param("keyword") String keyword, Pageable pageable);
 
-    @Query(value = joinQueryNotPresent + " and (e.academic_year_id=:academicYearId) and (e.subject_type_id=:subjectTypeId)",
-            countQuery = joinQueryNotPresent + " and (e.academic_year_id=:academicYearId) and (e.subject_type_id=:subjectTypeId)",
+    @Query(value = joinQueryNotPresent + " and (e.academic_year_id=:academicYearId) and (e.subject_type_id=:subjectTypeId)" + " order by sc.reg_no, a.exam_id",
+            countQuery = joinQueryNotPresent + " and (e.academic_year_id=:academicYearId) and (e.subject_type_id=:subjectTypeId)" + " order by sc.reg_no, a.exam_id",
             nativeQuery = true)
-    Page<Attendance> findAllByAcademicYearAndSubjectTypeAndKeywordAndNotPresent(@Param("academicYearId") Long academicYearId, @Param("subjectTypeId") Long subjectTypeId, @Param("keyword") String keyword, Pageable sortedById);
+    Page<Attendance> findAllByAcademicYearAndSubjectTypeAndKeywordAndNotPresent(@Param("academicYearId") Long academicYearId, @Param("subjectTypeId") Long subjectTypeId, @Param("keyword") String keyword, Pageable pageable);
 
-    @Query(value = joinQueryNotPresent + " and (e.exam_title_id=:examTitleId) and (e.subject_type_id=:subjectTypeId)",
-            countQuery = joinQueryNotPresent + " and (e.exam_title_id=:examTitleId) and (e.subject_type_id=:subjectTypeId)",
+    @Query(value = joinQueryNotPresent + " and (e.exam_title_id=:examTitleId) and (e.subject_type_id=:subjectTypeId)" + " order by sc.reg_no, a.exam_id",
+            countQuery = joinQueryNotPresent + " and (e.exam_title_id=:examTitleId) and (e.subject_type_id=:subjectTypeId)" + " order by sc.reg_no, a.exam_id",
             nativeQuery = true)
-    Page<Attendance> findAllByExamTitleAndSubjectTypeAndKeywordAndNotPresent(@Param("examTitleId") Long examTitleId, @Param("subjectTypeId") Long subjectTypeId, @Param("keyword") String keyword, Pageable sortedById);
+    Page<Attendance> findAllByExamTitleAndSubjectTypeAndKeywordAndNotPresent(@Param("examTitleId") Long examTitleId, @Param("subjectTypeId") Long subjectTypeId, @Param("keyword") String keyword, Pageable pageable);
 
-    @Query(value = joinQueryNotPresent + " and (e.academic_year_id=:academicYearId) and (e.exam_title_id=:examTitleId) and (e.subject_type_id=:subjectTypeId)",
-            countQuery = joinQueryNotPresent + " and (e.academic_year_id=:academicYearId) and (e.exam_title_id=:examTitleId) and (e.subject_type_id=:subjectTypeId)",
+    @Query(value = joinQueryNotPresent + " and (e.academic_year_id=:academicYearId) and (e.exam_title_id=:examTitleId) and (e.subject_type_id=:subjectTypeId)" + " order by sc.reg_no, a.exam_id",
+            countQuery = joinQueryNotPresent + " and (e.academic_year_id=:academicYearId) and (e.exam_title_id=:examTitleId) and (e.subject_type_id=:subjectTypeId)" + " order by sc.reg_no, a.exam_id",
             nativeQuery = true)
-    Page<Attendance> findAllByAcademicYearAndExamTitleAndSubjectTypeAndKeywordAndNotPresent(@Param("academicYearId") Long academicYearId, @Param("examTitleId") Long examTitleId, @Param("subjectTypeId") Long subjectTypeId, @Param("keyword") String keyword, Pageable sortedById);
+    Page<Attendance> findAllByAcademicYearAndExamTitleAndSubjectTypeAndKeywordAndNotPresent(@Param("academicYearId") Long academicYearId, @Param("examTitleId") Long examTitleId, @Param("subjectTypeId") Long subjectTypeId, @Param("keyword") String keyword, Pageable pageable);
 
     //-----Student Exam-----
     @Query(value = joinQueryPresent + " and (sc.exam_title_id=:examTitleId) and (c.academic_year_id=:academicYearId) and (c.grade_id=:gradeId)" + groupByQuery + " order by sc.reg_no",

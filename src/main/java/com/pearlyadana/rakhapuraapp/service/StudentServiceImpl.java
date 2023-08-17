@@ -77,7 +77,7 @@ public class StudentServiceImpl implements StudentService {
     @Transactional(readOnly = true)
     @Override
     public PaginationResponse<StudentDto> findEachPageBySearchingSortByCreatedTimestamp(int pageNumber, boolean isAscending, Long regionId, String keyword) {
-        Pageable sortedByCreatedTimestamp = null;
+        Pageable sortedByCreatedTimestamp;
         if(isAscending) {
             sortedByCreatedTimestamp = PageRequest.of(PaginationUtil.pageNumber(pageNumber),
                     paginationUtil.getPageSize(), Sort.by("createdTimestamp").ascending());

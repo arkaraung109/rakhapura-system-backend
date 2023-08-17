@@ -67,7 +67,7 @@ public class ExamTitleServiceImpl implements ExamTitleService {
     @Transactional(readOnly = true)
     @Override
     public PaginationResponse<ExamTitleDto> findEachPageBySearchingSortById(int pageNumber, boolean isAscending, String keyword) {
-        Pageable sortedById = null;
+        Pageable sortedById;
         if(isAscending) {
             sortedById = PageRequest.of(PaginationUtil.pageNumber(pageNumber),
                     paginationUtil.getPageSize(), Sort.by("id").ascending());

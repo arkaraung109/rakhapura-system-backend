@@ -48,7 +48,6 @@ public class ArrivedStudentExcelGenerator {
     }
 
     private void createCell(Row row, int columnCount, Object value, CellStyle style) {
-        sheet.autoSizeColumn(columnCount);
         Cell cell = row.createCell(columnCount);
         if(value instanceof Integer) {
             cell.setCellValue((Integer) value);
@@ -82,6 +81,9 @@ public class ArrivedStudentExcelGenerator {
             createCell(row, columnCount++, studentClassDto.getExamTitle().getName(), style);
             createCell(row, columnCount++, studentClassDto.getStudentClass().getGrade().getName(), style);
             createCell(row, columnCount++, studentClassDto.getStudentClass().getName(), style);
+        }
+        for(int i = 0 ; i < 8; i++) {
+            sheet.autoSizeColumn(i);
         }
     }
 

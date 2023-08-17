@@ -47,12 +47,8 @@ public class AttendanceController {
     }
 
     @GetMapping("/segment/not-present/search")
-    public ResponseEntity<PaginationResponse<AttendanceDto>> findEachNotPresentPageBySearchingSortByCreatedTimestamp(@RequestParam int page, @RequestParam(required = false) String order, @RequestParam Long academicYearId, @RequestParam Long examTitleId, @RequestParam Long subjectTypeId, @RequestParam String keyword) {
-        boolean isAscending = true;
-        if(order!=null && order.equals("desc")) {
-            isAscending = false;
-        }
-        return new ResponseEntity<>(this.attendanceService.findEachNotPresentPageBySearchingSortByCreatedTimestamp(page, isAscending, academicYearId, examTitleId, subjectTypeId, keyword), HttpStatus.OK);
+    public ResponseEntity<PaginationResponse<AttendanceDto>> findEachNotPresentPageBySearching(@RequestParam int page, @RequestParam Long academicYearId, @RequestParam Long examTitleId, @RequestParam Long subjectTypeId, @RequestParam String keyword) {
+        return new ResponseEntity<>(this.attendanceService.findEachNotPresentPageBySearching(page, academicYearId, examTitleId, subjectTypeId, keyword), HttpStatus.OK);
     }
 
     private TableHeader setTableHeader(Long academicYearId, Long examTitleId, Long gradeId, String keyword) {

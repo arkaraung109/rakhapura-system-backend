@@ -48,7 +48,6 @@ public class PunishmentExcelGenerator {
     }
 
     private void createCell(Row row, int columnCount, Object value, CellStyle style) {
-        sheet.autoSizeColumn(columnCount);
         Cell cell = row.createCell(columnCount);
         if(value instanceof Integer) {
             cell.setCellValue((Integer) value);
@@ -82,6 +81,9 @@ public class PunishmentExcelGenerator {
             createCell(row, columnCount++, punishmentDto.getEventDate(), style);
             createCell(row, columnCount++, punishmentDto.getStartDate(), style);
             createCell(row, columnCount++, punishmentDto.getEndDate(), style);
+        }
+        for(int i = 0 ; i < 8; i++) {
+            sheet.autoSizeColumn(i);
         }
     }
 

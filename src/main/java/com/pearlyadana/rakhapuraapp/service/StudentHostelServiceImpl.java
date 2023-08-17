@@ -75,7 +75,7 @@ public class StudentHostelServiceImpl implements StudentHostelService {
     @Transactional(readOnly = true)
     @Override
     public PaginationResponse<StudentClassDto> findEachNotPresentPageBySearchingSortByCreatedTimestamp(int pageNumber, boolean isAscending, Long examTitleId, Long academicYearId, Long gradeId, String keyword) {
-        Pageable sortedByCreatedTimestamp = null;
+        Pageable sortedByCreatedTimestamp;
         if(isAscending) {
             sortedByCreatedTimestamp = PageRequest.of(PaginationUtil.pageNumber(pageNumber),
                     paginationUtil.getPageSize(), Sort.by("createdTimestamp").ascending());
@@ -113,7 +113,7 @@ public class StudentHostelServiceImpl implements StudentHostelService {
     @Transactional(readOnly = true)
     @Override
     public PaginationResponse<StudentClassDto> findEachPresentPageBySearchingSortByCreatedTimestamp(int pageNumber, boolean isAscending, Long examTitleId, Long academicYearId, Long gradeId, Long hostelId, String keyword) {
-        Pageable sortedByCreatedTimestamp = null;
+        Pageable sortedByCreatedTimestamp;
         if(isAscending) {
             sortedByCreatedTimestamp = PageRequest.of(PaginationUtil.pageNumber(pageNumber),
                     paginationUtil.getPageSize(), Sort.by("createdTimestamp").ascending());

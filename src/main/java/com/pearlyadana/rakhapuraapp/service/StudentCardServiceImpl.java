@@ -59,7 +59,7 @@ public class StudentCardServiceImpl implements StudentCardService {
     @Transactional(readOnly = true)
     @Override
     public PaginationResponse<StudentClassDto> findEachPageBySearchingSortByCreatedTimestamp(int pageNumber, boolean isAscending, Long examTitleId, Long academicYearId, Long gradeId) {
-        Pageable sortedByCreatedTimestamp = null;
+        Pageable sortedByCreatedTimestamp;
         if(isAscending) {
             sortedByCreatedTimestamp = PageRequest.of(PaginationUtil.pageNumber(pageNumber),
                     paginationUtil.getPageSize(), Sort.by("createdTimestamp").ascending());
@@ -138,8 +138,7 @@ public class StudentCardServiceImpl implements StudentCardService {
             PdfWriter writer = PdfWriter.getInstance(doc, pdfStream);
             doc.open();
 
-            Image img = null;
-            img = Image.getInstance("src/main/resources/imgs/favicon.png");
+            Image img = Image.getInstance("src/main/resources/imgs/favicon.png");
             img.scaleAbsolute(150f, 130f);
             img.setAlignment(Image.MIDDLE);
             doc.add(img);

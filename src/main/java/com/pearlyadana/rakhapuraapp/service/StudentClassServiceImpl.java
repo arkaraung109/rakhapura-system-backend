@@ -121,7 +121,7 @@ public class StudentClassServiceImpl implements StudentClassService {
     @Transactional(readOnly = true)
     @Override
     public PaginationResponse<StudentClassDto> findEachPageBySearchingSortByCreatedTimestamp(int pageNumber, boolean isAscending, Long examTitleId, Long academicYearId, Long gradeId, String studentClass, String keyword) {
-        Pageable sortedByCreatedTimestamp = null;
+        Pageable sortedByCreatedTimestamp;
         if(isAscending) {
             sortedByCreatedTimestamp = PageRequest.of(PaginationUtil.pageNumber(pageNumber),
                     paginationUtil.getPageSize(), Sort.by("createdTimestamp").ascending());
@@ -129,7 +129,7 @@ public class StudentClassServiceImpl implements StudentClassService {
             sortedByCreatedTimestamp = PageRequest.of(PaginationUtil.pageNumber(pageNumber),
                     paginationUtil.getPageSize(), Sort.by("createdTimestamp").descending());
         }
-        Page<StudentClass> page = null;
+        Page<StudentClass> page;
         if(examTitleId == 0 && academicYearId == 0 && gradeId == 0 && studentClass.equals("All")) {
             page = this.studentClassRepository.findAllByKeyword(keyword, sortedByCreatedTimestamp);
         } else if(examTitleId != 0 && academicYearId == 0 && gradeId == 0 && studentClass.equals("All")) {

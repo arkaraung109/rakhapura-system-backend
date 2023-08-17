@@ -78,7 +78,7 @@ public class StudentExamExcelGenerator {
             firstCol = lastCol + 1;
         }
         sheet.addMergedRegion(new CellRangeAddress(9, 10, firstCol, firstCol));
-        createCell(row9, firstCol, "ဘာသာရပ်အားလုံးပေါင်း", style);
+        createCell(row9, firstCol, "ဘာသာရပ်ကြီးအားလုံးပေါင်း", style);
         sheet.addMergedRegion(new CellRangeAddress(9, 11, firstCol + 1, firstCol + 1));
         createCell(row9, firstCol + 1, "အောင်/ရှုံး/ကုစား", style);
 
@@ -108,7 +108,7 @@ public class StudentExamExcelGenerator {
     }
 
     private void createCell(Row row, int columnCount, Object value, CellStyle style) {
-        sheet.autoSizeColumn(columnCount);
+        sheet.autoSizeColumn(columnCount, true);
         Cell cell = row.createCell(columnCount);
         if(value instanceof Integer) {
             cell.setCellValue((Integer) value);

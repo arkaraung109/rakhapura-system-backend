@@ -66,7 +66,7 @@ public class AwardServiceImpl implements AwardService {
     @Transactional(readOnly = true)
     @Override
     public PaginationResponse<AwardDto> findEachPageBySearchingSortById(int pageNumber, boolean isAscending, String keyword) {
-        Pageable sortedById = null;
+        Pageable sortedById;
         if(isAscending) {
             sortedById = PageRequest.of(PaginationUtil.pageNumber(pageNumber),
                     paginationUtil.getPageSize(), Sort.by("id").ascending());
