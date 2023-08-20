@@ -52,11 +52,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@PostConstruct
 	private void init(){
-		System.out.println("Security Configrations are enabled");
+		System.out.println("Security Configurations are enabled");
 	}
 
 	@Bean
-	public PasswordEncoder passwordEncoder(){
+	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder(11);
 	}
 	

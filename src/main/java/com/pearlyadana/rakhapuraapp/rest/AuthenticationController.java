@@ -57,6 +57,13 @@ public class AuthenticationController {
             Optional<ApplicationUserDto> dto = this.userTableService.findUserTableByLoginUsername(login.getUserID());
             if(dto.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            } else {
+                if(!dto.get().isActiveStatus()) {
+                    CustomHttpResponse err = new CustomHttpResponse();
+                    err.setMessage("Account is disabled.");
+                    err.setStatus(HttpStatus.LOCKED.value());
+                    return new ResponseEntity<>(err, HttpStatus.LOCKED);
+                }
             }
             Authentication authenticate = authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(login.getUserID(), login.getPassword()));

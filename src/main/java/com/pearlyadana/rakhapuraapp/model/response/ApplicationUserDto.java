@@ -15,6 +15,8 @@ public class ApplicationUserDto implements Serializable {
 
     private String password;
 
+    private String oldPassword;
+
     private boolean activeStatus;
 
     private UserRoleDto role;
@@ -22,12 +24,13 @@ public class ApplicationUserDto implements Serializable {
     public ApplicationUserDto() {
     }
 
-    public ApplicationUserDto(Long id, String firstName, String lastName, String loginUserName, String password, boolean activeStatus, UserRoleDto role) {
+    public ApplicationUserDto(Long id, String firstName, String lastName, String loginUserName, String password, String oldPassword, boolean activeStatus, UserRoleDto role) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.loginUserName = loginUserName;
         this.password = password;
+        this.oldPassword = oldPassword;
         this.activeStatus = activeStatus;
         this.role = role;
     }
@@ -70,6 +73,14 @@ public class ApplicationUserDto implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getOldPassword() {
+        return oldPassword;
+    }
+
+    public void setOldPassword(String oldPassword) {
+        this.oldPassword = oldPassword;
     }
 
     public boolean isActiveStatus() {

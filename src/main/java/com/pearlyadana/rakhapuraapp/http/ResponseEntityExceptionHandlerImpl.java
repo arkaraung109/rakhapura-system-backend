@@ -56,7 +56,7 @@ public class ResponseEntityExceptionHandlerImpl extends ResponseEntityExceptionH
 		Map<String, Object> body = new HashMap<String, Object>();
 		body.put("timestamp", new Date());
 		body.put("status", status.value());
-		body.put("error", "Http request mehtod not supported");
+		body.put("error", "Http request method not supported");
 		body.put("message", builder.toString());
 		body.put("path", ((ServletWebRequest) request).getRequest().getRequestURI());
 
@@ -361,7 +361,7 @@ public class ResponseEntityExceptionHandlerImpl extends ResponseEntityExceptionH
 		body.put("timestamp", new Date());
 		body.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
 		body.put("error", "Internal server error");
-		body.put("message", "Internal server error occured, please see in log file");
+		body.put("message", "Internal server error occurred, please see in log file");
 		body.put("path", ((ServletWebRequest) request).getRequest().getRequestURI());
 
 		response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
