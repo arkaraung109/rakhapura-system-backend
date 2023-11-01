@@ -55,7 +55,7 @@ public class AuthenticationController {
     public ResponseEntity<Object> authenticate(@RequestBody Login login) throws Exception {
         try {
             Optional<ApplicationUserDto> dto = this.userTableService.findUserTableByLoginUsername(login.getUserID());
-            if(dto.isEmpty()) {
+            if(!dto.isPresent()) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             } else {
                 if(!dto.get().isActiveStatus()) {
